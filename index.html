@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101713"><meta name="description" content="Deine kostenlose Fitness Quest">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Fitness Quest</title>
+<style>
+:root{color-scheme:dark;--bg:#0d1411;--panel:#17231d;--panel2:#203128;--gold:#e7c879;--muted:#aab8af;--line:#314238;--green:#9bc6a6}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1b3025 0,#0d1411 55%);color:#f4f6f2;font:16px system-ui,-apple-system,sans-serif;padding:env(safe-area-inset-top) 16px calc(24px + env(safe-area-inset-bottom));max-width:650px;margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;padding:20px 2px 14px}.eyebrow{color:var(--gold);font-size:11px;letter-spacing:2px;font-weight:800}.brand{font-size:24px;font-weight:900;letter-spacing:.5px}.brand span{color:var(--gold)}.panel{background:linear-gradient(145deg,#1b2a22,#142019);border:1px solid var(--line);border-radius:20px;padding:18px;margin:12px 0;box-shadow:0 12px 30px #0003}.hero{border-color:#6d5d37}.row{display:flex;justify-content:space-between;align-items:center;gap:12px}.muted{color:var(--muted);font-size:13px}.level{font-size:42px;font-weight:900;line-height:1.1}.rank{color:var(--gold);font-weight:800}.xp{font-size:22px;font-weight:800}.bar{height:10px;background:#34453a;border-radius:20px;overflow:hidden;margin:12px 0 6px}.fill{height:100%;background:linear-gradient(90deg,#b68b3f,var(--gold));width:0%;transition:width .25s}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#111b15;border-radius:14px;padding:12px}.stat strong{display:block;font-size:23px}.section-title{font-weight:850;font-size:18px;margin:4px 0 12px}.exercise{background:#111b15;border:1px solid #2b3c31;border-radius:15px;padding:14px;margin:10px 0}.exercise h3{margin:0 0 4px;font-size:16px}.exercise input{width:82px;background:#0b120e;color:white;border:1px solid #506356;border-radius:10px;padding:10px;font-size:17px;text-align:center}.exercise label{font-size:12px;color:var(--muted)}button{border:0;border-radius:13px;padding:14px 16px;font-weight:800;font-size:15px;background:var(--gold);color:#17150e;width:100%;margin-top:10px}button.secondary{background:#293a30;color:#f1f4ef;border:1px solid #46594b}button:disabled{opacity:.4}.tag{font-size:11px;color:var(--green);font-weight:800}.history{padding-left:18px;color:var(--muted);font-size:13px}.smallbtn{width:auto;padding:8px 11px;font-size:12px;margin:0}.notice{font-size:12px;color:var(--muted);line-height:1.5}.toast{color:var(--green);min-height:20px;font-size:13px;margin-top:8px}footer{text-align:center;color:#829187;font-size:11px;padding:12px}
+</style>
+</head>
+<body>
+<header><div><div class="eyebrow">DEIN PERSÖNLICHES TRAININGSSYSTEM</div><div class="brand">FITNESS <span>QUEST</span></div></div><div style="font-size:28px">⚔️</div></header>
+<section class="panel hero">
+ <div class="row"><span class="eyebrow">DEIN ABENTEUER</span><span class="tag">● OFFLINE BEREIT</span></div>
+ <div class="row" style="align-items:end;margin-top:8px"><div><div class="level" id="level">LEVEL 1</div><div class="rank" id="rank">Anfänger</div></div><div style="text-align:right"><div class="xp" id="xp">0 XP</div><div class="muted">Gesamt-Erfahrung</div></div></div>
+ <div class="bar"><div class="fill" id="progress"></div></div><div class="row muted"><span id="progressText">0 / 100 XP</span><span id="next">Noch 100 XP bis Level 2</span></div>
+</section>
+<div class="stats">
+ <div class="stat"><div class="muted">Abgeschlossene Einheiten</div><strong id="sessions">0</strong></div>
+ <div class="stat"><div class="muted">Trainings-Wiederholungen</div><strong id="reps">0</strong></div>
+</div>
+<section class="panel">
+ <div class="row"><div class="section-title">⚔️ Heutige Quest</div><span class="tag">+50 XP</span></div>
+ <p class="muted">Trage ein, was du heute tatsächlich geschafft hast. Richtwert zum Einstieg: 3 kontrollierte Sätze, mit ausreichend Pause.</p>
+ <div id="exercises"></div>
+ <button id="complete">Quest abschließen · +50 XP</button><div class="toast" id="toast"></div>
+</section>
+<section class="panel">
+ <div class="row"><div class="section-title">🏆 Deine Erfolge</div><button class="secondary smallbtn" id="historyToggle">Anzeigen</button></div>
+ <div id="history" hidden><ol class="history" id="historyList"></ol><p class="muted" id="emptyHistory">Noch keine abgeschlossenen Quests.</p></div>
+ <p class="notice">Deine Daten werden nur lokal in diesem Browser auf diesem Gerät gespeichert. Browserdaten löschen kann den Spielstand entfernen.</p>
+</section>
+<section class="panel">
+ <div class="section-title">📜 Deine Rangordnung</div>
+ <div class="muted">Level 1–5 Anfänger · 6–10 Lehrling · 11–15 Kämpfer · 16–20 Athlet · 21–25 Elite · 26–30 Meister · ab 31 Legende</div>
+</section>
+<section class="panel">
+ <div class="section-title">⚙️ Spielstand</div>
+ <button class="secondary" id="export">Spielstand exportieren</button>
+ <button class="secondary" id="reset">Spielstand zurücksetzen</button>
+</section>
+<footer>FITNESS QUEST · KOSTENLOS · KEIN ABO</footer>
+<script>
+const defaults=[{name:"Klimmzüge",target:6,per:2},{name:"Liegestütze",target:30,per:10},{name:"Kniebeugen",target:36,per:12},{name:"Sit-ups",target:30,per:10}];
+let state=JSON.parse(localStorage.getItem("fitnessQuestSave")||'{"xp":0,"sessions":0,"history":[]}');
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem("fitnessQuestSave",JSON.stringify(state));render()}
+function level(){return Math.floor(state.xp/100)+1}
+function rank(){return ["Anfänger","Lehrling","Kämpfer","Athlet","Elite","Meister","Legende"][Math.min(Math.floor((level()-1)/5),6)]}
+function render(){
+ $("level").textContent="LEVEL "+level();$("rank").textContent=rank();$("xp").textContent=state.xp+" XP";
+ const p=state.xp%100;$("progress").style.width=p+"%";$("progressText").textContent=p+" / 100 XP";$("next").textContent="Noch "+(100-p)+" XP bis Level "+(level()+1);
+ $("sessions").textContent=state.sessions;$("reps").textContent=state.history.reduce((a,h)=>a+h.reps.reduce((x,y)=>x+y,0),0);
+ $("historyList").innerHTML=state.history.slice().reverse().map(h=>`<li>${new Date(h.date).toLocaleDateString("de-DE")} · ${h.reps.reduce((a,b)=>a+b,0)} Wiederholungen · +50 XP</li>`).join("");
+ $("emptyHistory").hidden=state.history.length>0;
+}
+$("exercises").innerHTML=defaults.map((e,i)=>`<div class="exercise"><div class="row"><div><h3>${e.name}</h3><div class="muted">Orientierung: ${e.target} gesamt · ${e.per} × 3 Sätze</div></div><div><label for="rep${i}">Heute geschafft</label><br><input id="rep${i}" type="number" min="0" max="999" inputmode="numeric" value="${e.target}"></div></div></div>`).join("");
+$("complete").addEventListener("click",()=>{
+ const reps=defaults.map((e,i)=>Math.max(0,Math.min(999,parseInt($("rep"+i).value)||0)));
+ if(reps.every(n=>n===0)){ $("toast").textContent="Trage mindestens eine Wiederholung ein.";return}
+ state.xp+=50;state.sessions++;state.history.push({date:new Date().toISOString(),reps});save();
+ $("toast").textContent="Quest abgeschlossen! +50 XP wurden gutgeschrieben. Stark gemacht!";$("complete").disabled=true;$("complete").textContent="Quest für heute abgeschlossen";
+});
+$("historyToggle").onclick=()=>{$("history").hidden=!$("history").hidden;$("historyToggle").textContent=$("history").hidden?"Anzeigen":"Ausblenden"};
+$("reset").onclick=()=>{if(confirm("Wirklich alle lokal gespeicherten Trainingsdaten löschen?")){state={xp:0,sessions:0,history:[]};localStorage.removeItem("fitnessQuestSave");$("complete").disabled=false;$("complete").textContent="Quest abschließen · +50 XP";$("toast").textContent="Spielstand zurückgesetzt.";render()}};
+$("export").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="fitness-quest-spielstand.json";a.click();URL.revokeObjectURL(a.href)};
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+render();
+</script>
+</body></html>
