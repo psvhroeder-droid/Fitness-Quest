@@ -1,4 +1,4 @@
-const const CACHE_NAME = "fitness-quest-v4";
+const const CACHE_NAME = "fitness-quest-v5";
 const APP_FILES = ["./","./index.html","./manifest.webmanifest","./icon-192.png","./icon-512.png"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => Promise.all(APP_FILES.map(f => cache.add(f).catch(()=>{})))).then(()=>self.skipWaiting()));
