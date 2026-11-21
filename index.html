@@ -1,62 +1,81 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#10131d">
+<meta name="theme-color" content="#111827">
 <title>Fitness Quest</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon-192.png">
 <style>
-:root{--bg:#10131d;--panel:#1b2030;--panel2:#252d41;--text:#f3f5ff;--muted:#a5aec5;--gold:#f4c45e;--blue:#79aaff;--green:#68dba2;--line:#374159}
+:root{
+ --bg:#0d1422;--panel:#172235;--panel2:#202f46;--panel3:#263851;
+ --text:#f2f6ff;--muted:#9eacc2;--gold:#f5c96b;--blue:#82b7ff;
+ --green:#73dfb0;--red:#ff8793;--line:#31445f;
+ --shadow:0 12px 30px rgba(0,0,0,.20)
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;padding-bottom:88px}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 50% -15%,#243a59 0%,var(--bg) 48%);color:var(--text);font-family:system-ui,-apple-system,sans-serif;padding-bottom:100px;min-height:100vh}
 header,main{max-width:850px;margin:auto}
-header{padding:20px 17px 12px}
-main{padding:0 14px 25px}
-h1{font-size:26px;margin:0 0 4px}
-h2{font-size:21px;margin:0 0 13px}
-h3{font-size:16px;margin:0 0 9px}
-p{line-height:1.5}
+header{padding:24px 18px 17px}
+main{padding:0 14px 28px}
+h1{font-size:27px;letter-spacing:-.7px;margin:0 0 5px;font-weight:850}
+h2{font-size:20px;letter-spacing:-.3px;margin:0 0 13px}
+h3{font-size:16px;margin:0 0 10px}
+p{line-height:1.55}
 small,.muted{color:var(--muted)}
 button,input,select{font:inherit}
-button{border:0;border-radius:11px;padding:11px 14px;background:var(--blue);color:#111827;font-weight:750;cursor:pointer}
-button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
-button.danger{background:#713744;color:white}
-input,select{width:100%;background:#111725;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:11px;margin:5px 0 12px}
-label{display:block;font-size:13px;color:var(--muted);margin-top:8px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:15px;margin:12px 0}
-.hero{background:linear-gradient(135deg,#293956,#20263a);border-color:#465879}
-.heroTop{display:flex;justify-content:space-between;gap:12px;align-items:center}
-.level{font-size:38px;font-weight:900;color:var(--gold)}
-.rank{color:var(--gold);font-weight:750}
-.big{font-size:25px;font-weight:850}
-.progress{height:11px;background:#101522;border-radius:20px;overflow:hidden;margin:10px 0}
-.progress span{display:block;height:100%;background:linear-gradient(90deg,#5c94ff,#8bd8ff);width:0}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.stat{background:var(--panel2);border-radius:12px;padding:12px}
-.stat strong{display:block;font-size:23px}
+button{border:1px solid transparent;border-radius:13px;padding:12px 16px;background:linear-gradient(135deg,#9ac8ff,#6ea5f4);color:#101a2b;font-weight:800;cursor:pointer;box-shadow:0 5px 14px rgba(80,140,220,.13);transition:transform .15s,filter .15s}
+button:active{transform:scale(.98)}
+button.secondary{background:var(--panel3);color:var(--text);border-color:var(--line);box-shadow:none}
+button.danger{background:#713b4a;color:#fff;border-color:#995363;box-shadow:none}
+input,select{width:100%;background:#101b2c;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px;margin:6px 0 13px;outline:none}
+input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(130,183,255,.12)}
+label{display:block;font-size:13px;color:var(--muted);margin-top:9px;font-weight:650}
+.card{background:linear-gradient(145deg,rgba(28,43,65,.98),rgba(21,33,51,.98));border:1px solid var(--line);border-radius:19px;padding:17px;margin:13px 0;box-shadow:var(--shadow)}
+.hero{background:linear-gradient(135deg,#29466a,#202e49 68%,#29324a);border-color:#49658a;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-65px;top:-70px;background:rgba(255,255,255,.045)}
+.heroTop{display:flex;justify-content:space-between;gap:12px;align-items:center;position:relative;z-index:1}
+.level{font-size:42px;line-height:1.1;font-weight:950;color:var(--gold);text-shadow:0 3px 15px #0004}
+.rank{color:var(--gold);font-weight:800;margin-top:4px}
+.big{font-size:26px;font-weight:900;letter-spacing:-.5px}
+.progress{height:10px;background:#0d1727;border-radius:20px;overflow:hidden;margin:12px 0}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,#6fa6ff,#8de0ef);width:0;border-radius:20px;transition:width .35s}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{background:linear-gradient(145deg,#263a55,#202f46);border:1px solid #344a68;border-radius:15px;padding:13px}
+.stat strong{display:block;font-size:24px;line-height:1.2;margin-bottom:4px}
 .stat small{font-size:12px}
-.section{display:none}.section.active{display:block}
-.exercise{display:grid;grid-template-columns:1fr 100px;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.section{display:none}.section.active{display:block;animation:appear .22s ease}
+@keyframes appear{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}
+.exercise{display:grid;grid-template-columns:1fr 100px;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
 .exercise:last-child{border:0}
 .exercise input{margin:0}
-.xp{color:var(--gold);font-weight:800}
-.item{padding:12px 0;border-bottom:1px solid var(--line)}
+.xp{color:var(--gold);font-weight:850}
+.item{padding:13px 0;border-bottom:1px solid var(--line)}
 .item:last-child{border:0}
 .itemTop{display:flex;justify-content:space-between;gap:10px;align-items:center}
-.actions{display:flex;gap:8px;margin-top:8px}.actions button{flex:1}
-nav{position:fixed;bottom:0;left:0;right:0;background:#151a28;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);padding:7px 3px calc(7px + env(safe-area-inset-bottom));z-index:5}
-nav button{background:transparent;color:var(--muted);padding:6px 1px;border-radius:9px;font-size:11px}
-nav button span{display:block;font-size:20px;margin-bottom:2px}
-nav button.active{color:var(--gold);background:#282e40}
-.notice{background:#263a35;border:1px solid #3d695a;border-radius:12px;padding:12px;color:#baf2d5}
-.planGrid{display:grid;grid-template-columns:1fr;gap:8px}
-.planOption{background:var(--panel2);border-radius:12px;padding:12px}
-.planOption p{font-size:12px;color:var(--muted);min-height:40px}
-.badge{display:inline-block;background:#303b55;color:#dce6ff;border-radius:20px;padding:3px 8px;font-size:11px}
-@media(min-width:620px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.planGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.actions{display:flex;gap:8px;margin-top:10px}.actions button{flex:1;padding:10px}
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(17,26,41,.96);backdrop-filter:blur(16px);border-top:1px solid #34445d;display:grid;grid-template-columns:repeat(6,1fr);padding:8px 3px calc(8px + env(safe-area-inset-bottom));z-index:5}
+nav button{background:transparent;color:var(--muted);padding:7px 1px;border:0;border-radius:12px;font-size:11px;box-shadow:none;font-weight:700}
+nav button span{display:block;font-size:20px;margin-bottom:3px}
+nav button.active{color:var(--gold);background:#29364c}
+.notice{background:#1d403b;border:1px solid #376d5d;border-radius:14px;padding:13px;color:#c0f3da}
+.planGrid{display:grid;grid-template-columns:1fr;gap:9px}
+.planOption{background:linear-gradient(145deg,#263a55,#1e2d43);border:1px solid #3a506e;border-radius:14px;padding:13px}
+.planOption p{font-size:12px;color:var(--muted);min-height:40px;line-height:1.5}
+.badge{display:inline-block;background:#344966;color:#e2edff;border-radius:20px;padding:4px 9px;font-size:11px;font-weight:750}
+#dialogLayer{display:none;position:fixed;inset:0;z-index:20;background:rgba(4,9,17,.76);backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:20px}
+#dialogLayer.open{display:flex}
+.dialog{width:min(100%,420px);background:#1b2a40;border:1px solid #49617f;border-radius:20px;padding:20px;box-shadow:0 25px 70px #0008}
+.dialog h3{font-size:19px;margin-bottom:8px}
+.dialog p{color:#bdc9dc;margin:0 0 12px;white-space:pre-line}
+.dialog input{margin:7px 0 15px}
+.dialogActions{display:flex;gap:9px;margin-top:15px}
+.dialogActions button{flex:1}
+.dialogActions .secondary{background:#2b3c54}
+@media(min-width:620px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.planGrid{grid-template-columns:repeat(3,minmax(0,1fr))}header{padding-top:30px}}
+@media(max-width:360px){nav button{font-size:10px}nav button span{font-size:18px}.card{padding:14px}}
 </style>
 </head>
 <body>
@@ -64,7 +83,6 @@ nav button.active{color:var(--gold);background:#282e40}
 <h1>⚔️ Fitness Quest</h1>
 <div class="muted">Dein Training. Dein Abenteuer.</div>
 </header>
-
 <main>
 <section id="home" class="section active">
  <div class="card hero">
@@ -72,8 +90,7 @@ nav button.active{color:var(--gold);background:#282e40}
    <div><small>DEIN LEVEL</small><div class="level" id="level">1</div><div class="rank" id="rank">Anfänger</div></div>
    <div style="text-align:right"><small>GESAMT-XP</small><div class="big" id="totalXp">0</div><small id="nextXp">Noch 100 XP bis Level 2</small></div>
   </div>
-  <div class="progress"><span id="xpBar"></span></div>
-  <small id="xpProgress">0 / 100 XP</small>
+  <div class="progress"><span id="xpBar"></span></div><small id="xpProgress">0 / 100 XP</small>
  </div>
  <div class="grid">
   <div class="stat"><strong id="streak">0</strong><small>🔥 Tage in Folge</small></div>
@@ -81,86 +98,32 @@ nav button.active{color:var(--gold);background:#282e40}
   <div class="stat"><strong id="workouts">0</strong><small>🏋️ Trainingseinheiten</small></div>
   <div class="stat"><strong id="todayXp">0</strong><small>✨ XP heute</small></div>
  </div>
- <div class="card">
-  <h2>🎯 Wochenquest</h2>
-  <p>Trainiere an drei verschiedenen Tagen in dieser Woche.</p>
-  <div class="progress"><span id="weekBar"></span></div>
-  <strong id="weekText">0 von 3 Tagen</strong>
-  <p class="xp">Belohnung: +100 XP</p>
- </div>
- <div class="card">
-  <h2>👣 Schritte heute</h2>
-  <div class="big" id="homeSteps">0</div>
-  <small id="homeStepXp">0 XP durch Schritte</small>
-  <p><button onclick="showSection('training')">Training öffnen</button></p>
- </div>
+ <div class="card"><h2>🎯 Wochenquest</h2><p>Trainiere an drei verschiedenen Tagen in dieser Woche.</p><div class="progress"><span id="weekBar"></span></div><strong id="weekText">0 von 3 Tagen</strong><p class="xp">Belohnung: +100 XP</p></div>
+ <div class="card"><h2>👣 Schritte heute</h2><div class="big" id="homeSteps">0</div><small id="homeStepXp">0 XP durch Schritte</small><p><button onclick="showSection('training')">Training öffnen</button></p></div>
  <div class="card"><h2>⚡ Letzte Aktivität</h2><div id="recentHome" class="muted">Noch keine Aktivität.</div></div>
 </section>
-
 <section id="training" class="section">
  <h2>🏋️ Freies Training</h2>
- <div class="card">
-  <p class="muted">Trage deine Wiederholungen ein. Plank wird in Sekunden erfasst. Ausfallschritte zählen pro Bein, Mountain Climbers pro Knie.</p>
-  <div id="exerciseList"></div>
-  <button onclick="saveExercises()">Training speichern</button>
- </div>
- <div class="card">
-  <h2>👣 Schritte eintragen</h2>
-  <p class="muted">Trage deinen gesamten Tagesstand ein. Korrigierst du ihn später, werden die XP automatisch angepasst.</p>
-  <label>Datum</label><input type="date" id="stepDate">
-  <label>Schritte an diesem Tag</label><input type="number" min="0" max="100000" id="stepCount" placeholder="z. B. 7500">
-  <button onclick="saveSteps()">Schritte speichern</button>
-  <div id="stepStats" class="muted" style="margin-top:12px"></div>
-  <small>1.000 Schritte = 10 XP · 5.000 = 50 XP · 10.000 = 100 XP</small>
- </div>
+ <div class="card"><p class="muted">Trage deine Wiederholungen ein. Plank wird in Sekunden erfasst. Ausfallschritte zählen pro Bein, Mountain Climbers pro Knie.</p><div id="exerciseList"></div><button onclick="saveExercises()">Training speichern</button></div>
+ <div class="card"><h2>👣 Schritte eintragen</h2><p class="muted">Trage deinen gesamten Tagesstand ein. Korrigierst du ihn später, werden die XP automatisch angepasst.</p><label>Datum</label><input type="date" id="stepDate"><label>Schritte an diesem Tag</label><input type="number" min="0" max="100000" id="stepCount" placeholder="z. B. 7500"><button onclick="saveSteps()">Schritte speichern</button><div id="stepStats" class="muted" style="margin-top:12px"></div><small>1.000 Schritte = 10 XP · 5.000 = 50 XP · 10.000 = 100 XP</small></div>
 </section>
-
-<section id="workoutsSection" class="section">
- <h2>⚔️ Trainingspläne</h2>
- <p class="muted">Wähle einen Plan und eine Schwierigkeitsstufe. Du kannst jeden Plan unabhängig von deinem Level starten.</p>
- <div id="workoutList"></div>
-</section>
-
-<section id="achievements" class="section">
- <h2>🏆 Erfolge & Meilensteine</h2>
- <div class="card"><h3>Spieler-Erfolge</h3><div id="achievementList"></div></div>
- <div class="card"><h3>Übungs-Meilensteine</h3><div id="milestoneList"></div></div>
- <div class="card"><h3>🔥 Trainingsserien</h3><div id="streakMilestones"></div></div>
-</section>
-
+<section id="workoutsSection" class="section"><h2>⚔️ Trainingspläne</h2><p class="muted">Wähle einen Plan und eine Schwierigkeitsstufe. Du kannst jeden Plan unabhängig von deinem Level starten.</p><div id="workoutList"></div></section>
+<section id="achievements" class="section"><h2>🏆 Erfolge & Meilensteine</h2><div class="card"><h3>Spieler-Erfolge</h3><div id="achievementList"></div></div><div class="card"><h3>Übungs-Meilensteine</h3><div id="milestoneList"></div></div><div class="card"><h3>🔥 Trainingsserien</h3><div id="streakMilestones"></div></div></section>
 <section id="recovery" class="section">
- <h2>🌿 Erholung & Beweglichkeit</h2>
- <p class="muted">Regeneration gehört zum Training. Ruhetage sind erlaubt und bringen keine Nachteile.</p>
+ <h2>🌿 Erholung & Beweglichkeit</h2><p class="muted">Regeneration gehört zum Training. Ruhetage sind erlaubt und bringen keine Nachteile.</p>
  <div class="card"><h3>🦵 Beine</h3><p>Oberschenkelvorderseite: 20–30 Sekunden je Seite. Waden: 20–30 Sekunden je Seite. Hintere Oberschenkel sanft dehnen: 20–30 Sekunden.</p></div>
  <div class="card"><h3>🧍 Rücken</h3><p>Katze-Kuh: 8–10 langsame Wiederholungen. Kindhaltung: 20–30 Sekunden. Oberkörperrotation im Sitzen: 20 Sekunden je Seite.</p></div>
  <div class="card"><h3>💪 Schultern & Brust</h3><p>Brustöffnung an der Wand: 20 Sekunden je Seite. Schulterkreisen: 10 Wiederholungen vorwärts und rückwärts.</p></div>
  <div class="card"><h3>🧘 Sanfte Mobilität</h3><p>Lockeres Gehen, sanfte Hüftkreise und ruhige Bewegungen für 5–10 Minuten. Alles ohne Schmerzen und ohne Zwang.</p></div>
  <div class="notice">Erholung ist kein Rückschritt. Höre auf deinen Körper und pausiere bei Schmerzen.</div>
 </section>
-
 <section id="profile" class="section">
  <h2>🛡️ Profil & Historie</h2>
- <div class="card">
-  <div class="grid">
-   <div class="stat"><strong id="profileXp">0</strong><small>Gesamt-XP</small></div>
-   <div class="stat"><strong id="profileLevel">1</strong><small>Level</small></div>
-   <div class="stat"><strong id="profileWorkouts">0</strong><small>Einheiten</small></div>
-   <div class="stat"><strong id="profileDays">0</strong><small>Trainingstage</small></div>
-  </div>
- </div>
- <div class="card">
-  <h3>📜 Trainingshistorie</h3>
-  <p class="muted">Neue Einträge kannst du bearbeiten oder löschen. Änderungen berechnen XP und Erfolge automatisch neu.</p>
-  <div id="historyList"></div>
- </div>
- <div class="card">
-  <h3>⚠️ Spielstand</h3>
-  <p class="muted">Der Spielstand wird auf diesem Gerät gespeichert. Lösche nicht die Browserdaten, wenn du deinen Fortschritt behalten möchtest.</p>
-  <button class="danger" onclick="resetProgress()">Spielstand zurücksetzen</button>
- </div>
+ <div class="card"><div class="grid"><div class="stat"><strong id="profileXp">0</strong><small>Gesamt-XP</small></div><div class="stat"><strong id="profileLevel">1</strong><small>Level</small></div><div class="stat"><strong id="profileWorkouts">0</strong><small>Einheiten</small></div><div class="stat"><strong id="profileDays">0</strong><small>Trainingstage</small></div></div></div>
+ <div class="card"><h3>📜 Trainingshistorie</h3><p class="muted">Neue Einträge kannst du bearbeiten oder löschen. Änderungen berechnen XP und Erfolge automatisch neu.</p><div id="historyList"></div></div>
+ <div class="card"><h3>⚠️ Spielstand</h3><p class="muted">Der Spielstand wird auf diesem Gerät gespeichert. Lösche nicht die Browserdaten, wenn du deinen Fortschritt behalten möchtest.</p><button class="danger" onclick="resetProgress()">Spielstand zurücksetzen</button></div>
 </section>
 </main>
-
 <nav>
  <button class="active" data-section="home" onclick="showSection('home')"><span>🏠</span>Start</button>
  <button data-section="training" onclick="showSection('training')"><span>🏋️</span>Training</button>
@@ -169,25 +132,18 @@ nav button.active{color:var(--gold);background:#282e40}
  <button data-section="recovery" onclick="showSection('recovery')"><span>🌿</span>Erholung</button>
  <button data-section="profile" onclick="showSection('profile')"><span>🛡️</span>Profil</button>
 </nav>
-
+<div id="dialogLayer" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+ <div class="dialog">
+  <h3 id="dialogTitle">Fitness Quest</h3><p id="dialogMessage"></p>
+  <input id="dialogInput" style="display:none" autocomplete="off">
+  <div class="dialogActions"><button id="dialogCancel" class="secondary">Abbrechen</button><button id="dialogOk">Bestätigen</button></div>
+ </div>
+</div>
 <script>
 "use strict";
 const SAVE_KEY="fitnessQuestSaveV4";
 const EXERCISES=[
-{id:"pull",name:"Klimmzüge",xp:10,unit:"Wiederholungen"},
-{id:"push",name:"Liegestütze",xp:2,unit:"Wiederholungen"},
-{id:"squat",name:"Kniebeugen",xp:1,unit:"Wiederholungen"},
-{id:"sit",name:"Sit-ups",xp:1,unit:"Wiederholungen"},
-{id:"burpee",name:"Burpees",xp:5,unit:"Wiederholungen"},
-{id:"lunge",name:"Ausfallschritte",xp:2,unit:"pro Bein"},
-{id:"plank",name:"Plank",xp:2,unit:"Sekunden · 2 XP je 10 Sek."},
-{id:"bridge",name:"Beckenheben",xp:2,unit:"Wiederholungen"},
-{id:"pike",name:"Pike Push-ups",xp:5,unit:"Wiederholungen"},
-{id:"superman",name:"Superman",xp:2,unit:"Wiederholungen"},
-{id:"calf",name:"Wadenheben",xp:1,unit:"Wiederholungen"},
-{id:"jack",name:"Hampelmänner",xp:1,unit:"Wiederholungen"},
-{id:"dips",name:"Dips",xp:5,unit:"Wiederholungen"},
-{id:"mountain",name:"Mountain Climbers",xp:2,unit:"pro Knie"}
+{id:"pull",name:"Klimmzüge",xp:10,unit:"Wiederholungen"},{id:"push",name:"Liegestütze",xp:2,unit:"Wiederholungen"},{id:"squat",name:"Kniebeugen",xp:1,unit:"Wiederholungen"},{id:"sit",name:"Sit-ups",xp:1,unit:"Wiederholungen"},{id:"burpee",name:"Burpees",xp:5,unit:"Wiederholungen"},{id:"lunge",name:"Ausfallschritte",xp:2,unit:"pro Bein"},{id:"plank",name:"Plank",xp:2,unit:"Sekunden · 2 XP je 10 Sek."},{id:"bridge",name:"Beckenheben",xp:2,unit:"Wiederholungen"},{id:"pike",name:"Pike Push-ups",xp:5,unit:"Wiederholungen"},{id:"superman",name:"Superman",xp:2,unit:"Wiederholungen"},{id:"calf",name:"Wadenheben",xp:1,unit:"Wiederholungen"},{id:"jack",name:"Hampelmänner",xp:1,unit:"Wiederholungen"},{id:"dips",name:"Dips",xp:5,unit:"Wiederholungen"},{id:"mountain",name:"Mountain Climbers",xp:2,unit:"pro Knie"}
 ];
 const DIFFICULTIES=["Anfänger","Fortgeschrittene","Profi"];
 const PLANS=[
@@ -202,171 +158,169 @@ const PLANS=[
 {name:"Der Abenteurer",icon:"🧭",sets:[ [["lunge",8],["jack",20],["push",6],["mountain",15]], [["lunge",12],["jack",30],["push",10],["mountain",25]], [["lunge",18],["jack",45],["push",15],["mountain",40]] ]},
 {name:"Bosskampf – Ganzkörper",icon:"🐉",sets:[ [["squat",15],["push",8],["burpee",5],["plank",25],["bridge",12]], [["squat",22],["push",12],["burpee",8],["plank",40],["bridge",18]], [["squat",30],["push",18],["burpee",12],["plank",55],["bridge",25]] ]}
 ];
-const EX_MILESTONES=[10,25,50,100,250,500,1000];
-const STREAK_MILESTONES=[3,5,7,14,30];
+const EX_MILESTONES=[10,25,50,100,250,500,1000],STREAK_MILESTONES=[3,5,7,14,30];
 const ACHIEVEMENTS=[
-{name:"Erster Schritt",desc:"Sammle deine ersten 10 XP.",test:t=>t.xp>=10},
-{name:"Trainingsstart",desc:"Schließe deine erste Trainingseinheit ab.",test:t=>t.workouts>=1},
-{name:"Level 5",desc:"Erreiche Level 5.",test:t=>t.level>=5},
-{name:"Level 10",desc:"Erreiche Level 10.",test:t=>t.level>=10},
-{name:"Wochenkrieger",desc:"Schließe eine Wochenquest ab.",test:t=>t.weekRewards>=1},
-{name:"Schritt für Schritt",desc:"Sammle insgesamt 50.000 Schritte.",test:t=>t.totalSteps>=50000},
-{name:"Konsequent",desc:"Erreiche eine Serie von 7 Trainingstagen.",test:t=>t.longestStreak>=7},
-{name:"Boss bezwungen",desc:"Schließe den Bosskampf ab.",test:t=>t.bosses>=1}
+{name:"Erster Schritt",desc:"Sammle deine ersten 10 XP.",test:t=>t.xp>=10},{name:"Trainingsstart",desc:"Schließe deine erste Trainingseinheit ab.",test:t=>t.workouts>=1},{name:"Level 5",desc:"Erreiche Level 5.",test:t=>t.level>=5},{name:"Level 10",desc:"Erreiche Level 10.",test:t=>t.level>=10},{name:"Wochenkrieger",desc:"Schließe eine Wochenquest ab.",test:t=>t.weekRewards>=1},{name:"Schritt für Schritt",desc:"Sammle insgesamt 50.000 Schritte.",test:t=>t.totalSteps>=50000},{name:"Konsequent",desc:"Erreiche eine Serie von 7 Trainingstagen.",test:t=>t.longestStreak>=7},{name:"Boss bezwungen",desc:"Schließe den Bosskampf ab.",test:t=>t.bosses>=1}
 ];
 let data={entries:[]};
-
-function todayKey(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
-function dateKey(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
-function mondayKey(key){let d=new Date(key+"T12:00:00");d.setDate(d.getDate()-((d.getDay()+6)%7));return dateKey(d)}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function load(){try{let v=JSON.parse(localStorage.getItem(SAVE_KEY));if(v&&Array.isArray(v.entries))data=v}catch(e){data={entries:[]}}}
-function save(){localStorage.setItem(SAVE_KEY,JSON.stringify(data))}
-function xpForLevel(level){return Math.round(100*(Math.pow(1.35,level-1)-1)/0.35)}
-function getLevel(xp){let l=1;while(xp>=xpForLevel(l+1))l++;return l}
-function xpForExercise(id,amount){let e=EXERCISES.find(x=>x.id===id);if(!e)return 0;return id==="plank"?Math.floor(amount/10)*2:Math.floor(amount)*e.xp}
-function trainingDays(){return [...new Set(data.entries.filter(e=>e.type==="exercise"||e.type==="workout").map(e=>e.date))].sort()}
-function currentStreak(days){let set=new Set(days),d=new Date(todayKey()+"T12:00:00");if(!set.has(dateKey(d)))d.setDate(d.getDate()-1);let n=0;while(set.has(dateKey(d))){n++;d.setDate(d.getDate()-1)}return n}
-function longestStreak(days){let best=0,n=0,prev=null;days.forEach(k=>{let d=new Date(k+"T12:00:00");if(prev){let diff=(d-prev)/86400000;n=diff===1?n+1:1}else n=1;best=Math.max(best,n);prev=d});return best}
-function milestoneInfo(){
- let counts={};EXERCISES.forEach(e=>counts[e.id]=0);
- data.entries.filter(e=>e.type==="exercise").forEach(e=>counts[e.exercise]=(counts[e.exercise]||0)+Number(e.amount||0));
- let rewards=0,unlocked=[];
- EXERCISES.forEach(ex=>EX_MILESTONES.forEach(n=>{if(counts[ex.id]>=n){let reward=10+Math.floor(n/10);rewards+=reward;unlocked.push({name:ex.name+" · "+n+(ex.id==="plank"?" Sek.":" Wiederholungen"),reward})}}));
- return{counts,rewards,unlocked};
-}
+let dialogResolver=null;
+function today(){return new Date().toISOString().slice(0,10)}
+function dateObj(s){return new Date(s+"T12:00:00")}
+function weekKey(s){const d=dateObj(s);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.toISOString().slice(0,10)}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function xpFor(id,n){const e=EXERCISES.find(x=>x.id===id);if(!e)return 0;return id==="plank"?Math.floor(n/10)*e.xp:n*e.xp}
+function entryXp(e){return (e.items||[]).reduce((a,x)=>a+xpFor(x.id,x.amount),0)+(e.bonus||0)}
+function levelFor(xp){return Math.floor(xp/100)+1}
+function totalXp(){return data.entries.reduce((a,e)=>a+entryXp(e),0)}
+function trainingDays(){return [...new Set(data.entries.filter(e=>e.type!=="steps").map(e=>e.date))].sort()}
+function currentStreak(){const days=trainingDays();if(!days.length)return 0;let d=dateObj(today()),count=0;if(!days.includes(today()))d.setDate(d.getDate()-1);while(days.includes(d.toISOString().slice(0,10))){count++;d.setDate(d.getDate()-1)}return count}
+function longestStreak(){const days=trainingDays();let best=0,run=0,last=null;for(const s of days){const d=dateObj(s);if(last&&Math.round((d-last)/86400000)===1)run++;else run=1;best=Math.max(best,run);last=d}return best}
+function stepTotal(){return data.entries.filter(e=>e.type==="steps").reduce((a,e)=>a+(e.steps||0),0)}
+function stepXp(steps){return Math.floor(steps/1000)*10}
 function totals(){
- let days=trainingDays(),week=mondayKey(todayKey());
- let thisWeek=days.filter(d=>mondayKey(d)===week);
- let weeks={};days.forEach(d=>{let w=mondayKey(d);weeks[w]=(weeks[w]||new Set());weeks[w].add(d)});
- let weekRewards=Object.values(weeks).filter(s=>s.size>=3).length;
- let weeklyXp=weekRewards*100;
- let mi=milestoneInfo();
- let streakBest=longestStreak(days);
- let streakXp=STREAK_MILESTONES.filter(n=>streakBest>=n).reduce((s,n)=>s+n*5,0);
- let entriesXp=data.entries.reduce((s,e)=>s+(Number(e.xp)||0),0);
- let xp=entriesXp+weeklyXp+mi.rewards+streakXp;
- let steps=data.entries.filter(e=>e.type==="steps");
- let totalSteps=steps.reduce((s,e)=>s+Number(e.amount||0),0);
- let workouts=data.entries.filter(e=>e.type==="workout").length;
- let bosses=data.entries.filter(e=>e.type==="workout"&&e.planIndex===9).length;
- return{xp,level:getLevel(xp),days,thisWeek,weekRewards,weeklyXp,mi,streakBest,streakXp,workouts,totalSteps,bosses,entriesXp};
+ const xp=totalXp(),days=trainingDays(),week=days.filter(d=>weekKey(d)===weekKey(today())).length;
+ return {xp,level:levelFor(xp),workouts:data.entries.filter(e=>e.type==="workout").length,days:days.length,week,streak:currentStreak(),longestStreak:longestStreak(),totalSteps:stepTotal(),weekRewards:data.weekRewards||0,bosses:data.entries.filter(e=>e.plan==="Bosskampf – Ganzkörper").length}
 }
-function showSection(id){document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===id));document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.section===id));window.scrollTo(0,0)}
-function buildExercises(){document.getElementById("exerciseList").innerHTML=EXERCISES.map(e=>`<div class="exercise"><div><strong>${e.name}</strong><br><small>${e.xp} XP je ${e.id==="plank"?"10 Sekunden":e.unit}</small></div><input type="number" min="0" max="10000" id="qty-${e.id}" placeholder="0" aria-label="${e.name}"></div>`).join("")}
-
-function saveExercises(){
- let items=EXERCISES.map(e=>({
-  ex:e,
-  amount:Math.max(0,Math.floor(Number(document.getElementById("qty-"+e.id).value)||0))
- })).filter(x=>x.amount>0);
-
- if(!items.length){
-  alert("Bitte gib mindestens eine Übung ein.");
-  return;
- }
-
- let session=uid(),date=todayKey();
-
- items.forEach(({ex,amount})=>{
-  data.entries.push({
-   id:uid(),type:"exercise",exercise:ex.id,name:ex.name,
-   amount,xp:xpForExercise(ex.id,amount),date,session
-  });
- });
-
- data.entries.push({
-  id:uid(),type:"workout",name:"Freies Training",
-  date,session,xp:0
- });
-
- save();
- buildExercises();
- render();
- alert("Training gespeichert! Deine XP wurden gutgeschrieben.");
+function save(){localStorage.setItem(SAVE_KEY,JSON.stringify(data))}
+function load(){
+ try{const raw=localStorage.getItem(SAVE_KEY);if(raw){const parsed=JSON.parse(raw);if(parsed&&Array.isArray(parsed.entries))data={...data,...parsed}}}catch(e){console.error("Spielstand konnte nicht geladen werden",e)}
 }
-
+function showSection(id){
+ document.querySelectorAll(".section").forEach(x=>x.classList.toggle("active",x.id===id));
+ document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.section===id));
+ window.scrollTo({top:0,behavior:"smooth"});
+ if(id==="profile")renderHistory()
+}
+function ask(title,message,opts={}){
+ return new Promise(resolve=>{
+  dialogResolver=resolve;
+  const layer=document.getElementById("dialogLayer"),input=document.getElementById("dialogInput");
+  document.getElementById("dialogTitle").textContent=title;
+  document.getElementById("dialogMessage").textContent=message;
+  input.style.display=opts.input?"block":"none";input.value=opts.value??"";
+  input.type=opts.type||"text";input.placeholder=opts.placeholder||"";
+  document.getElementById("dialogOk").textContent=opts.ok||"Bestätigen";
+  document.getElementById("dialogCancel").style.display=opts.cancel===false?"none":"block";
+  layer.classList.add("open");
+  if(opts.input)setTimeout(()=>input.focus(),100);
+ });
+}
+function closeDialog(value){
+ document.getElementById("dialogLayer").classList.remove("open");
+ if(dialogResolver){dialogResolver(value);dialogResolver=null}
+}
+document.getElementById("dialogOk").onclick=()=>{const i=document.getElementById("dialogInput");closeDialog(i.style.display==="none"?true:i.value)};
+document.getElementById("dialogCancel").onclick=()=>closeDialog(null);
+document.getElementById("dialogLayer").addEventListener("click",e=>{if(e.target.id==="dialogLayer")closeDialog(null)});
+function buildExercises(){
+ document.getElementById("exerciseList").innerHTML=EXERCISES.map(e=>`<div class="exercise"><div><strong>${e.name}</strong><br><small>${e.unit} · ${e.xp} XP je Einheit</small></div><input type="number" min="0" max="10000" id="ex_${e.id}" placeholder="0"></div>`).join("");
+}
+async function saveExercises(){
+ const items=EXERCISES.map(e=>({id:e.id,amount:Math.max(0,Number(document.getElementById("ex_"+e.id).value)||0)})).filter(x=>x.amount>0);
+ if(!items.length){await ask("Kein Training","Bitte trage mindestens eine Übung ein.",{cancel:false,ok:"Okay"});return}
+ data.entries.push({id:Date.now(),type:"workout",date:today(),items});
+ save();EXERCISES.forEach(e=>document.getElementById("ex_"+e.id).value="");render();
+ await ask("Quest abgeschlossen!","Training gespeichert. Du hast "+entryXp(data.entries[data.entries.length-1])+" XP gesammelt.",{cancel:false,ok:"Weiter"});
+}
 function saveSteps(){
- let date=document.getElementById("stepDate").value||todayKey();
- let amount=Math.max(0,Math.min(100000,Math.floor(Number(document.getElementById("stepCount").value)||0)));
- let old=data.entries.find(e=>e.type==="steps"&&e.date===date),xp=Math.floor(amount/1000)*10;
- if(old){old.amount=amount;old.xp=xp}else data.entries.push({id:uid(),type:"steps",name:"Schritte",amount,xp,date});
- save();render();alert("Schritte gespeichert. XP wurden aktualisiert.");
+ const date=document.getElementById("stepDate").value||today(),steps=Math.max(0,Math.floor(Number(document.getElementById("stepCount").value)||0));
+ if(steps>100000){ask("Ungültige Eingabe","Bitte gib höchstens 100.000 Schritte ein.",{cancel:false});return}
+ let old=data.entries.find(e=>e.type==="steps"&&e.date===date);
+ if(old){old.steps=steps}else data.entries.push({id:Date.now(),type:"steps",date,steps});
+ save();render();document.getElementById("stepStats").textContent=steps+" Schritte · "+stepXp(steps)+" XP";
+ ask("Schritte gespeichert","Deine Schritte für "+date+" wurden gespeichert. Dafür erhältst du "+stepXp(steps)+" XP.",{cancel:false,ok:"Super"});
 }
-function renderSteps(){
- let list=data.entries.filter(e=>e.type==="steps"),today=list.find(e=>e.date===todayKey());
- let week=list.filter(e=>mondayKey(e.date)===mondayKey(todayKey())).reduce((s,e)=>s+e.amount,0);
- let total=list.reduce((s,e)=>s+e.amount,0),record=Math.max(0,...list.map(e=>e.amount));
- document.getElementById("homeSteps").textContent=(today?.amount||0).toLocaleString("de-DE");
- document.getElementById("homeStepXp").textContent=(today?.xp||0)+" XP durch Schritte";
- document.getElementById("stepStats").innerHTML=`Heute: <b>${(today?.amount||0).toLocaleString("de-DE")}</b><br>Diese Woche: <b>${week.toLocaleString("de-DE")}</b><br>Gesamt: <b>${total.toLocaleString("de-DE")}</b> · Tagesrekord: <b>${record.toLocaleString("de-DE")}</b>`;
- document.getElementById("stepDate").value=todayKey();document.getElementById("stepCount").value=today?.amount||"";
+function buildWorkouts(){
+ document.getElementById("workoutList").innerHTML=PLANS.map((p,i)=>`<div class="card"><div class="itemTop"><h3>${p.icon} ${p.name}</h3><span class="badge">Plan ${i+1}</span></div><div class="planGrid">${DIFFICULTIES.map((d,j)=>`<div class="planOption"><strong>${d}</strong><p>${p.sets[j].map(x=>{const e=EXERCISES.find(z=>z.id===x[0]);return e.name+" × "+x[1]}).join(" · ")}</p><button onclick="startPlan(${i},${j})">Starten</button></div>`).join("")}</div></div>`).join("");
 }
-function renderWorkouts(){
- document.getElementById("workoutList").innerHTML=PLANS.map((p,i)=>`<div class="card"><h3>${p.icon} ${p.name}</h3><div class="planGrid">${DIFFICULTIES.map((d,j)=>{let bonus=p.bonus?p.bonus[j]:[20,40,70][j];let desc=p.sets[j].map(([id,n])=>{let e=EXERCISES.find(x=>x.id===id);return e.name+" "+n+(id==="plank"?" Sek.":"×")}).join(" · ");return `<div class="planOption"><span class="badge">${d}</span><p>${desc}</p><div class="xp">+${bonus} XP Abschlussbonus</div><button style="margin-top:9px;width:100%" onclick="startPlan(${i},${j})">Starten</button></div>`}).join("")}</div></div>`).join("");
-}
-function startPlan(i,j){
- let p=PLANS[i],session=uid(),date=todayKey(),bonus=p.bonus?p.bonus[j]:[20,40,70][j];
- let summary=p.sets[j].map(([id,n])=>EXERCISES.find(e=>e.id===id).name+" "+n).join(", ");
- if(!confirm(`${p.name} · ${DIFFICULTIES[j]}\n\n${summary}\n\nNach Bestätigung werden die Übungen und der Abschlussbonus eingetragen.`))return;
- p.sets[j].forEach(([id,amount])=>{let ex=EXERCISES.find(e=>e.id===id);data.entries.push({id:uid(),type:"exercise",exercise:id,name:ex.name,amount,xp:xpForExercise(id,amount),date,session,plan:p.name})});
- data.entries.push({id:uid(),type:"workout",name:p.name+" · "+DIFFICULTIES[j],date,session,xp:bonus,planIndex:i});
- save();render();alert("Quest abgeschlossen! Abschlussbonus: "+bonus+" XP.");
-}
-function editEntry(id){
- let e=data.entries.find(x=>x.id===id);if(!e)return;
- let date=prompt("Datum (JJJJ-MM-TT):",e.date);if(date===null)return;
- if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){alert("Bitte ein Datum im Format JJJJ-MM-TT eingeben.");return}
- e.date=date;
- if(e.amount!==undefined){let a=prompt(e.type==="steps"?"Schrittzahl:":e.exercise==="plank"?"Plank-Sekunden:":"Wiederholungen:",e.amount);if(a===null)return;e.amount=Math.max(0,Math.floor(Number(a)||0));e.xp=e.type==="steps"?Math.floor(e.amount/1000)*10:xpForExercise(e.exercise,e.amount)}
+async function startPlan(i,j){
+ const p=PLANS[i],items=p.sets[j].map(x=>({id:x[0],amount:x[1]}));
+ const bonus=p.bonus?p.bonus[j]:0;
+ const ok=await ask(p.name,"Schwierigkeitsstufe: "+DIFFICULTIES[j]+"\n\n"+items.map(x=>EXERCISES.find(e=>e.id===x.id).name+" × "+x.amount).join("\n")+"\n\nPlan als abgeschlossen eintragen?",{ok:"Abschließen"});
+ if(!ok)return;
+ data.entries.push({id:Date.now(),type:"workout",date:today(),plan:p.name,items,bonus});
  save();render();
-}
-function deleteEntry(id){
- let e=data.entries.find(x=>x.id===id);if(!e)return;
- if(!confirm("Eintrag wirklich löschen? Die dazugehörigen XP und Erfolge werden neu berechnet."))return;
- if(e.session)data.entries=data.entries.filter(x=>x.session!==e.session);else data.entries=data.entries.filter(x=>x.id!==id);
- save();render();
-}
-function renderHistory(){
- let list=data.entries.slice().sort((a,b)=>b.date.localeCompare(a.date));
- document.getElementById("historyList").innerHTML=list.length?list.map(e=>`<div class="item"><div class="itemTop"><strong>${escapeHtml(e.name)}</strong><span class="xp">+${e.xp} XP</span></div><small>${e.date}${e.amount!==undefined?" · "+e.amount.toLocaleString("de-DE")+(e.type==="steps"?" Schritte":e.exercise==="plank"?" Sekunden":" Wiederholungen"):""}</small><div class="actions"><button class="secondary" onclick="editEntry('${e.id}')">Bearbeiten</button><button class="danger" onclick="deleteEntry('${e.id}')">Löschen</button></div></div>`).join(""):'<div class="muted">Noch keine Einträge vorhanden.</div>';
-}
-function renderAchievements(){
- let t=totals();
- document.getElementById("achievementList").innerHTML=ACHIEVEMENTS.map(a=>{let ok=a.test(t);return `<div class="item"><div class="itemTop"><strong>${ok?"🏆":"🔒"} ${a.name}</strong><span class="badge">${ok?"Freigeschaltet":"Gesperrt"}</span></div><small>${a.desc}</small></div>`}).join("");
- document.getElementById("milestoneList").innerHTML=EXERCISES.map(e=>{let n=t.mi.counts[e.id]||0,next=EX_MILESTONES.find(x=>x>n);return `<div class="item"><div class="itemTop"><strong>${e.name}</strong><span>${n}${e.id==="plank"?" Sek.":"×"}</span></div><div class="progress"><span style="width:${next?Math.min(100,n/next*100):100}%"></span></div><small>${next?"Nächster Meilenstein: "+next:"Alle aktuellen Meilensteine erreicht!"}</small></div>`}).join("");
- document.getElementById("streakMilestones").innerHTML=STREAK_MILESTONES.map(n=>`<div class="item"><strong>${t.streakBest>=n?"🏅":"🔒"} ${n} Tage in Folge</strong><small> · ${t.streakBest>=n?"Erreicht":"Noch nicht erreicht"} · Belohnung "+${n*5} XP</small></div>`).join("");
+ await ask("Plan abgeschlossen!","Du hast "+entryXp(data.entries[data.entries.length-1])+" XP verdient.",{cancel:false,ok:"Weiter"});
 }
 function render(){
- let t=totals(),level=t.level,base=xpForLevel(level),next=xpForLevel(level+1),inside=t.xp-base,needed=next-base;
- document.getElementById("level").textContent=level;
- document.getElementById("rank").textContent=["Anfänger","Lehrling","Kämpfer","Veteran","Elite","Meister","Champion","Legende"][Math.min(7,Math.floor((level-1)/5))];
- document.getElementById("totalXp").textContent=t.xp.toLocaleString("de-DE");
- document.getElementById("nextXp").textContent="Noch "+(next-t.xp).toLocaleString("de-DE")+" XP bis Level "+(level+1);
- document.getElementById("xpBar").style.width=Math.min(100,inside/needed*100)+"%";
- document.getElementById("xpProgress").textContent=inside.toLocaleString("de-DE")+" / "+needed.toLocaleString("de-DE")+" XP für das nächste Level";
- document.getElementById("streak").textContent=currentStreak(t.days);
- document.getElementById("weekDays").textContent=t.thisWeek.length+"/3";
+ const t=totals(),xpInto=t.xp%100,percent=xpInto;
+ document.getElementById("level").textContent=t.level;
+ document.getElementById("rank").textContent=t.level>=20?"Legende":t.level>=10?"Elite-Krieger":t.level>=5?"Kämpfer":"Anfänger";
+ document.getElementById("totalXp").textContent=t.xp;
+ document.getElementById("nextXp").textContent="Noch "+(100-xpInto)+" XP bis Level "+(t.level+1);
+ document.getElementById("xpBar").style.width=percent+"%";
+ document.getElementById("xpProgress").textContent=xpInto+" / 100 XP";
+ document.getElementById("streak").textContent=t.streak;
+ document.getElementById("weekDays").textContent=Math.min(3,t.week)+"/3";
  document.getElementById("workouts").textContent=t.workouts;
- let todayXp=data.entries.filter(e=>e.date===todayKey()).reduce((s,e)=>s+e.xp,0);
- document.getElementById("todayXp").textContent=todayXp;
- document.getElementById("weekBar").style.width=Math.min(100,t.thisWeek.length/3*100)+"%";
- document.getElementById("weekText").textContent=t.thisWeek.length+" von 3 Trainingstagen"+(t.thisWeek.length>=3?" · Quest geschafft!":"");
- document.getElementById("profileXp").textContent=t.xp.toLocaleString("de-DE");
- document.getElementById("profileLevel").textContent=level;
+ document.getElementById("todayXp").textContent=data.entries.filter(e=>e.date===today()).reduce((a,e)=>a+entryXp(e),0);
+ document.getElementById("weekBar").style.width=Math.min(100,t.week/3*100)+"%";
+ document.getElementById("weekText").textContent=Math.min(3,t.week)+" von 3 Tagen";
+ document.getElementById("homeSteps").textContent=data.entries.filter(e=>e.type==="steps"&&e.date===today()).reduce((a,e)=>a+e.steps,0).toLocaleString("de-DE");
+ document.getElementById("homeStepXp").textContent=stepXp(data.entries.filter(e=>e.type==="steps"&&e.date===today()).reduce((a,e)=>a+e.steps,0))+" XP durch Schritte";
+ document.getElementById("recentHome").textContent=data.entries.length?data.entries.slice().sort((a,b)=>b.date.localeCompare(a.date))[0].date+" – "+(data.entries[data.entries.length-1].type==="steps"?"Schritte":"Training"):"Noch keine Aktivität.";
+ document.getElementById("profileXp").textContent=t.xp;
+ document.getElementById("profileLevel").textContent=t.level;
  document.getElementById("profileWorkouts").textContent=t.workouts;
- document.getElementById("profileDays").textContent=t.days.length;
- let recent=data.entries.slice().sort((a,b)=>b.date.localeCompare(a.date))[0];
- document.getElementById("recentHome").textContent=recent?recent.date+" · "+recent.name+" · +"+recent.xp+" XP":"Noch keine Aktivität.";
- renderSteps();renderHistory();renderAchievements();
+ document.getElementById("profileDays").textContent=t.days;
+ renderAchievements();renderHistory();
+ const todayEntry=data.entries.find(e=>e.type==="steps"&&e.date===today());
+ document.getElementById("stepDate").value=today();
+ document.getElementById("stepCount").value=todayEntry?todayEntry.steps:"";
 }
-function resetProgress(){
- if(!confirm("Wirklich den kompletten neuen Spielstand löschen? Diese Aktion kann nicht rückgängig gemacht werden."))return;
- data={entries:[]};save();buildExercises();render();showSection("home");
+function renderAchievements(){
+ const t=totals();
+ document.getElementById("achievementList").innerHTML=ACHIEVEMENTS.map(a=>`<div class="item"><div class="itemTop"><strong>${a.test(t)?"🏆":"🔒"} ${a.name}</strong><span class="badge">${a.test(t)?"Erreicht":"Offen"}</span></div><small>${a.desc}</small></div>`).join("");
+ document.getElementById("milestoneList").innerHTML=EXERCISES.map(e=>{
+ const count=data.entries.filter(x=>x.type!=="steps").reduce((a,x)=>a+(x.items||[]).filter(y=>y.id===e.id).reduce((b,y)=>b+y.amount,0),0);
+ return `<div class="item"><strong>${e.name}</strong><div class="progress"><span style="width:${Math.min(100,count/100*100)}%"></span></div><small>${count} / 100 · nächste Meilensteine: ${EX_MILESTONES.filter(n=>n>count).slice(0,3).join(", ")||"Alle erreicht"}</small></div>`
+ }).join("");
+ document.getElementById("streakMilestones").innerHTML=STREAK_MILESTONES.map(n=>`<div class="item itemTop"><span>${n} Tage in Folge</span><span class="badge">${t.longestStreak>=n?"🏆 Erreicht":"🔒 Offen"}</span></div>`).join("");
 }
-load();buildExercises();renderWorkouts();render();
-if("serviceWorker" in navigator&&location.protocol.startsWith("http")){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
+function renderHistory(){
+ const el=document.getElementById("historyList");if(!el)return;
+ const entries=data.entries.slice().sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+ el.innerHTML=entries.length?entries.map(e=>{
+ const title=e.type==="steps"?"👣 Schritte":e.plan?"⚔️ "+e.plan:"🏋️ Freies Training";
+ const detail=e.type==="steps"?e.steps.toLocaleString("de-DE")+" Schritte · "+entryXp(e)+" XP":(e.items||[]).map(x=>EXERCISES.find(z=>z.id===x.id)?.name+" × "+x.amount).join(", ");
+ return `<div class="item"><div class="itemTop"><strong>${title}</strong><span class="badge">${e.date}</span></div><small>${detail}</small><div class="actions"><button class="secondary" onclick="editEntry(${e.id})">Bearbeiten</button><button class="danger" onclick="deleteEntry(${e.id})">Löschen</button></div></div>`
+ }).join(""):"<p class='muted'>Noch keine Einträge vorhanden.</p>";
+}
+async function editEntry(id){
+ const e=data.entries.find(x=>x.id===id);if(!e)return;
+ if(e.type==="steps"){
+  const value=await ask("Schritte bearbeiten","Neue Schrittzahl für "+e.date,{input:true,type:"number",value:e.steps});
+  if(value===null)return;
+  const n=Number(value);if(!Number.isFinite(n)||n<0||n>100000){await ask("Ungültige Zahl","Bitte eine Zahl zwischen 0 und 100.000 eingeben.",{cancel:false});return}
+  e.steps=Math.floor(n);
+ }else{
+  const date=await ask("Training bearbeiten","Neues Datum (JJJJ-MM-TT)",{input:true,value:e.date});
+  if(date===null)return;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){await ask("Ungültiges Datum","Bitte das Datum im Format JJJJ-MM-TT eingeben.",{cancel:false});return}
+  const amount=await ask("XP und Übungen","Wenn du die Übungswerte ändern möchtest, lösche den Eintrag und erfasse ihn neu. Das Datum wird angepasst.",{cancel:false,ok:"Weiter"});
+  if(amount===null)return;
+  e.date=date;
+ }
+ save();render();
+}
+async function deleteEntry(id){
+ const ok=await ask("Eintrag löschen","Möchtest du diesen Eintrag wirklich löschen?");
+ if(!ok)return;
+ data.entries=data.entries.filter(e=>e.id!==id);save();render();
+}
+async function resetProgress(){
+ const ok=await ask("Spielstand zurücksetzen","Möchtest du wirklich deinen gesamten Fitness-Quest-Fortschritt löschen? Das kann nicht rückgängig gemacht werden.",{ok:"Ja, zurücksetzen"});
+ if(!ok)return;
+ data={entries:[],weekRewards:0};save();render();
+ await ask("Spielstand zurückgesetzt","Dein Abenteuer beginnt von vorn!",{cancel:false,ok:"Okay"});
+}
+load();
+buildExercises();
+buildWorkouts();
+render();
+if("serviceWorker" in navigator&&location.protocol.startsWith("http")){
+ window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
 </script>
 </body>
 </html>
