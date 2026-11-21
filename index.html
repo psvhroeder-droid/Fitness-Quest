@@ -121,6 +121,17 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 }
 .planPreview .item{padding:8px 0}
 .planPreviewTitle{font-size:12px;color:var(--gold2);font-weight:800;margin-bottom:4px}
+.planAmount{
+ display:grid;grid-template-columns:1fr 95px;
+ align-items:center;gap:10px;margin-top:7px
+}
+.planAmount label{margin:0;font-size:12px}
+.planAmount input{margin:0;padding:9px;text-align:center}
+.planXpBox{
+ margin-top:12px;padding:12px;border-radius:13px;
+ background:linear-gradient(135deg,#30212c,#1a141c);
+ border:1px solid #654455
+}
 .notice{background:#253027;border:1px solid #58745c;border-radius:14px;padding:13px;color:#d6f0d8}
 .questCard{
  background:linear-gradient(135deg,#30212c,#1a141c);
@@ -129,8 +140,6 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .questCard.done{border-color:#9c8051}
 .questReward{color:var(--gold2);font-weight:850}
 .questType{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--pink);font-weight:850}
-
-/* Aufklappbare Quest-Menüs im Stil der Trainingspläne */
 .questDropdown{
  background:linear-gradient(145deg,#2b202a,#1b151d);
  border:1px solid #624354;
@@ -155,14 +164,11 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
  font-size:12px;
  transition:transform .2s
 }
-.questDropdown[open] summary::after{
- transform:rotate(180deg)
-}
+.questDropdown[open] summary::after{transform:rotate(180deg)}
 .questDropdownContent{
  padding:0 14px 10px;
  border-top:1px solid var(--line)
 }
-
 .achievement{
  display:flex;align-items:center;gap:12px;
  padding:12px 0;border-bottom:1px solid var(--line)
@@ -222,6 +228,7 @@ nav button.active{
  .card{padding:14px}
  .planControls{gap:6px}
  .planControls select{font-size:12px;padding:9px 6px}
+ .planAmount{grid-template-columns:1fr 82px}
 }
 @media(prefers-reduced-motion:reduce){
  *,*:before,*:after{animation:none!important;scroll-behavior:auto!important}
@@ -301,35 +308,25 @@ nav button.active{
 
 <section id="workoutsSection" class="section">
  <h2>⚔️ Trainingspläne</h2>
- <p class="muted">Wähle deinen Trainingsplan und deine Herausforderung.</p>
+ <p class="muted">Wähle deinen Trainingsplan, deine Herausforderung und deine eigenen Wiederholungszahlen.</p>
  <div id="workoutList"></div>
 </section>
 
 <section id="questsSection" class="section">
  <h2>📜 Quest-Tafel</h2>
  <p class="muted">Tägliche Aufgaben, Wochenziele und Herausforderungen für deine ganze Fitness-Reise.</p>
-
  <details class="questDropdown">
   <summary>🌞 Tägliche Quests</summary>
-  <div class="questDropdownContent">
-   <div id="dailyQuestList"></div>
-  </div>
+  <div class="questDropdownContent"><div id="dailyQuestList"></div></div>
  </details>
-
  <details class="questDropdown">
   <summary>🗓️ Wochenquests</summary>
-  <div class="questDropdownContent">
-   <div id="weeklyQuestList"></div>
-  </div>
+  <div class="questDropdownContent"><div id="weeklyQuestList"></div></div>
  </details>
-
  <details class="questDropdown">
   <summary>♾️ Langzeit-Quests</summary>
-  <div class="questDropdownContent">
-   <div id="longQuestList"></div>
-  </div>
+  <div class="questDropdownContent"><div id="longQuestList"></div></div>
  </details>
-
  <div class="card">
   <h3>🏅 Wochenfortschritt</h3>
   <div class="progress"><span id="questWeekBar"></span></div>
@@ -355,10 +352,14 @@ nav button.active{
    <div class="stat"><strong id="profileDays">0</strong><small>Trainingstage</small></div>
   </div>
  </div>
- <div class="card">
-  <h3>📜 Trainingshistorie</h3>
-  <div id="historyList"></div>
- </div>
+
+ <details class="questDropdown">
+  <summary>📜 Trainingshistorie anzeigen</summary>
+  <div class="questDropdownContent">
+   <div id="historyList"></div>
+  </div>
+ </details>
+
  <div class="card">
   <h3>💾 Spielstand-Sicherung</h3>
   <p class="muted">Dein Spielstand wird auf diesem Gerät gespeichert und zusätzlich automatisch gesichert.</p>
@@ -424,49 +425,49 @@ const PLANS=[
   [["squat",20],["push",12],["bridge",20],["plank",30]]
  ]},
  {name:"Oberkörper-Krieger",icon:"⚔️",sets:[
-  [["push",8],["dips",5],["superman",10],["plank",20]],
-  [["push",12],["dips",8],["pike",5],["superman",15]],
-  [["push",18],["dips",12],["pike",10],["superman",20]]
+  [["push",8],["pull",2],["superman",10],["plank",20]],
+  [["push",12],["pull",4],["dips",6],["superman",15],["plank",30]],
+  [["push",18],["pull",6],["dips",10],["pike",8],["superman",20]]
  ]},
  {name:"Bein-Meister",icon:"🦵",sets:[
   [["squat",12],["lunge",8],["calf",15],["bridge",12]],
-  [["squat",20],["lunge",12],["calf",20],["bridge",18]],
-  [["squat",25],["lunge",18],["calf",30],["bridge",25]]
+  [["squat",18],["lunge",12],["calf",20],["bridge",18],["jack",20]],
+  [["squat",25],["lunge",18],["calf",30],["bridge",25],["mountain",30]]
  ]},
  {name:"Ausdauer-Herausforderung",icon:"🔥",bonus:[30,60,100],sets:[
   [["jack",20],["burpee",5],["mountain",20],["squat",15]],
-  [["jack",35],["burpee",8],["mountain",30],["squat",20]],
-  [["jack",50],["burpee",12],["mountain",45],["squat",30]]
+  [["jack",35],["burpee",8],["mountain",30],["lunge",12],["plank",20]],
+  [["jack",50],["burpee",12],["mountain",45],["squat",30],["plank",35]]
  ]},
  {name:"Core-Krieger",icon:"🧱",sets:[
   [["sit",10],["plank",20],["bridge",12],["superman",10]],
-  [["sit",15],["plank",35],["bridge",18],["superman",15]],
-  [["sit",25],["plank",50],["bridge",25],["superman",20]]
+  [["sit",15],["plank",35],["bridge",18],["superman",15],["mountain",20]],
+  [["sit",25],["plank",50],["bridge",25],["superman",20],["mountain",35]]
  ]},
  {name:"Der Morgenstart",icon:"🌅",sets:[
   [["squat",10],["push",5],["jack",15],["plank",15]],
-  [["squat",15],["push",8],["jack",25],["plank",25]],
-  [["squat",20],["push",12],["jack",35],["plank",35]]
+  [["squat",15],["push",8],["jack",25],["pull",2],["plank",25]],
+  [["squat",20],["push",12],["jack",35],["pull",4],["plank",35]]
  ]},
  {name:"Calisthenics-Kämpfer",icon:"🤸",sets:[
-  [["push",8],["dips",5],["pike",4],["pull",2]],
-  [["push",12],["dips",8],["pike",7],["pull",4]],
-  [["push",18],["dips",12],["pike",10],["pull",6]]
+  [["push",8],["pull",3],["squat",12],["plank",20],["superman",10]],
+  [["push",12],["pull",5],["squat",18],["dips",6],["plank",30],["superman",15]],
+  [["push",18],["pull",8],["squat",25],["dips",10],["pike",8],["plank",45],["superman",20]]
  ]},
  {name:"Rücken & Haltung",icon:"🧍",sets:[
-  [["superman",10],["bridge",12],["plank",20],["squat",10]],
-  [["superman",15],["bridge",18],["plank",30],["squat",15]],
-  [["superman",20],["bridge",25],["plank",45],["squat",20]]
+  [["pull",2],["superman",10],["bridge",12],["plank",20]],
+  [["pull",4],["superman",15],["bridge",18],["plank",30],["squat",15]],
+  [["pull",6],["superman",20],["bridge",25],["plank",45],["lunge",15]]
  ]},
  {name:"Der Abenteurer",icon:"🧭",sets:[
   [["lunge",8],["jack",20],["push",6],["mountain",15]],
-  [["lunge",12],["jack",30],["push",10],["mountain",25]],
-  [["lunge",18],["jack",45],["push",15],["mountain",40]]
+  [["lunge",12],["jack",30],["push",10],["pull",3],["mountain",25]],
+  [["lunge",18],["jack",45],["push",15],["pull",5],["burpee",8],["mountain",40]]
  ]},
  {name:"Bosskampf – Ganzkörper",icon:"🐉",sets:[
-  [["squat",15],["push",8],["burpee",5],["plank",25],["bridge",12]],
-  [["squat",22],["push",12],["burpee",8],["plank",40],["bridge",18]],
-  [["squat",30],["push",18],["burpee",12],["plank",55],["bridge",25]]
+  [["squat",15],["push",8],["pull",2],["burpee",5],["plank",25]],
+  [["squat",22],["push",12],["pull",4],["burpee",8],["plank",40],["bridge",18]],
+  [["squat",30],["push",18],["pull",6],["burpee",12],["plank",55],["bridge",25],["mountain",30]]
  ]}
 ];
 
@@ -529,17 +530,12 @@ function weekKey(date=today()){
  d.setDate(d.getDate()-((d.getDay()+6)%7));
  return d.toISOString().slice(0,10);
 }
-
 function xpForLevel(level){
  return Math.floor(100*Math.pow(Math.max(0,level-1),1.35));
 }
-
 function levelFor(xp){
  let low=1,high=2;
- while(xp>=xpForLevel(high)){
-  low=high;
-  high*=2;
- }
+ while(xp>=xpForLevel(high)){low=high;high*=2;}
  while(low+1<high){
   const mid=Math.floor((low+high)/2);
   if(xp>=xpForLevel(mid))low=mid;
@@ -547,7 +543,6 @@ function levelFor(xp){
  }
  return low;
 }
-
 function rankFor(level){
  if(level>=1000)return "🌌 Transzendenz";
  if(level>=500)return "👑 Ewige Legende";
@@ -558,7 +553,6 @@ function rankFor(level){
  if(level>=10)return "🛡️ Fortgeschritten";
  return "🌱 Anfänger";
 }
-
 function entryXp(e){
  let xp=Number(e.bonus||0);
  (e.items||[]).forEach(i=>{
@@ -567,19 +561,12 @@ function entryXp(e){
  });
  return xp;
 }
-
 function stepXp(n){return Math.floor(n/1000)*5}
-
 function totalXp(){
- const workoutXp=data.entries
-  .filter(e=>e.type==="workout")
-  .reduce((s,e)=>s+entryXp(e),0);
- const stepsXp=data.entries
-  .filter(e=>e.type==="steps")
-  .reduce((s,e)=>s+stepXp(Number(e.steps||0)),0);
+ const workoutXp=data.entries.filter(e=>e.type==="workout").reduce((s,e)=>s+entryXp(e),0);
+ const stepsXp=data.entries.filter(e=>e.type==="steps").reduce((s,e)=>s+stepXp(Number(e.steps||0)),0);
  return workoutXp+stepsXp+Number(data.questXp||0);
 }
-
 function days(){
  return [...new Set(data.entries.filter(e=>e.type==="workout").map(e=>e.date))].sort();
 }
@@ -596,37 +583,24 @@ function streak(){
  return n;
 }
 function stepsOn(date=today()){
- return data.entries.filter(e=>e.type==="steps"&&e.date===date)
-  .reduce((s,e)=>s+Number(e.steps||0),0);
+ return data.entries.filter(e=>e.type==="steps"&&e.date===date).reduce((s,e)=>s+Number(e.steps||0),0);
 }
 function totalSteps(){
- return data.entries.filter(e=>e.type==="steps")
-  .reduce((s,e)=>s+Number(e.steps||0),0);
+ return data.entries.filter(e=>e.type==="steps").reduce((s,e)=>s+Number(e.steps||0),0);
 }
-function workoutEntries(){
- return data.entries.filter(e=>e.type==="workout");
-}
+function workoutEntries(){return data.entries.filter(e=>e.type==="workout")}
 function totalExerciseAmount(){
- return workoutEntries().reduce((sum,e)=>
-  sum+(e.items||[]).reduce((s,i)=>s+Number(i.amount||0),0),0);
+ return workoutEntries().reduce((sum,e)=>sum+(e.items||[]).reduce((s,i)=>s+Number(i.amount||0),0),0);
 }
 function exerciseAmount(id){
- return workoutEntries().reduce((sum,e)=>
-  sum+(e.items||[]).filter(i=>i.id===id)
-   .reduce((s,i)=>s+Number(i.amount||0),0),0);
+ return workoutEntries().reduce((sum,e)=>sum+(e.items||[]).filter(i=>i.id===id).reduce((s,i)=>s+Number(i.amount||0),0),0);
 }
 function totals(){
  const xp=totalXp();
- return {
-  xp,level:levelFor(xp),
-  workouts:workoutEntries().length,
-  days:days().length,week:weekDays(),streak:streak(),
-  steps:totalSteps()
- };
+ return {xp,level:levelFor(xp),workouts:workoutEntries().length,days:days().length,week:weekDays(),streak:streak(),steps:totalSteps()};
 }
 
 /* Dialoge */
-
 function openDialog(title,message,buttons,input){
  $("dialogTitle").textContent=title;
  $("dialogMessage").textContent=message;
@@ -653,16 +627,10 @@ function closeDialog(){
 }
 function showNotice(message,title="Alles klar!"){openDialog(title,message,[{text:"Weiter"}])}
 function showConfirm(message,onYes,title="Bist du sicher?"){
- openDialog(title,message,[
-  {text:"Abbrechen",secondary:true},
-  {text:"Bestätigen",action:onYes}
- ]);
+ openDialog(title,message,[{text:"Abbrechen",secondary:true},{text:"Bestätigen",action:onYes}]);
 }
 function showInput(message,value,onSave,title="Eintrag bearbeiten"){
- openDialog(title,message,[
-  {text:"Abbrechen",secondary:true},
-  {text:"Speichern",action:onSave}
- ],{label:"Neues Datum (JJJJ-MM-TT)",type:"date",value});
+ openDialog(title,message,[{text:"Abbrechen",secondary:true},{text:"Speichern",action:onSave}],{label:"Neues Datum (JJJJ-MM-TT)",type:"date",value});
 }
 $("dialogLayer").addEventListener("click",e=>{
  if(e.target===$("dialogLayer"))closeDialog();
@@ -680,7 +648,6 @@ function showSection(id){
 }
 
 /* Übungen */
-
 function buildExercises(){
  $("exerciseList").innerHTML=EXERCISES.map(e=>`
  <div class="exercise">
@@ -690,7 +657,6 @@ function buildExercises(){
 }
 
 /* Trainingspläne */
-
 function buildWorkouts(){
  $("workoutList").innerHTML=`<div id="activePlanSession"></div>`+
  PLANS.map((p,i)=>`
@@ -727,16 +693,52 @@ function updatePlanPreview(i){
  if(!preview)return;
  const difficulty=Number($("difficulty_"+i).value);
  const rounds=Number($("rounds_"+i).value);
+ const exercises=PLANS[i].sets[difficulty];
+
  preview.hidden=false;
  preview.className="planPreview";
  preview.innerHTML=`
   <div class="planPreviewTitle">Deine Übungen · ${rounds} ${rounds===1?"Satz":"Sätze"}</div>
-  ${PLANS[i].sets[difficulty].map(([id,amount])=>{
+  ${exercises.map(([id,defaultAmount],j)=>{
    const ex=EXERCISES.find(e=>e.id===id);
    if(!ex)return "";
-   return `<div class="item"><strong>${esc(ex.name)}</strong><br>
-    <small>${rounds} × ${amount} ${esc(ex.unit)} = ${fmt(amount*rounds)}</small></div>`;
-  }).join("")}`;
+   return `
+    <div class="item">
+     <strong>${esc(ex.name)}</strong>
+     <small> · ${ex.xp} XP je ${esc(ex.unit)}</small>
+     <div class="planAmount">
+      <label for="planAmount_${i}_${j}">Anzahl pro Satz</label>
+      <input id="planAmount_${i}_${j}" type="number" min="0" max="500"
+       value="${defaultAmount}" inputmode="numeric"
+       oninput="updatePlanXp(${i})">
+     </div>
+     <small>Gesamt: <strong id="planTotal_${i}_${j}">${fmt(defaultAmount*rounds)}</strong> ${esc(ex.unit)}</small>
+    </div>`;
+  }).join("")}
+  <div class="planXpBox">
+   <strong>✨ Voraussichtliche Erfahrungspunkte</strong>
+   <div class="big xp" id="planXp_${i}">0 XP</div>
+   <small>Basierend auf deiner Auswahl und der Satzanzahl.</small>
+  </div>`;
+ updatePlanXp(i);
+}
+function updatePlanXp(i){
+ const difficulty=Number($("difficulty_"+i).value);
+ const rounds=Number($("rounds_"+i).value);
+ const exercises=PLANS[i].sets[difficulty];
+ let xp=PLANS[i].bonus?.[difficulty]||0;
+
+ exercises.forEach(([id,defaultAmount],j)=>{
+  const ex=EXERCISES.find(e=>e.id===id);
+  const field=$("planAmount_"+i+"_"+j);
+  if(!ex||!field)return;
+  const amount=Math.min(500,Math.max(0,Number(field.value||0)));
+  xp+=amount*rounds*ex.xp;
+  const total=$("planTotal_"+i+"_"+j);
+  if(total)total.textContent=fmt(amount*rounds);
+ });
+ const output=$("planXp_"+i);
+ if(output)output.textContent=fmt(xp)+" XP";
 }
 function startPlan(i){
  if(activePlan){
@@ -746,10 +748,20 @@ function startPlan(i){
  const p=PLANS[i];
  const difficulty=Number($("difficulty_"+i).value);
  const rounds=Number($("rounds_"+i).value);
+ const items=p.sets[difficulty].map(([id,defaultAmount],j)=>{
+  const field=$("planAmount_"+i+"_"+j);
+  const amount=field?Math.min(500,Math.max(0,Number(field.value||0))):defaultAmount;
+  return {id,amount,done:false};
+ }).filter(item=>item.amount>0);
+
+ if(!items.length){
+  showNotice("Bitte gib für mindestens eine Übung eine Anzahl größer als 0 ein.","Keine Übungen ausgewählt");
+  return;
+ }
  activePlan={
   planIndex:i,name:p.name,difficulty,rounds,
   bonus:p.bonus?.[difficulty]||0,
-  items:p.sets[difficulty].map(([id,amount])=>({id,amount,done:false}))
+  items
  };
  renderPlanSession();
  const area=$("activePlanSession");
@@ -762,6 +774,11 @@ function renderPlanSession(){
  const done=activePlan.items.filter(x=>x.done).length;
  const total=activePlan.items.length;
  const finished=done===total;
+ const expectedXp=activePlan.bonus+activePlan.items.reduce((sum,item)=>{
+  const ex=EXERCISES.find(e=>e.id===item.id);
+  return sum+(ex?item.amount*activePlan.rounds*ex.xp:0);
+ },0);
+
  area.innerHTML=`
  <div class="card hero">
   <h2>🏋️ ${esc(activePlan.name)}</h2>
@@ -776,10 +793,11 @@ function renderPlanSession(){
    return `<label style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);color:var(--text);font-size:14px;opacity:${item.done?0.65:1}">
     <input type="checkbox" style="width:22px;height:22px;margin:0;flex-shrink:0" ${item.done?"checked":""} onchange="togglePlanExercise(${i},this.checked)">
     <span style="${item.done?"text-decoration:line-through":""}">
-     <strong>${esc(ex.name)}</strong><br><small>${activePlan.rounds} × ${item.amount} ${esc(ex.unit)} = ${fmt(item.amount*activePlan.rounds)}</small>
+     <strong>${esc(ex.name)}</strong><br>
+     <small>${activePlan.rounds} × ${item.amount} ${esc(ex.unit)} = ${fmt(item.amount*activePlan.rounds)}</small>
     </span></label>`;
   }).join("")}
-  <p class="xp">Belohnung: +${activePlan.bonus} Bonus-XP</p>
+  <p class="xp">Voraussichtliche Belohnung: +${fmt(expectedXp)} XP</p>
   <button onclick="completePlan()" ${finished?"":"disabled"}>Training abschließen</button>
   <p><button class="secondary" onclick="cancelPlan()">Plan abbrechen</button></p>
  </div>`;
@@ -814,11 +832,8 @@ function cancelPlan(){
 }
 
 /* Training speichern */
-
 function saveExercises(){
- const items=EXERCISES.map(e=>({
-  id:e.id,amount:Number($("ex_"+e.id).value||0)
- })).filter(i=>i.amount>0);
+ const items=EXERCISES.map(e=>({id:e.id,amount:Number($("ex_"+e.id).value||0)})).filter(i=>i.amount>0);
  if(!items.length){
   showNotice("Bitte trage zuerst mindestens eine Übung ein.","Noch kein Training");
   return;
@@ -843,7 +858,6 @@ function saveSteps(){
 }
 
 /* Quest-System: alte Belohnungen bleiben erhalten */
-
 function checkQuests(){
  const day=today(),week=weekKey();
  data.claimedQuests=data.claimedQuests||[];
@@ -867,7 +881,6 @@ function checkQuests(){
  }
  if(changed)save();
 }
-
 function questDefinitions(){
  const d=today(),week=weekKey();
  const todayWorkouts=workoutEntries().filter(e=>e.date===d);
@@ -875,7 +888,6 @@ function questDefinitions(){
  const todayAmount=todayWorkouts.reduce((s,e)=>s+(e.items||[]).reduce((n,x)=>n+Number(x.amount||0),0),0);
  const weekEntries=workoutEntries().filter(e=>e.date>=week&&e.date<=d);
  const weekAmount=weekEntries.reduce((s,e)=>s+(e.items||[]).reduce((n,x)=>n+Number(x.amount||0),0),0);
-
  return {
   daily:[
    {id:"daily_workout_"+d,type:"Täglich",icon:"🏋️",name:"Trainingsstart",desc:"Schließe heute eine Trainingseinheit ab.",value:todayWorkouts.length,goal:1,xp:30},
@@ -903,7 +915,6 @@ function questDefinitions(){
   ]
  };
 }
-
 function claimQuest(id){
  const all=questDefinitions();
  const quest=[...all.daily,...all.weekly,...all.long].find(q=>q.id===id);
@@ -913,7 +924,6 @@ function claimQuest(id){
  save();render();
  showNotice("Du hast die Quest abgeschlossen und "+quest.xp+" XP erhalten!","Quest-Belohnung erhalten 🎉");
 }
-
 function questCard(q){
  const done=q.value>=q.goal;
  const claimed=data.claimedQuestIds.includes(q.id);
@@ -924,12 +934,9 @@ function questCard(q){
   <p class="muted">${esc(q.desc)}</p>
   <div class="progress"><span style="width:${pct}%"></span></div>
   <small>${fmt(Math.min(q.value,q.goal))} / ${fmt(q.goal)} · <span class="questReward">+${q.xp} XP</span></small>
-  ${claimed?'<p class="questReward">✓ Belohnung eingesammelt</p>':
-   done?`<p><button onclick="claimQuest('${q.id}')">Belohnung abholen</button></p>`:
-   ""}
+  ${claimed?'<p class="questReward">✓ Belohnung eingesammelt</p>':done?`<p><button onclick="claimQuest('${q.id}')">Belohnung abholen</button></p>`:""}
  </div>`;
 }
-
 function renderQuests(){
  const q=questDefinitions();
  $("dailyQuestList").innerHTML=q.daily.map(questCard).join("");
@@ -941,8 +948,7 @@ function renderQuests(){
  $("homeQuests").innerHTML=[...q.daily,...q.weekly.slice(0,1)].map(questCard).join("");
 }
 
-/* Ruhmeshalle: Level-Meilensteine wachsen weit über Level 25 hinaus */
-
+/* Ruhmeshalle */
 function achievementList(){
  const t=totals();
  const levels=[5,10,25,50,75,100,150,200,300,500,750,1000,1500,2000,5000,10000];
@@ -950,7 +956,6 @@ function achievementList(){
  const steps=[10000,50000,100000,250000,500000,1000000,2500000,5000000,10000000];
  const volume=[100,500,1000,5000,10000,25000,50000,100000];
  const streaks=[3,7,14,30,60,100,180,365];
-
  const a=[];
  levels.forEach(n=>a.push(["👑","Level "+fmt(n),"Erreiche Level "+fmt(n)+".",t.level>=n]));
  workouts.forEach(n=>a.push(["🏋️",fmt(n)+" Trainings","Schließe "+fmt(n)+" Trainingseinheiten ab.",t.workouts>=n]));
@@ -964,7 +969,6 @@ function achievementList(){
  );
  return a;
 }
-
 function renderAchievements(){
  const a=achievementList();
  const unlocked=a.filter(x=>x[3]).length;
@@ -978,7 +982,6 @@ function renderAchievements(){
 }
 
 /* Historie */
-
 function renderHistory(){
  const list=[...data.entries].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
  $("historyList").innerHTML=list.length?list.map(e=>`
@@ -993,7 +996,6 @@ function renderHistory(){
   </div>
  </div>`).join(""):"<p class='muted'>Noch keine Einträge.</p>";
 }
-
 function editEntry(id){
  const e=data.entries.find(x=>x.id===id);
  if(!e)return;
@@ -1013,7 +1015,6 @@ function deleteEntry(id){
 }
 
 /* Spielstand sichern und übertragen */
-
 function exportSave(){
  const content=JSON.stringify(data,null,2);
  const blob=new Blob([content],{type:"application/json"});
@@ -1050,7 +1051,6 @@ function importSave(){
   }}
  ]);
 }
-
 function resetProgress(){
  showConfirm(
   "Möchtest du wirklich deinen gesamten Spielstand löschen? Dieser Schritt kann nicht rückgängig gemacht werden. Deine externe Sicherungsdatei bleibt davon unberührt.",
@@ -1065,7 +1065,6 @@ function resetProgress(){
 }
 
 /* Gesamte Anzeige aktualisieren */
-
 function render(){
  checkQuests();
  const t=totals();
