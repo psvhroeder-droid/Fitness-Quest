@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -107,25 +106,34 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 }
 .warriorCard:after{
  content:"";position:absolute;inset:0;pointer-events:none;
- background:radial-gradient(ellipse at 50% 45%,#f5c96b12,transparent 65%)
+ background:radial-gradient(ellipse at 50% 45%,#f5c96b18,transparent 65%)
 }
+.warriorCard>*{position:relative;z-index:1}
 .warriorStage{color:var(--gold);font-weight:900;letter-spacing:1px}
 .warriorVisual{
- width:220px;height:235px;margin:5px auto 10px;
+ width:min(270px,75vw);height:285px;margin:10px auto 12px;
  position:relative;display:flex;align-items:center;justify-content:center;
- animation:warriorIdle 3s ease-in-out infinite
+ transform-origin:50% 85%;
+ animation:warriorBreath 3.2s ease-in-out infinite
 }
 .warriorVisual:before{
- content:"";position:absolute;width:190px;height:190px;border-radius:50%;
- background:radial-gradient(circle,#d58b3b55,transparent 70%);
+ content:"";position:absolute;width:210px;height:210px;border-radius:50%;
+ background:radial-gradient(circle,#d58b3b66,transparent 70%);
  animation:auraPulse 3s ease-in-out infinite
 }
-.warriorVisual svg{width:100%;height:100%;position:relative;z-index:1}
-.warriorVisual .armor{fill:#66768d;transition:fill .5s}
-.warriorVisual .helmet{fill:#b5a17b;transition:fill .5s}
+.warriorVisual svg{
+ width:100%;height:100%;position:relative;z-index:1;
+ overflow:visible;filter:drop-shadow(0 12px 12px #0008)
+}
+.warriorVisual .armor{fill:#66768d;transition:fill .6s}
+.warriorVisual .helmet{fill:#b5a17b;transition:fill .6s}
 .warriorVisual .skin{fill:#b98261}
 .warriorVisual .mark{fill:#a83232}
 .warriorVisual .glow{fill:#f5c96b}
+.warriorVisual .cape{fill:#7f2938;transform-origin:100px 90px;animation:capeMove 2.8s ease-in-out infinite}
+.warriorVisual .armLeft{transform-origin:57px 112px;animation:armIdle 3.2s ease-in-out infinite}
+.warriorVisual .armRight{transform-origin:143px 112px;animation:armIdle 3.2s ease-in-out infinite reverse}
+.warriorVisual .weapon{transform-origin:155px 100px;animation:weaponSway 3.2s ease-in-out infinite}
 .warriorVisual.stage2 .armor{fill:#92704a}
 .warriorVisual.stage2 .helmet{fill:#d1ad65}
 .warriorVisual.stage3 .armor{fill:#913f38}
@@ -135,23 +143,46 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .warriorVisual.stage5 .armor{fill:#59427d}
 .warriorVisual.stage5 .helmet{fill:#f6dc8d}
 .warriorVisual.stage5:before{
- background:radial-gradient(circle,#a66aff88,transparent 70%)
+ background:radial-gradient(circle,#a66aff99,transparent 70%)
 }
 .warriorName{font-size:22px;font-weight:950}
 .warriorDescription{font-size:13px;color:var(--muted);margin-top:5px}
 .warriorLevel{color:var(--gold);font-size:13px;font-weight:800;margin-top:8px}
-.warriorVisual.berserk{animation:berserk .45s infinite alternate}
-@keyframes warriorIdle{
- 0%,100%{transform:translateY(0)}
- 50%{transform:translateY(-7px)}
+.warriorVisual.berserk{animation:berserk .38s infinite alternate}
+.warriorVisual.berserk .weapon{animation:weaponAttack .38s infinite alternate}
+.warriorVisual.berserk .armLeft{animation:armAttack .38s infinite alternate}
+.warriorVisual.berserk .armRight{animation:armAttack .38s infinite alternate-reverse}
+@keyframes warriorBreath{
+ 0%,100%{transform:translateY(0) scaleY(1)}
+ 50%{transform:translateY(-5px) scaleY(1.018)}
 }
 @keyframes auraPulse{
- 0%,100%{transform:scale(.9);opacity:.5}
+ 0%,100%{transform:scale(.88);opacity:.45}
  50%{transform:scale(1.12);opacity:1}
+}
+@keyframes capeMove{
+ 0%,100%{transform:skewY(0) scaleX(1)}
+ 50%{transform:skewY(4deg) scaleX(.96)}
+}
+@keyframes armIdle{
+ 0%,100%{transform:rotate(0)}
+ 50%{transform:rotate(-3deg)}
+}
+@keyframes weaponSway{
+ 0%,100%{transform:rotate(-2deg)}
+ 50%{transform:rotate(3deg)}
 }
 @keyframes berserk{
  from{transform:translateY(-3px) scale(1);filter:drop-shadow(0 0 5px #f44)}
- to{transform:translateY(-8px) scale(1.04);filter:drop-shadow(0 0 20px #f33)}
+ to{transform:translateY(-8px) scale(1.045);filter:drop-shadow(0 0 22px #f33)}
+}
+@keyframes weaponAttack{
+ from{transform:rotate(-8deg)}
+ to{transform:rotate(18deg)}
+}
+@keyframes armAttack{
+ from{transform:rotate(-7deg)}
+ to{transform:rotate(9deg)}
 }
 .levelFlash{animation:levelFlash .8s ease}
 @keyframes levelFlash{
@@ -243,22 +274,43 @@ nav button.active{color:var(--gold);background:#29364c}
   <h2>⚔️ Dein Krieger</h2>
   <div class="warriorStage" id="warriorStage">JUNGER KÄMPFER</div>
   <div class="warriorVisual stage1" id="warriorVisual">
-   <svg viewBox="0 0 200 220" role="img" aria-label="Dein Fantasy-Krieger">
-    <path class="glow" d="M100 8 L108 22 L100 35 L92 22Z"/>
+   <svg viewBox="0 0 200 230" role="img" aria-label="Dein Fantasy-Krieger">
+    <defs>
+     <linearGradient id="blade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4f7ff"/>
+      <stop offset=".5" stop-color="#8da9c9"/>
+      <stop offset="1" stop-color="#e6efff"/>
+     </linearGradient>
+    </defs>
+    <path class="cape" d="M72 78 L128 78 L153 203 L100 184 L47 203Z"/>
+    <path class="glow" d="M100 5 L108 22 L100 36 L92 22Z"/>
     <path class="armor" d="M48 105 Q52 75 78 72 L100 88 L122 72 Q148 75 152 105 L177 190 L23 190Z"/>
     <path class="skin" d="M76 48 Q76 23 100 23 Q124 23 124 48 L119 86 Q100 103 81 86Z"/>
     <path class="helmet" d="M70 51 Q65 8 100 8 Q135 8 130 51 L119 43 L100 49 L81 43Z"/>
     <path class="mark" d="M96 48 L104 48 L100 76Z"/>
     <path class="armor" d="M70 110 L100 132 L130 110 L143 190 L57 190Z"/>
-    <path class="helmet" d="M42 112 L70 93 L78 122 L62 143Z M158 112 L130 93 L122 122 L138 143Z"/>
+    <g class="armLeft">
+     <path class="skin" d="M48 105 L28 137 L43 157 L67 125Z"/>
+     <path class="helmet" d="M42 112 L70 93 L78 122 L62 143Z"/>
+    </g>
+    <g class="armRight">
+     <path class="skin" d="M152 105 L172 137 L157 157 L133 125Z"/>
+     <path class="helmet" d="M158 112 L130 93 L122 122 L138 143Z"/>
+    </g>
     <path class="mark" d="M86 145 L100 155 L114 145 L108 177 L92 177Z"/>
     <path class="glow" d="M22 190 L178 190 L170 199 L30 199Z"/>
+    <g class="weapon">
+     <path d="M160 105 L185 28 L190 31 L169 111Z" fill="url(#blade)" stroke="#d8e6f8" stroke-width="2"/>
+     <path d="M151 105 L177 111 L174 118 L148 112Z" fill="#c49a4b"/>
+     <path d="M163 117 L168 120 L157 145 L152 142Z" fill="#805a36"/>
+     <path d="M181 27 L191 18 L190 34Z" fill="#f5c96b"/>
+    </g>
    </svg>
   </div>
   <div class="warriorName" id="warriorName">Der Herausforderer</div>
   <div class="warriorDescription" id="warriorDescription">Deine Reise beginnt gerade erst.</div>
   <div class="warriorLevel" id="warriorLevel">LEVEL 1</div>
-  <button class="secondary" onclick="toggleBerserk()">🔥 Berserker-Modus</button>
+  <button class="secondary" id="berserkButton" onclick="toggleBerserk()">🔥 Berserker-Modus</button>
  </div>
 
  <div class="grid">
@@ -294,7 +346,6 @@ nav button.active{color:var(--gold);background:#29364c}
   <div id="recentHome" class="muted">Noch keine Aktivität.</div>
  </div>
 </section>
-
 <section id="training" class="section">
  <h2>🏋️ Trainingsarena</h2>
  <div class="card">
@@ -304,12 +355,13 @@ nav button.active{color:var(--gold);background:#29364c}
  </div>
  <div class="card">
   <h2>👣 Schritte eintragen</h2>
-  <label>Datum</label><input type="date" id="stepDate">
+  <label>Datum</label>
+  <input type="date" id="stepDate">
   <label>Schritte an diesem Tag</label>
   <input type="number" min="0" max="100000" id="stepCount" placeholder="z. B. 7500">
   <button onclick="saveSteps()">Schritte speichern</button>
   <div id="stepStats" class="muted"></div>
-  <small>1.000 Schritte = 10 XP · maximal 100.000 Schritte pro Tag</small>
+  <small>1.000 Schritte = 5 XP · maximal 100.000 Schritte pro Tag</small>
  </div>
 </section>
 
@@ -507,12 +559,13 @@ const ACHIEVEMENTS=[
  {name:"Boss bezwungen",desc:"Schließe den Bosskampf ab.",test:t=>t.bosses>=1}
 ];
 
-// ==========================================
+// Teil 3 setzt hier fort.
+ // ==========================================
 // FITNESS QUEST – TEIL 3
-// Spiel-Logik, Krieger, Quests und Fortschritt
+// Spielsteuerung, Krieger, Training und Quests
 // ==========================================
 
-let data = { entries: [], questXp: 0, claimedQuests: [], claimedWeeks: [] };
+let data = { entries: [] };
 let berserkActive = false;
 let lastRenderedLevel = null;
 
@@ -522,16 +575,9 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
-function dateFromDaysAgo(days) {
-  const d = new Date();
-  d.setDate(d.getDate() - days);
-  return d.toISOString().slice(0, 10);
-}
-
 function weekKey(date = today()) {
   const d = new Date(date + "T12:00:00");
-  const day = (d.getDay() + 6) % 7;
-  d.setDate(d.getDate() - day);
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
   return d.toISOString().slice(0, 10);
 }
 
@@ -563,18 +609,15 @@ function save() {
 }
 
 function exerciseById(id) {
-  return (EXERCISES || []).find(e => String(e.id) === String(id));
+  return EXERCISES.find(e => e.id === id);
 }
 
 function entryXp(entry) {
-  if (!entry) return 0;
   let xp = Number(entry.bonus || 0);
 
   (entry.items || []).forEach(item => {
     const exercise = exerciseById(item.id);
-    if (exercise) {
-      xp += Number(item.amount || 0) * Number(exercise.xp || 1);
-    }
+    if (exercise) xp += Number(item.amount || 0) * exercise.xp;
   });
 
   return xp;
@@ -589,18 +632,6 @@ function levelFor(xp) {
   return Math.floor(Math.max(0, xp) / 100) + 1;
 }
 
-function xpIntoLevel(xp) {
-  return Math.max(0, xp) % 100;
-}
-
-function rankFor(level) {
-  if (level >= 100) return "Unsterblicher Kriegsgott";
-  if (level >= 50) return "Göttlicher Krieger";
-  if (level >= 20) return "Champion";
-  if (level >= 10) return "Veteran";
-  return "Anwärter";
-}
-
 function trainingDays() {
   return [...new Set(
     data.entries
@@ -609,13 +640,17 @@ function trainingDays() {
   )];
 }
 
+function workoutsThisWeek() {
+  const start = weekKey();
+  return trainingDays().filter(d => d >= start && d <= today()).length;
+}
+
 function currentStreak() {
   const days = new Set(trainingDays());
-  let count = 0;
-  let d = new Date();
-
+  const d = new Date();
   if (!days.has(today())) d.setDate(d.getDate() - 1);
 
+  let count = 0;
   while (days.has(d.toISOString().slice(0, 10))) {
     count++;
     d.setDate(d.getDate() - 1);
@@ -625,17 +660,12 @@ function currentStreak() {
 
 function longestStreak() {
   const days = trainingDays().sort();
-  let best = 0, current = 0, previous = null;
+  let best = 0, count = 0, previous = null;
 
   days.forEach(date => {
     const d = new Date(date + "T12:00:00");
-    if (previous) {
-      const diff = Math.round((d - previous) / 86400000);
-      current = diff === 1 ? current + 1 : 1;
-    } else {
-      current = 1;
-    }
-    best = Math.max(best, current);
+    count = previous && (d - previous) === 86400000 ? count + 1 : 1;
+    best = Math.max(best, count);
     previous = d;
   });
 
@@ -652,19 +682,13 @@ function stepXp(steps) {
   return Math.floor(Number(steps || 0) / 1000) * 5;
 }
 
-function workoutsThisWeek() {
-  const start = weekKey();
-  return trainingDays().filter(d => d >= start && d <= today()).length;
-}
-
 function totals() {
   const xp = totalXp();
-  const workouts = data.entries.filter(e => e.type === "workout").length;
 
   return {
     xp,
     level: levelFor(xp),
-    workouts,
+    workouts: data.entries.filter(e => e.type === "workout").length,
     days: trainingDays().length,
     week: workoutsThisWeek(),
     streak: currentStreak(),
@@ -677,9 +701,9 @@ function totals() {
   };
 }
 
-// ------------------------------------------
-// QUests – Belohnungen werden nur einmal vergeben
-// ------------------------------------------
+// -----------------------------
+// QUests und Belohnungen
+// -----------------------------
 
 function claimQuest(key, reward) {
   if (data.claimedQuests.includes(key)) return false;
@@ -692,6 +716,7 @@ function claimQuest(key, reward) {
 function checkQuests() {
   let changed = false;
   const day = today();
+
   const didWorkout = data.entries.some(
     e => e.type === "workout" && e.date === day
   );
@@ -704,9 +729,10 @@ function checkQuests() {
     changed = claimQuest(day + "_steps", 20) || changed;
   }
 
-  const wk = weekKey();
-  if (workoutsThisWeek() >= 3 && !data.claimedWeeks.includes(wk)) {
-    data.claimedWeeks.push(wk);
+  const week = weekKey();
+
+  if (workoutsThisWeek() >= 3 && !data.claimedWeeks.includes(week)) {
+    data.claimedWeeks.push(week);
     data.questXp = Number(data.questXp || 0) + 100;
     data.weekRewards = Number(data.weekRewards || 0) + 1;
     changed = true;
@@ -717,63 +743,57 @@ function checkQuests() {
 }
 
 function renderQuests() {
-  const day = today();
   const workoutDone = data.entries.some(
-    e => e.type === "workout" && e.date === day
+    e => e.type === "workout" && e.date === today()
   );
-  const steps = stepTotal(day);
+
+  const steps = stepTotal();
   const week = workoutsThisWeek();
 
   const quests = [
     {
       title: "Erhebe dich!",
-      description: "Absolviere heute ein Training.",
+      desc: "Absolviere heute ein Training.",
       progress: workoutDone ? 1 : 0,
       goal: 1,
-      reward: 25,
-      done: workoutDone
+      reward: 25
     },
     {
       title: "Der lange Marsch",
-      description: "Sammle heute 5.000 Schritte.",
+      desc: "Sammle heute 5.000 Schritte.",
       progress: Math.min(steps, 5000),
       goal: 5000,
-      reward: 20,
-      done: steps >= 5000
+      reward: 20
     },
     {
       title: "Wöchentliche Prüfung",
-      description: "Trainiere an drei verschiedenen Tagen.",
+      desc: "Trainiere an drei verschiedenen Tagen.",
       progress: Math.min(week, 3),
       goal: 3,
-      reward: 100,
-      done: week >= 3
+      reward: 100
     }
   ];
 
   const html = quests.map(q => {
-    const percent = Math.min(100, q.progress / q.goal * 100);
-    const progressText = q.goal === 5000
-      ? `${q.progress.toLocaleString("de-DE")} / 5.000 Schritte`
-      : `${q.progress} / ${q.goal}`;
+    const done = q.progress >= q.goal;
+    const percent = q.progress / q.goal * 100;
 
     return `
-      <div class="card questCard">
-        <div class="row">
-          <div>
-            <strong>${esc(q.title)}</strong>
-            <div class="muted">${esc(q.description)}</div>
-          </div>
-          <strong>${q.done ? "✓" : "＋"} ${q.reward} XP</strong>
+      <div class="questCard ${done ? "questDone" : ""}">
+        <strong>${done ? "✅" : "📜"} ${esc(q.title)}</strong>
+        <div>${esc(q.desc)}</div>
+        <div class="progress">
+          <span style="width:${percent}%"></span>
         </div>
-        <div class="progress"><div class="progressFill" style="width:${percent}%"></div></div>
-        <small>${progressText} ${q.done ? "– Geschafft!" : ""}</small>
+        <div class="questProgress">
+          ${q.progress.toLocaleString("de-DE")} / ${q.goal.toLocaleString("de-DE")}
+          · <span class="questReward">+${q.reward} XP</span>
+        </div>
       </div>`;
   }).join("");
 
-  ["questList", "homeQuests"].forEach(id => {
-    if ($(id)) $(id).innerHTML = html;
-  });
+  if ($("questList")) $("questList").innerHTML = html;
+  if ($("homeQuests")) $("homeQuests").innerHTML = html;
 
   if ($("questWeekBar")) {
     $("questWeekBar").style.width = Math.min(100, week / 3 * 100) + "%";
@@ -783,13 +803,12 @@ function renderQuests() {
   }
 }
 
-// ------------------------------------------
-// KRIEGER – Entwicklung mit jedem Level
-// ------------------------------------------
+// -----------------------------
+// KRIEGER UND ENTWICKLUNG
+// -----------------------------
 
 function renderWarrior() {
-  const xp = totalXp();
-  const level = levelFor(xp);
+  const level = levelFor(totalXp());
 
   let stage = 1;
   let name = "Der Herausforderer";
@@ -799,36 +818,46 @@ function renderWarrior() {
   if (level >= 10) {
     stage = 2;
     name = "Der Schlachtenveteran";
-    description = "Narben erzählen deine Geschichte. Deine Kraft wächst.";
+    description = "Deine Erfahrung und Stärke wachsen.";
     stageName = "SCHLACHTENVETERAN";
   }
+
   if (level >= 20) {
     stage = 3;
     name = "Der Arenachampion";
-    description = "Du hast dich bewiesen. Kein Gegner unterschätzt dich.";
+    description = "Du hast dich bewiesen. Deine Legende wächst.";
     stageName = "CHAMPION";
   }
+
   if (level >= 50) {
     stage = 4;
     name = "Der göttliche Krieger";
     description = "Deine Macht übersteigt die Grenzen gewöhnlicher Kämpfer.";
     stageName = "GÖTTLICHER KRIEGER";
   }
+
   if (level >= 100) {
     stage = 5;
     name = "Der unsterbliche Kriegsgott";
-    description = "Eine Legende. Und selbst jetzt ist deine Reise nicht vorbei.";
+    description = "Eine Legende – und deine Reise geht weiter.";
     stageName = "UNSTERBLICHER KRIEGSGOTT";
   }
 
   const visual = $("warriorVisual");
+
   if (visual) {
     visual.className = `warriorVisual stage${stage}`;
     if (berserkActive) visual.classList.add("berserk");
 
-    // Kleine optische Entwicklung mit jedem einzelnen Level
     const glow = Math.min(0.7, 0.12 + (level % 100) * 0.005);
-    visual.style.filter = `drop-shadow(0 0 ${Math.round(8 + glow * 20)}px rgba(255,150,50,${glow}))`;
+    visual.style.filter =
+      `drop-shadow(0 0 ${8 + glow * 20}px rgba(255,150,50,${glow}))`;
+
+    if (lastRenderedLevel !== null && level > lastRenderedLevel) {
+      visual.classList.remove("levelFlash");
+      void visual.offsetWidth;
+      visual.classList.add("levelFlash");
+    }
   }
 
   if ($("warriorName")) $("warriorName").textContent = name;
@@ -836,11 +865,6 @@ function renderWarrior() {
   if ($("warriorStage")) $("warriorStage").textContent = stageName;
   if ($("warriorLevel")) $("warriorLevel").textContent = `LEVEL ${level}`;
 
-  if (lastRenderedLevel !== null && level > lastRenderedLevel && visual) {
-    visual.classList.remove("levelFlash");
-    void visual.offsetWidth;
-    visual.classList.add("levelFlash");
-  }
   lastRenderedLevel = level;
 }
 
@@ -848,58 +872,56 @@ function toggleBerserk() {
   berserkActive = !berserkActive;
   renderWarrior();
 
-  const buttons = document.querySelectorAll(".berserkButton, [onclick='toggleBerserk()']");
-  buttons.forEach(button => {
+  document.querySelectorAll("[onclick='toggleBerserk()']").forEach(button => {
     button.textContent = berserkActive
       ? "🔥 Berserker-Modus beenden"
       : "🔥 Berserker-Modus";
   });
 }
 
-// ------------------------------------------
+// -----------------------------
 // NAVIGATION
-// ------------------------------------------
+// -----------------------------
 
 function showSection(id) {
-  document.querySelectorAll("main section").forEach(section => {
+  document.querySelectorAll("main .section").forEach(section => {
     section.classList.toggle("active", section.id === id);
   });
 
-  document.querySelectorAll(".nav button, .bottomNav button").forEach(button => {
-    const target = button.dataset.target || button.getAttribute("data-section");
-    button.classList.toggle("active", target === id);
+  document.querySelectorAll("nav button").forEach(button => {
+    button.classList.toggle("active", button.dataset.section === id);
   });
 
-  if (id === "profileSection") renderHistory();
+  if (id === "profile") renderHistory();
   if (id === "questsSection") renderQuests();
 }
 
-// ------------------------------------------
-// TRAINING UND TRAININGSPLÄNE
-// ------------------------------------------
+// -----------------------------
+// TRAINING
+// -----------------------------
 
 function buildExercises() {
-  const container =
-    $("exerciseInputs") || $("exerciseList") || $("trainingExercises");
-
+  const container = $("exerciseList");
   if (!container) return;
 
-  container.innerHTML = (EXERCISES || []).map(e => `
-    <label class="exerciseRow">
-      <span>${esc(e.name)}</span>
-      <span class="muted">${Number(e.xp || 1)} XP / ${esc(e.unit || "Wdh.")}</span>
-      <input id="ex_${esc(e.id)}" type="number" min="0" step="1" value="0"
-        inputmode="numeric" placeholder="0">
-    </label>
+  container.innerHTML = EXERCISES.map(e => `
+    <div class="exercise">
+      <div>
+        <strong>${esc(e.name)}</strong>
+        <small>${e.xp} XP · ${esc(e.unit)}</small>
+      </div>
+      <input id="ex_${esc(e.id)}" type="number" min="0" value="0"
+        inputmode="numeric" aria-label="${esc(e.name)}">
+    </div>
   `).join("");
 }
 
 function saveExercises() {
   const items = [];
 
-  (EXERCISES || []).forEach(e => {
+  EXERCISES.forEach(e => {
     const field = $("ex_" + e.id);
-    const amount = field ? Math.max(0, Number(field.value || 0)) : 0;
+    const amount = Math.max(0, Number(field?.value || 0));
     if (amount > 0) items.push({ id: e.id, amount });
   });
 
@@ -918,7 +940,7 @@ function saveExercises() {
   save();
   checkQuests();
   render();
-  alert("Training gespeichert! Weiter so, Krieger! ⚔️");
+  alert("Training gespeichert! ⚔️");
 
   items.forEach(item => {
     const field = $("ex_" + item.id);
@@ -927,64 +949,51 @@ function saveExercises() {
 }
 
 function buildWorkouts() {
-  const container = $("workoutPlans") || $("plansList") || $("workoutsList");
+  const container = $("workoutList");
   if (!container) return;
 
-  container.innerHTML = (PLANS || []).map((plan, i) => `
-    <div class="card planCard">
-      <h3>${esc(plan.name || "Trainingsplan")}</h3>
-      <p>${esc(plan.description || plan.desc || "")}</p>
-      <button onclick="startPlan(${i})">Plan starten</button>
+  container.innerHTML = PLANS.map((plan, i) => `
+    <div class="planOption">
+      <h3>${esc(plan.icon || "⚔️")} ${esc(plan.name)}</h3>
+      <p>Wähle deine Herausforderung und sammle Erfahrung.</p>
+      ${plan.sets.map((set, j) => `
+        <button class="secondary" onclick="startPlan(${i},${j})">
+          ${DIFFICULTIES[j] || "Stufe " + (j + 1)}
+        </button>
+      `).join(" ")}
     </div>
   `).join("");
 }
 
 function startPlan(i, j) {
-  const plan = (PLANS || [])[i];
-  if (!plan) return;
+  const plan = PLANS[i];
+  if (!plan || !plan.sets || !plan.sets[j]) return;
 
-  let items = [];
-  const source = plan.items || plan.exercises || plan.workout || [];
-
-  source.forEach(item => {
-    if (item.id !== undefined) {
-      items.push({
-        id: item.id,
-        amount: Number(item.amount || item.reps || 1)
-      });
-    }
-  });
-
-  if (!items.length && Array.isArray(plan.days)) {
-    (plan.days[j || 0]?.items || []).forEach(item => {
-      if (item.id !== undefined) {
-        items.push({ id: item.id, amount: Number(item.amount || 1) });
-      }
-    });
-  }
+  const items = plan.sets[j].map(([id, amount]) => ({ id, amount }));
+  const bonus = Array.isArray(plan.bonus) ? Number(plan.bonus[j] || 0) : 0;
 
   data.entries.push({
     id: Date.now(),
     type: "workout",
     date: today(),
-    plan: plan.name || "Trainingsplan",
+    plan: plan.name,
     items,
-    bonus: Number(plan.bonus || 0)
+    bonus
   });
 
   save();
   checkQuests();
   render();
-  alert(`${plan.name || "Trainingsplan"} abgeschlossen! 💪`);
+  alert(`${plan.name} abgeschlossen! 💪`);
 }
 
-// ------------------------------------------
+// -----------------------------
 // SCHRITTE
-// ------------------------------------------
+// -----------------------------
 
 function saveSteps() {
   const date = $("stepDate")?.value || today();
-  const steps = Math.max(0, Number($("stepCount")?.value || 0));
+  const steps = Math.min(100000, Math.max(0, Number($("stepCount")?.value || 0)));
 
   if (!steps) {
     alert("Bitte gib eine Schrittzahl ein.");
@@ -998,59 +1007,54 @@ function saveSteps() {
   if (existing) {
     existing.steps = steps;
   } else {
-    data.entries.push({
-      id: Date.now(),
-      type: "steps",
-      date,
-      steps
-    });
+    data.entries.push({ id: Date.now(), type: "steps", date, steps });
   }
 
   save();
   checkQuests();
   render();
-  alert("Schritte gespeichert! 🚶");
+  alert("Schritte gespeichert! 👣");
 }
 
-// ------------------------------------------
+// -----------------------------
 // ERFOLGE
-// ------------------------------------------
+// -----------------------------
 
 function renderAchievements() {
-  const container = $("achievementsList") || $("achievementList");
+  const container = $("achievementList");
   if (!container) return;
 
   const t = totals();
+
   const achievements = [
-    ["Erster Schritt", "Speichere dein erstes Training.", t.workouts >= 1, "🥉"],
+    ["Erster Schritt", "Absolviere dein erstes Training.", t.workouts >= 1, "🥉"],
     ["Fleißiger Kämpfer", "Absolviere 10 Trainings.", t.workouts >= 10, "⚔️"],
     ["Unaufhaltsam", "Absolviere 50 Trainings.", t.workouts >= 50, "🔥"],
-    ["Eiserne Disziplin", "Erreiche 7 Trainingstage insgesamt.", t.days >= 7, "🛡️"],
+    ["Eiserne Disziplin", "Erreiche 7 Trainingstage.", t.days >= 7, "🛡️"],
     ["Serienkrieger", "Erreiche 3 Tage Trainingsserie.", t.longestStreak >= 3, "🏅"],
     ["Legende", "Erreiche Level 20.", t.level >= 20, "👑"],
     ["Göttliche Macht", "Erreiche Level 50.", t.level >= 50, "✨"],
     ["Unsterblichkeit", "Erreiche Level 100.", t.level >= 100, "⚡"],
-    ["Schrittemeister", "Sammle insgesamt 100.000 Schritte.", t.totalSteps >= 100000, "👣"]
+    ["Schrittemeister", "Sammle 100.000 Schritte.", t.totalSteps >= 100000, "👣"]
   ];
 
   container.innerHTML = achievements.map(a => `
-    <div class="card achievement ${a[2] ? "unlocked" : "locked"}">
-      <span class="achievementIcon">${a[3]}</span>
-      <div>
-        <strong>${esc(a[0])}</strong>
-        <div class="muted">${esc(a[1])}</div>
+    <div class="item">
+      <div class="itemTop">
+        <strong>${a[3]} ${esc(a[0])}</strong>
+        <span>${a[2] ? "✅" : "🔒"}</span>
       </div>
-      <span>${a[2] ? "✓" : "🔒"}</span>
+      <small>${esc(a[1])}</small>
     </div>
   `).join("");
 }
 
-// ------------------------------------------
-// PROFIL UND VERLAUF
-// ------------------------------------------
+// -----------------------------
+// HISTORIE
+// -----------------------------
 
 function renderHistory() {
-  const container = $("historyList") || $("trainingHistory");
+  const container = $("historyList");
   if (!container) return;
 
   const entries = [...data.entries].sort((a, b) =>
@@ -1063,30 +1067,28 @@ function renderHistory() {
   }
 
   container.innerHTML = entries.map(e => {
-    let title = "Training";
-    let detail = "";
+    const title = e.type === "steps"
+      ? "👣 Schritte"
+      : e.plan ? `⚔️ ${esc(e.plan)}` : "🏋️ Training";
 
-    if (e.type === "steps") {
-      title = "Schritte";
-      detail = `${Number(e.steps || 0).toLocaleString("de-DE")} Schritte`;
-    } else {
-      title = e.plan ? `Plan: ${e.plan}` : "Training";
-      detail = (e.items || []).map(item => {
-        const exercise = exerciseById(item.id);
-        return `${esc(exercise?.name || item.id)}: ${Number(item.amount || 0)}`;
-      }).join(" · ");
-    }
+    const detail = e.type === "steps"
+      ? `${Number(e.steps || 0).toLocaleString("de-DE")} Schritte`
+      : (e.items || []).map(item => {
+          const exercise = exerciseById(item.id);
+          return `${esc(exercise?.name || item.id)}: ${Number(item.amount || 0)}`;
+        }).join(" · ");
 
     return `
-      <div class="historyItem card">
-        <div>
-          <strong>${esc(title)}</strong>
-          <div class="muted">${esc(e.date || "")}</div>
-          <small>${detail}</small>
+      <div class="item">
+        <div class="itemTop">
+          <strong>${title}</strong>
+          <span class="xp">${entryXp(e)} XP</span>
         </div>
-        <div class="historyActions">
-          <button onclick="editEntry(${Number(e.id)})">✏️</button>
-          <button onclick="deleteEntry(${Number(e.id)})">🗑️</button>
+        <small>${esc(e.date || "")}</small>
+        <div>${detail}</div>
+        <div class="actions">
+          <button class="secondary" onclick="editEntry(${Number(e.id)})">✏️ Datum</button>
+          <button class="danger" onclick="deleteEntry(${Number(e.id)})">🗑️ Löschen</button>
         </div>
       </div>
     `;
@@ -1097,11 +1099,11 @@ function editEntry(id) {
   const entry = data.entries.find(e => Number(e.id) === Number(id));
   if (!entry) return;
 
-  const newDate = prompt("Datum ändern (JJJJ-MM-TT):", entry.date || today());
+  const newDate = prompt("Neues Datum (JJJJ-MM-TT):", entry.date || today());
   if (!newDate) return;
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
-    alert("Bitte ein gültiges Datum im Format JJJJ-MM-TT eingeben.");
+    alert("Bitte ein gültiges Datum eingeben.");
     return;
   }
 
@@ -1119,9 +1121,7 @@ function deleteEntry(id) {
 }
 
 function resetProgress() {
-  if (!confirm("Wirklich deinen gesamten Fortschritt zurücksetzen? Das kann nicht rückgängig gemacht werden.")) {
-    return;
-  }
+  if (!confirm("Wirklich den gesamten Spielstand zurücksetzen?")) return;
 
   data = {
     entries: [],
@@ -1137,70 +1137,58 @@ function resetProgress() {
   alert("Dein Abenteuer beginnt von vorn.");
 }
 
-// ------------------------------------------
-// HAUPT-RENDERING
-// ------------------------------------------
-
-function setText(id, value) {
-  if ($(id)) $(id).textContent = value;
-}
+// -----------------------------
+// HAUPTANZEIGE
+// -----------------------------
 
 function render() {
   checkQuests();
 
   const t = totals();
-  const levelXp = xpIntoLevel(t.xp);
-  const progress = levelXp;
+  const progress = t.xp % 100;
 
-  setText("level", t.level);
-  setText("rank", rankFor(t.level));
-  setText("totalXp", t.xp.toLocaleString("de-DE"));
-  setText("nextXp", 100 - progress);
-  setText("streak", t.streak);
-  setText("workouts", t.workouts);
-  setText("todayXp", data.entries
+  const put = (id, value) => {
+    if ($(id)) $(id).textContent = value;
+  };
+
+  put("level", t.level);
+  put("rank", t.level >= 100 ? "Unsterblicher Kriegsgott" :
+    t.level >= 50 ? "Göttlicher Krieger" :
+    t.level >= 20 ? "Champion" :
+    t.level >= 10 ? "Veteran" : "Anfänger");
+
+  put("totalXp", t.xp.toLocaleString("de-DE"));
+  put("nextXp", `Noch ${100 - progress} XP bis Level ${t.level + 1}`);
+  put("xpProgress", `${progress} / 100 XP`);
+  put("streak", t.streak);
+  put("workouts", t.workouts);
+  put("weekDays", `${t.week}/3`);
+  put("todayXp", data.entries
     .filter(e => e.date === today())
     .reduce((sum, e) => sum + entryXp(e), 0)
     .toLocaleString("de-DE"));
-  setText("homeSteps", stepTotal().toLocaleString("de-DE"));
-  setText("homeStepXp", stepXp(stepTotal()));
-  setText("profileXp", t.xp.toLocaleString("de-DE"));
-  setText("profileLevel", t.level);
-  setText("profileWorkouts", t.workouts);
-  setText("profileDays", t.days);
+
+  put("homeSteps", stepTotal().toLocaleString("de-DE"));
+  put("homeStepXp", `${stepXp(stepTotal())} XP durch Schritte`);
+  put("profileXp", t.xp.toLocaleString("de-DE"));
+  put("profileLevel", t.level);
+  put("profileWorkouts", t.workouts);
+  put("profileDays", t.days);
 
   if ($("xpBar")) $("xpBar").style.width = progress + "%";
-  if ($("xpProgress")) $("xpProgress").textContent = `${progress} / 100 XP`;
-
-  const weekBar = $("weekBar");
-  if (weekBar) weekBar.style.width = Math.min(100, t.week / 3 * 100) + "%";
-  setText("weekText", `${t.week} von 3 Trainingstagen`);
-
-  const weekDays = $("weekDays");
-  if (weekDays) {
-    const start = new Date(weekKey() + "T12:00:00");
-    weekDays.innerHTML = Array.from({ length: 7 }, (_, i) => {
-      const d = new Date(start);
-      d.setDate(start.getDate() + i);
-      const key = d.toISOString().slice(0, 10);
-      const done = data.entries.some(e => e.type === "workout" && e.date === key);
-      return `<span class="${done ? "done" : ""}">${["Mo","Di","Mi","Do","Fr","Sa","So"][i]}</span>`;
-    }).join("");
-  }
-
-  const recent = $("recentHome");
-  if (recent) {
-    const latest = [...data.entries].sort((a, b) =>
-      String(b.date).localeCompare(String(a.date))
-    )[0];
-
-    recent.textContent = latest
-      ? `${latest.type === "steps" ? "Schritte" : "Training"} – ${latest.date}`
-      : "Dein erstes Abenteuer wartet!";
-  }
+  if ($("weekBar")) $("weekBar").style.width = Math.min(100, t.week / 3 * 100) + "%";
+  put("weekText", `${t.week} von 3 Tagen`);
 
   if ($("stepDate") && !$("stepDate").value) $("stepDate").value = today();
   if ($("stepCount")) $("stepCount").value = stepTotal();
+
+  const recent = [...data.entries].sort((a, b) =>
+    String(b.date).localeCompare(String(a.date))
+  )[0];
+
+  put("recentHome", recent
+    ? `${recent.type === "steps" ? "Schritte" : "Training"} – ${recent.date}`
+    : "Dein erstes Abenteuer wartet!");
 
   renderWarrior();
   renderQuests();
@@ -1208,9 +1196,9 @@ function render() {
   renderHistory();
 }
 
-// ------------------------------------------
+// -----------------------------
 // START
-// ------------------------------------------
+// -----------------------------
 
 load();
 buildExercises();
