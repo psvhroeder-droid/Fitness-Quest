@@ -465,7 +465,12 @@ function entryXp(e){
  return xp;
 }
 
-function totalXp(){return data.entries.reduce((s,e)=>s+entryXp(e),0)}
+function totalXp(){
+ return data.entries.reduce((s,e)=>{
+  if(e.type==="steps")return s+stepXp(Number(e.steps||0));
+  return s+entryXp(e);
+ },0)+(data.questXp||0);
+}
 function days(){return [...new Set(data.entries.filter(e=>e.type==="workout").map(e=>e.date))].sort()}
 function weekDays(){
  const start=weekKey();
