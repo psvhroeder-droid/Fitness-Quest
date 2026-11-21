@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -21,7 +22,7 @@ body{
  margin:0;min-height:100vh;padding-bottom:100px;
  background:radial-gradient(ellipse at 50% -15%,#49303d 0%,transparent 48%),
  linear-gradient(180deg,#100c12,var(--bg) 55%);
- color:var(--text);font-family:system-ui,-apple-system,sans-serif;
+ color:var(--text);font-family:system-ui,-apple-system,sans-serif
 }
 header,main{max-width:850px;margin:auto}
 header{padding:25px 18px 18px}
@@ -36,12 +37,11 @@ button{
  border:1px solid #f0ce8a;border-radius:14px;padding:12px 17px;
  background:linear-gradient(135deg,var(--gold2),var(--gold));
  color:#21150e;font-weight:850;cursor:pointer;
- box-shadow:0 5px 16px #dcae5522;
- transition:transform .16s,filter .2s,box-shadow .2s;
+ box-shadow:0 5px 16px #dcae5522;transition:transform .16s,filter .2s
 }
 button:active{transform:scale(.97)}
-button:hover{filter:brightness(1.07);box-shadow:0 7px 20px #dcae5533}
-button:disabled{opacity:.45;cursor:not-allowed;filter:none;box-shadow:none;transform:none}
+button:hover{filter:brightness(1.07)}
+button:disabled{opacity:.45;cursor:not-allowed;filter:none;box-shadow:none}
 button.secondary{
  background:linear-gradient(135deg,#4a2c3d,#30202d);
  border-color:#80516a;color:#f8d9e5;box-shadow:none
@@ -68,11 +68,6 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
  background:radial-gradient(circle at 90% 10%,#e9a2bd18,transparent 35%),
  linear-gradient(135deg,#34232e,#1a141c 72%);
  border-color:#8c654d;position:relative;overflow:hidden
-}
-.hero:after{
- content:"";position:absolute;width:180px;height:180px;
- right:-75px;top:-85px;border-radius:50%;border:1px solid #e7bd7233;
- box-shadow:0 0 0 17px #e7bd7208,0 0 0 34px #e7bd7205;pointer-events:none
 }
 .heroTop{display:flex;justify-content:space-between;gap:12px;align-items:center}
 .level{font-size:46px;line-height:1.1;font-weight:950;color:var(--gold2)}
@@ -103,7 +98,7 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .badge{
  display:inline-block;background:#432c3a;color:var(--pink2);
  border:1px solid #765064;border-radius:20px;
- padding:4px 9px;font-size:11px;font-weight:800
+ padding:4px 9px;font-size:11px;font-weight:800;margin:2px
 }
 .xp{color:var(--gold2);font-weight:850}
 .exercise{
@@ -114,11 +109,9 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .planGrid{display:grid;grid-template-columns:1fr;gap:9px}
 .planOption{
  background:linear-gradient(145deg,#2b202a,#1b151d);
- border:1px solid #624354;border-radius:16px;padding:15px;
- transition:border-color .2s,transform .2s
+ border:1px solid #624354;border-radius:16px;padding:15px
 }
-.planOption:active{transform:scale(.99)}
-.planOption p{font-size:12px;color:var(--muted);min-height:0;margin:8px 0}
+.planOption p{font-size:12px;color:var(--muted);margin:8px 0}
 .planControls{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .planControls label{font-size:11px;margin:0 0 3px}
 .planControls select{margin:3px 0 8px;padding:10px 9px;font-size:13px}
@@ -127,18 +120,15 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
  background:#100d12;border:1px solid #493442;border-radius:13px
 }
 .planPreview .item{padding:8px 0}
-.planPreview .item:last-child{border:0}
 .planPreviewTitle{font-size:12px;color:var(--gold2);font-weight:800;margin-bottom:4px}
-.notice{
- background:#253027;border:1px solid #58745c;
- border-radius:14px;padding:13px;color:#d6f0d8
-}
+.notice{background:#253027;border:1px solid #58745c;border-radius:14px;padding:13px;color:#d6f0d8}
 .questCard{
  background:linear-gradient(135deg,#30212c,#1a141c);
  border:1px solid #654455;border-radius:16px;padding:14px;margin:10px 0
 }
 .questCard.done{border-color:#9c8051}
 .questReward{color:var(--gold2);font-weight:850}
+.questType{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--pink);font-weight:850}
 .achievement{
  display:flex;align-items:center;gap:12px;
  padding:12px 0;border-bottom:1px solid var(--line)
@@ -163,7 +153,7 @@ nav button:hover{box-shadow:none}
 nav button span{display:block;font-size:20px;margin-bottom:3px}
 nav button.active{
  color:var(--gold2);background:linear-gradient(145deg,#392532,#251923);
- border:1px solid #765064;box-shadow:0 3px 14px #e9a2bd18
+ border:1px solid #765064
 }
 #dialogLayer{
  display:none;position:fixed;inset:0;z-index:20;background:#050308d9;
@@ -283,10 +273,18 @@ nav button.active{
 
 <section id="questsSection" class="section">
  <h2>📜 Quest-Tafel</h2>
- <p class="muted">Jede Herausforderung bringt dich deinem nächsten Level näher.</p>
+ <p class="muted">Tägliche Aufgaben, Wochenziele und Herausforderungen für deine ganze Fitness-Reise.</p>
  <div class="card">
-  <h3>🎯 Deine Aufgaben</h3>
-  <div id="questList"></div>
+  <h3>🌞 Tägliche Quests</h3>
+  <div id="dailyQuestList"></div>
+ </div>
+ <div class="card">
+  <h3>🗓️ Wochenquests</h3>
+  <div id="weeklyQuestList"></div>
+ </div>
+ <div class="card">
+  <h3>♾️ Langzeit-Quests</h3>
+  <div id="longQuestList"></div>
  </div>
  <div class="card">
   <h3>🏅 Wochenfortschritt</h3>
@@ -297,7 +295,10 @@ nav button.active{
 
 <section id="achievements" class="section">
  <h2>🏆 Ruhmeshalle</h2>
- <div class="card"><div id="achievementList"></div></div>
+ <div class="card">
+  <div id="achievementSummary" class="muted"></div>
+  <div id="achievementList"></div>
+ </div>
 </section>
 
 <section id="profile" class="section">
@@ -315,8 +316,15 @@ nav button.active{
   <div id="historyList"></div>
  </div>
  <div class="card">
+  <h3>💾 Spielstand-Sicherung</h3>
+  <p class="muted">Dein Spielstand wird auf diesem Gerät gespeichert und zusätzlich automatisch gesichert.</p>
+  <div id="backupStatus" class="notice">Automatische Sicherung aktiv.</div>
+  <p><button class="secondary" onclick="exportSave()">Spielstand exportieren</button></p>
+  <p><button class="secondary" onclick="importSave()">Sicherung importieren</button></p>
+ </div>
+ <div class="card">
   <h3>⚠️ Spielstand</h3>
-  <p class="muted">Dein Fortschritt wird auf diesem Gerät gespeichert.</p>
+  <p class="muted">Hier kannst du deinen Fortschritt bewusst zurücksetzen.</p>
   <button class="danger" onclick="resetProgress()">Spielstand zurücksetzen</button>
  </div>
 </section>
@@ -345,6 +353,8 @@ nav button.active{
 "use strict";
 
 const SAVE_KEY="fitnessQuestSaveV4";
+const BACKUP_KEY="fitnessQuestBackupV1";
+const BACKUP_DATE_KEY="fitnessQuestBackupDateV1";
 
 const EXERCISES=[
  {id:"pull",name:"Klimmzüge",xp:10,unit:"Wiederholungen"},
@@ -416,23 +426,59 @@ const PLANS=[
  ]}
 ];
 
-let data={entries:[],weekRewards:0};
+let data={
+ entries:[],weekRewards:0,questXp:0,
+ claimedQuests:[],claimedWeeks:[],claimedQuestIds:[]
+};
 let dialogCallback=null;
 let activePlan=null;
 
 const $=id=>document.getElementById(id);
 const today=()=>new Date().toISOString().slice(0,10);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>Number(n||0).toLocaleString("de-DE");
 
 function load(){
+ let saved=null;
  try{
-  const saved=JSON.parse(localStorage.getItem(SAVE_KEY)||"null");
-  if(saved&&Array.isArray(saved.entries))data={...data,...saved};
- }catch(e){console.warn(e)}
+  saved=JSON.parse(localStorage.getItem(SAVE_KEY)||"null");
+ }catch(e){console.warn("Spielstand konnte nicht gelesen werden",e)}
+
+ if(saved&&Array.isArray(saved.entries)){
+  data={...data,...saved};
+ }else{
+  try{
+   const backup=JSON.parse(localStorage.getItem(BACKUP_KEY)||"null");
+   if(backup&&Array.isArray(backup.entries)){
+    data={...data,...backup};
+    console.warn("Spielstand aus Sicherung geladen");
+   }
+  }catch(e){console.warn(e)}
+ }
+
  if(!Array.isArray(data.entries))data.entries=[];
+ if(!Array.isArray(data.claimedQuests))data.claimedQuests=[];
+ if(!Array.isArray(data.claimedWeeks))data.claimedWeeks=[];
+ if(!Array.isArray(data.claimedQuestIds))data.claimedQuestIds=[];
+ data.questXp=Number(data.questXp||0);
+ data.weekRewards=Number(data.weekRewards||0);
 }
 
-function save(){localStorage.setItem(SAVE_KEY,JSON.stringify(data))}
+function save(){
+ try{
+  const old=localStorage.getItem(SAVE_KEY);
+  if(old){
+   localStorage.setItem(BACKUP_KEY,old);
+   localStorage.setItem(BACKUP_DATE_KEY,new Date().toISOString());
+  }
+  localStorage.setItem(SAVE_KEY,JSON.stringify(data));
+  if(!$("backupStatus"))return;
+  $("backupStatus").textContent="Automatische Sicherung aktiv · "+new Date().toLocaleString("de-DE");
+ }catch(e){
+  console.error("Speichern fehlgeschlagen",e);
+  if($("backupStatus"))$("backupStatus").textContent="Achtung: Die Sicherung konnte nicht gespeichert werden. Bitte exportiere deinen Spielstand.";
+ }
+}
 
 function weekKey(date=today()){
  const d=new Date(date+"T12:00:00");
@@ -440,20 +486,33 @@ function weekKey(date=today()){
  return d.toISOString().slice(0,10);
 }
 
-function xpForLevel(level){return Math.floor(100*Math.pow(Math.max(0,level-1),1.35))}
+function xpForLevel(level){
+ return Math.floor(100*Math.pow(Math.max(0,level-1),1.35));
+}
 
 function levelFor(xp){
- let level=1;
- while(xp>=xpForLevel(level+1))level++;
- return level;
+ let low=1,high=2;
+ while(xp>=xpForLevel(high)){
+  low=high;
+  high*=2;
+ }
+ while(low+1<high){
+  const mid=Math.floor((low+high)/2);
+  if(xp>=xpForLevel(mid))low=mid;
+  else high=mid;
+ }
+ return low;
 }
 
 function rankFor(level){
- if(level>=100)return "Legende";
- if(level>=50)return "Meister";
- if(level>=25)return "Veteran";
- if(level>=10)return "Fortgeschritten";
- return "Anfänger";
+ if(level>=1000)return "🌌 Transzendenz";
+ if(level>=500)return "👑 Ewige Legende";
+ if(level>=200)return "💎 Mythischer Held";
+ if(level>=100)return "🔥 Unsterbliche Legende";
+ if(level>=50)return "⚔️ Meister";
+ if(level>=25)return "🏆 Veteran";
+ if(level>=10)return "🛡️ Fortgeschritten";
+ return "🌱 Anfänger";
 }
 
 function entryXp(e){
@@ -465,18 +524,25 @@ function entryXp(e){
  return xp;
 }
 
+function stepXp(n){return Math.floor(n/1000)*5}
+
 function totalXp(){
- return data.entries.reduce((s,e)=>{
-  if(e.type==="steps")return s+stepXp(Number(e.steps||0));
-  return s+entryXp(e);
- },0)+(data.questXp||0);
+ const workoutXp=data.entries
+  .filter(e=>e.type==="workout")
+  .reduce((s,e)=>s+entryXp(e),0);
+ const stepsXp=data.entries
+  .filter(e=>e.type==="steps")
+  .reduce((s,e)=>s+stepXp(Number(e.steps||0)),0);
+ return workoutXp+stepsXp+Number(data.questXp||0);
 }
-function days(){return [...new Set(data.entries.filter(e=>e.type==="workout").map(e=>e.date))].sort()}
+
+function days(){
+ return [...new Set(data.entries.filter(e=>e.type==="workout").map(e=>e.date))].sort();
+}
 function weekDays(){
  const start=weekKey();
  return days().filter(d=>d>=start&&d<=today()).length;
 }
-
 function streak(){
  const set=new Set(days());let d=new Date(),n=0;
  if(!set.has(today()))d.setDate(d.getDate()-1);
@@ -485,24 +551,37 @@ function streak(){
  }
  return n;
 }
-
 function stepsOn(date=today()){
- return data.entries.filter(e=>e.type==="steps"&&e.date===date).reduce((s,e)=>s+Number(e.steps||0),0);
+ return data.entries.filter(e=>e.type==="steps"&&e.date===date)
+  .reduce((s,e)=>s+Number(e.steps||0),0);
 }
-
-function stepXp(n){return Math.floor(n/1000)*5}
-
+function totalSteps(){
+ return data.entries.filter(e=>e.type==="steps")
+  .reduce((s,e)=>s+Number(e.steps||0),0);
+}
+function workoutEntries(){
+ return data.entries.filter(e=>e.type==="workout");
+}
+function totalExerciseAmount(){
+ return workoutEntries().reduce((sum,e)=>
+  sum+(e.items||[]).reduce((s,i)=>s+Number(i.amount||0),0),0);
+}
+function exerciseAmount(id){
+ return workoutEntries().reduce((sum,e)=>
+  sum+(e.items||[]).filter(i=>i.id===id)
+   .reduce((s,i)=>s+Number(i.amount||0),0),0);
+}
 function totals(){
  const xp=totalXp();
  return {
   xp,level:levelFor(xp),
-  workouts:data.entries.filter(e=>e.type==="workout").length,
+  workouts:workoutEntries().length,
   days:days().length,week:weekDays(),streak:streak(),
-  steps:data.entries.filter(e=>e.type==="steps").reduce((s,e)=>s+Number(e.steps||0),0)
+  steps:totalSteps()
  };
 }
 
-/* Einheitliche App-Meldungen statt Browser-Popups */
+/* Dialoge */
 
 function openDialog(title,message,buttons,input){
  $("dialogTitle").textContent=title;
@@ -517,40 +596,33 @@ function openDialog(title,message,buttons,input){
  dialogCallback=buttons.map(b=>b.action||null);
  if(input)setTimeout(()=>$("dialogInput").focus(),80);
 }
-
 function dialogAction(index){
  const action=dialogCallback&&dialogCallback[index];
  const value=$("dialogInput")?$("dialogInput").value:null;
  closeDialog();
  if(action)action(value);
 }
-
 function closeDialog(){
  $("dialogLayer").classList.remove("open");
  $("dialogLayer").setAttribute("aria-hidden","true");
  dialogCallback=null;
 }
-
 function showNotice(message,title="Alles klar!"){openDialog(title,message,[{text:"Weiter"}])}
-
 function showConfirm(message,onYes,title="Bist du sicher?"){
  openDialog(title,message,[
   {text:"Abbrechen",secondary:true},
   {text:"Bestätigen",action:onYes}
  ]);
 }
-
 function showInput(message,value,onSave,title="Eintrag bearbeiten"){
  openDialog(title,message,[
   {text:"Abbrechen",secondary:true},
   {text:"Speichern",action:onSave}
  ],{label:"Neues Datum (JJJJ-MM-TT)",type:"date",value});
 }
-
 $("dialogLayer").addEventListener("click",e=>{
  if(e.target===$("dialogLayer"))closeDialog();
 });
-
 document.addEventListener("keydown",e=>{
  if(e.key==="Escape"&&$("dialogLayer").classList.contains("open"))closeDialog();
 });
@@ -560,7 +632,10 @@ function showSection(id){
  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.section===id));
  if(id==="profile")renderHistory();
  if(id==="questsSection")renderQuests();
+ if(id==="achievements")renderAchievements();
 }
+
+/* Übungen */
 
 function buildExercises(){
  $("exerciseList").innerHTML=EXERCISES.map(e=>`
@@ -570,12 +645,11 @@ function buildExercises(){
  </div>`).join("");
 }
 
-/* Trainingspläne: kompakte Auswahl und versteckte Vorschau */
+/* Trainingspläne */
 
 function buildWorkouts(){
- $("workoutList").innerHTML=`
- <div id="activePlanSession"></div>
- `+PLANS.map((p,i)=>`
+ $("workoutList").innerHTML=`<div id="activePlanSession"></div>`+
+ PLANS.map((p,i)=>`
  <div class="card planOption">
   <h3>${p.icon} ${esc(p.name)}</h3>
   <div class="planControls">
@@ -597,296 +671,269 @@ function buildWorkouts(){
   <div id="planPreview_${i}" hidden></div>
   <button onclick="startPlan(${i})">Plan starten</button>
  </div>`).join("");
-
  renderPlanSession();
 }
-
-/* Vorschau erst zeigen, wenn ein Dropdown geöffnet wird */
-
 function showPlanPreview(i){
  const preview=$("planPreview_"+i);
  if(preview)preview.hidden=false;
  updatePlanPreview(i);
 }
-
 function updatePlanPreview(i){
  const preview=$("planPreview_"+i);
  if(!preview)return;
-
  const difficulty=Number($("difficulty_"+i).value);
  const rounds=Number($("rounds_"+i).value);
- const items=PLANS[i].sets[difficulty];
-
  preview.hidden=false;
  preview.className="planPreview";
  preview.innerHTML=`
   <div class="planPreviewTitle">Deine Übungen · ${rounds} ${rounds===1?"Satz":"Sätze"}</div>
-  ${items.map(([id,amount])=>{
+  ${PLANS[i].sets[difficulty].map(([id,amount])=>{
    const ex=EXERCISES.find(e=>e.id===id);
    if(!ex)return "";
-   return `<div class="item">
-    <strong>${esc(ex.name)}</strong><br>
-    <small>${rounds} × ${amount} ${esc(ex.unit)}</small>
-   </div>`;
-  }).join("")}
- `;
+   return `<div class="item"><strong>${esc(ex.name)}</strong><br>
+    <small>${rounds} × ${amount} ${esc(ex.unit)} = ${fmt(amount*rounds)}</small></div>`;
+  }).join("")}`;
 }
-
-/* Einen Plan starten */
-
 function startPlan(i){
  if(activePlan){
-  showNotice(
-   "Bitte schließe zuerst deinen aktuellen Trainingsplan ab oder brich ihn ab.",
-   "Training läuft bereits"
-  );
+  showNotice("Bitte schließe zuerst deinen aktuellen Trainingsplan ab oder brich ihn ab.","Training läuft bereits");
   return;
  }
-
  const p=PLANS[i];
  const difficulty=Number($("difficulty_"+i).value);
  const rounds=Number($("rounds_"+i).value);
-
  activePlan={
-  planIndex:i,
-  name:p.name,
-  difficulty:difficulty,
-  rounds:rounds,
+  planIndex:i,name:p.name,difficulty,rounds,
   bonus:p.bonus?.[difficulty]||0,
-  items:p.sets[difficulty].map(([id,amount])=>({
-   id,amount,done:false
-  }))
+  items:p.sets[difficulty].map(([id,amount])=>({id,amount,done:false}))
  };
-
  renderPlanSession();
-
  const area=$("activePlanSession");
  if(area)area.scrollIntoView({behavior:"smooth",block:"start"});
 }
-
-/* Laufenden Trainingsplan anzeigen */
-
 function renderPlanSession(){
  const area=$("activePlanSession");
  if(!area)return;
-
- if(!activePlan){
-  area.innerHTML="";
-  return;
- }
-
+ if(!activePlan){area.innerHTML="";return}
  const done=activePlan.items.filter(x=>x.done).length;
  const total=activePlan.items.length;
  const finished=done===total;
-
  area.innerHTML=`
  <div class="card hero">
   <h2>🏋️ ${esc(activePlan.name)}</h2>
   <div class="badge">${["Anfänger","Fortgeschritten","Profi"][activePlan.difficulty]}</div>
   <div class="badge">${activePlan.rounds} ${activePlan.rounds===1?"Satz":"Sätze"}</div>
-
   <p><strong>Dein Trainingsfortschritt</strong></p>
   <div class="progress"><span style="width:${done/total*100}%"></span></div>
   <small>${done} von ${total} Übungen erledigt</small>
-
   <h3 style="margin-top:20px">Deine Aufgaben</h3>
-
   ${activePlan.items.map((item,i)=>{
    const ex=EXERCISES.find(e=>e.id===item.id);
-   return `
-    <label style="
-     display:flex;align-items:center;gap:12px;padding:13px 0;
-     border-bottom:1px solid var(--line);color:var(--text);
-     font-size:14px;opacity:${item.done?0.65:1};
-    ">
-     <input type="checkbox"
-      style="width:22px;height:22px;margin:0;flex-shrink:0"
-      ${item.done?"checked":""}
-      onchange="togglePlanExercise(${i},this.checked)">
-     <span style="${item.done?"text-decoration:line-through":""}">
-      <strong>${esc(ex.name)}</strong><br>
-      <small>${activePlan.rounds} × ${item.amount} ${esc(ex.unit)}</small>
-     </span>
-    </label>
-   `;
+   return `<label style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);color:var(--text);font-size:14px;opacity:${item.done?0.65:1}">
+    <input type="checkbox" style="width:22px;height:22px;margin:0;flex-shrink:0" ${item.done?"checked":""} onchange="togglePlanExercise(${i},this.checked)">
+    <span style="${item.done?"text-decoration:line-through":""}">
+     <strong>${esc(ex.name)}</strong><br><small>${activePlan.rounds} × ${item.amount} ${esc(ex.unit)} = ${fmt(item.amount*activePlan.rounds)}</small>
+    </span></label>`;
   }).join("")}
-
   <p class="xp">Belohnung: +${activePlan.bonus} Bonus-XP</p>
-
-  <button onclick="completePlan()" ${finished?"":"disabled"}>
-   Training abschließen
-  </button>
-
+  <button onclick="completePlan()" ${finished?"":"disabled"}>Training abschließen</button>
   <p><button class="secondary" onclick="cancelPlan()">Plan abbrechen</button></p>
- </div>
- `;
+ </div>`;
 }
-
-/* Einzelne Übungen abhaken */
-
 function togglePlanExercise(index,checked){
  if(!activePlan)return;
  activePlan.items[index].done=checked;
  renderPlanSession();
 }
-
-/* Plan erst nach allen Übungen speichern */
-
 function completePlan(){
  if(!activePlan)return;
-
- const finished=activePlan.items.every(item=>item.done);
- if(!finished){
+ if(!activePlan.items.every(item=>item.done)){
   showNotice("Bitte erledige zuerst alle Übungen.","Training noch nicht fertig");
   return;
  }
-
  const rounds=activePlan.rounds;
-
  data.entries.push({
-  id:Date.now(),
-  type:"workout",
-  date:today(),
-  plan:activePlan.name,
-  items:activePlan.items.map(item=>({
-   id:item.id,
-   amount:item.amount*rounds
-  })),
+  id:Date.now(),type:"workout",date:today(),plan:activePlan.name,
+  items:activePlan.items.map(item=>({id:item.id,amount:item.amount*rounds})),
   bonus:activePlan.bonus
  });
-
  activePlan=null;
- save();
- render();
- renderPlanSession();
-
- showNotice(
-  "Du hast alle Übungen geschafft! Dein Training wurde gespeichert und deine XP wurden gutgeschrieben. 💪",
-  "Training abgeschlossen!"
- );
+ save();render();renderPlanSession();
+ showNotice("Du hast alle Übungen geschafft! Dein Training wurde gespeichert und deine XP wurden gutgeschrieben. 💪","Training abgeschlossen!");
 }
-
-/* Laufenden Plan abbrechen */
-
 function cancelPlan(){
  if(!activePlan)return;
-
- showConfirm(
-  "Möchtest du diesen Trainingsplan wirklich abbrechen?",
-  ()=>{
-   activePlan=null;
-   renderPlanSession();
-   showNotice("Dein Trainingsplan wurde abgebrochen.","Plan beendet");
-  },
-  "Training abbrechen"
- );
+ showConfirm("Möchtest du diesen Trainingsplan wirklich abbrechen?",()=>{
+  activePlan=null;renderPlanSession();
+  showNotice("Dein Trainingsplan wurde abgebrochen.","Plan beendet");
+ },"Training abbrechen");
 }
+
+/* Training speichern */
 
 function saveExercises(){
  const items=EXERCISES.map(e=>({
   id:e.id,amount:Number($("ex_"+e.id).value||0)
  })).filter(i=>i.amount>0);
-
  if(!items.length){
   showNotice("Bitte trage zuerst mindestens eine Übung ein.","Noch kein Training");
   return;
  }
-
  data.entries.push({id:Date.now(),type:"workout",date:today(),items});
- save();
- render();
+ save();render();
  EXERCISES.forEach(e=>$("ex_"+e.id).value=0);
  showNotice("Dein Training wurde gespeichert. Stark gemacht! 💪","Training gespeichert");
 }
-
 function saveSteps(){
  const date=$("stepDate").value||today();
- const steps=Math.max(0,Number($("stepCount").value||0));
-
+ const steps=Math.min(100000,Math.max(0,Number($("stepCount").value||0)));
  if(!steps){
   showNotice("Bitte gib eine gültige Schrittzahl ein.","Keine Schritte eingetragen");
   return;
  }
-
  const old=data.entries.find(e=>e.type==="steps"&&e.date===date);
  if(old)old.steps=steps;
  else data.entries.push({id:Date.now(),type:"steps",date,steps});
-
- save();
- render();
+ save();render();
  showNotice("Deine Schritte wurden gespeichert. Jeder Schritt zählt!","Schritte gespeichert");
 }
+
+/* Quest-System: alte Belohnungen bleiben erhalten */
 
 function checkQuests(){
  const day=today(),week=weekKey();
  data.claimedQuests=data.claimedQuests||[];
  data.claimedWeeks=data.claimedWeeks||[];
  let changed=false;
-
  if(data.entries.some(e=>e.type==="workout"&&e.date===day)&&!data.claimedQuests.includes(day)){
   data.claimedQuests.push(day);
   data.questXp=(data.questXp||0)+25;
   changed=true;
  }
-
  if(stepsOn(day)>=5000&&!data.claimedQuests.includes(day+"_steps")){
   data.claimedQuests.push(day+"_steps");
   data.questXp=(data.questXp||0)+20;
   changed=true;
  }
-
  if(weekDays()>=3&&!data.claimedWeeks.includes(week)){
   data.claimedWeeks.push(week);
   data.questXp=(data.questXp||0)+100;
   data.weekRewards=(data.weekRewards||0)+1;
   changed=true;
  }
-
  if(changed)save();
 }
 
+function questDefinitions(){
+ const d=today(),week=weekKey();
+ const todayWorkouts=workoutEntries().filter(e=>e.date===d);
+ const todayExerciseCount=todayWorkouts.reduce((s,e)=>s+(e.items||[]).length,0);
+ const todayAmount=todayWorkouts.reduce((s,e)=>s+(e.items||[]).reduce((n,x)=>n+Number(x.amount||0),0),0);
+ const weekEntries=workoutEntries().filter(e=>e.date>=week&&e.date<=d);
+ const weekAmount=weekEntries.reduce((s,e)=>s+(e.items||[]).reduce((n,x)=>n+Number(x.amount||0),0),0);
+
+ return {
+  daily:[
+   {id:"daily_workout_"+d,type:"Täglich",icon:"🏋️",name:"Trainingsstart",desc:"Schließe heute eine Trainingseinheit ab.",value:todayWorkouts.length,goal:1,xp:30},
+   {id:"daily_steps_"+d,type:"Täglich",icon:"👣",name:"Schritte sammeln",desc:"Erreiche heute 5.000 Schritte.",value:stepsOn(d),goal:5000,xp:25},
+   {id:"daily_variety_"+d,type:"Täglich",icon:"🎯",name:"Abwechslungsreich",desc:"Trainiere heute mindestens 3 verschiedene Übungen.",value:todayExerciseCount,goal:3,xp:25},
+   {id:"daily_volume_"+d,type:"Täglich",icon:"💪",name:"Fleißiger Kämpfer",desc:"Sammle heute 100 Wiederholungen oder Sekunden.",value:todayAmount,goal:100,xp:25}
+  ],
+  weekly:[
+   {id:"weekly_days_"+week,type:"Wöchentlich",icon:"⚔️",name:"Wochenkrieger",desc:"Trainiere an 5 verschiedenen Tagen dieser Woche.",value:weekDays(),goal:5,xp:150},
+   {id:"weekly_steps_"+week,type:"Wöchentlich",icon:"🥾",name:"Wanderlegende",desc:"Sammle diese Woche 25.000 Schritte.",value:data.entries.filter(e=>e.type==="steps"&&e.date>=week&&e.date<=d).reduce((s,e)=>s+Number(e.steps||0),0),goal:25000,xp:120},
+   {id:"weekly_volume_"+week,type:"Wöchentlich",icon:"🔥",name:"Volumen-Meister",desc:"Sammle diese Woche 500 Wiederholungen oder Sekunden.",value:weekAmount,goal:500,xp:120}
+  ],
+  long:[
+   {id:"long_workouts_10",type:"Langzeit",icon:"🏋️",name:"Trainingsanfänger",desc:"Schließe insgesamt 10 Trainingseinheiten ab.",value:workoutEntries().length,goal:10,xp:50},
+   {id:"long_workouts_50",type:"Langzeit",icon:"🥉",name:"Eiserner Wille",desc:"Schließe insgesamt 50 Trainingseinheiten ab.",value:workoutEntries().length,goal:50,xp:150},
+   {id:"long_workouts_100",type:"Langzeit",icon:"🥈",name:"Unaufhaltsam",desc:"Schließe insgesamt 100 Trainingseinheiten ab.",value:workoutEntries().length,goal:100,xp:300},
+   {id:"long_workouts_250",type:"Langzeit",icon:"🥇",name:"Trainingsmaschine",desc:"Schließe insgesamt 250 Trainingseinheiten ab.",value:workoutEntries().length,goal:250,xp:750},
+   {id:"long_steps_100k",type:"Langzeit",icon:"👣",name:"Schrittemeister",desc:"Sammle insgesamt 100.000 Schritte.",value:totalSteps(),goal:100000,xp:200},
+   {id:"long_steps_500k",type:"Langzeit",icon:"🥾",name:"Wegbereiter",desc:"Sammle insgesamt 500.000 Schritte.",value:totalSteps(),goal:500000,xp:500},
+   {id:"long_steps_1m",type:"Langzeit",icon:"🌍",name:"Weltentdecker",desc:"Sammle insgesamt 1.000.000 Schritte.",value:totalSteps(),goal:1000000,xp:1000},
+   {id:"long_volume_1000",type:"Langzeit",icon:"💪",name:"Wiederholungsheld",desc:"Sammle insgesamt 1.000 Wiederholungen oder Sekunden.",value:totalExerciseAmount(),goal:1000,xp:200},
+   {id:"long_volume_10000",type:"Langzeit",icon:"⚡",name:"Kraftpaket",desc:"Sammle insgesamt 10.000 Wiederholungen oder Sekunden.",value:totalExerciseAmount(),goal:10000,xp:600},
+   {id:"long_streak_7",type:"Langzeit",icon:"🔥",name:"Serienkrieger",desc:"Erreiche 7 Trainingstage in Folge.",value:streak(),goal:7,xp:100},
+   {id:"long_streak_30",type:"Langzeit",icon:"🌟",name:"Monatslegende",desc:"Erreiche 30 Trainingstage in Folge.",value:streak(),goal:30,xp:500}
+  ]
+ };
+}
+
+function claimQuest(id){
+ const all=questDefinitions();
+ const quest=[...all.daily,...all.weekly,...all.long].find(q=>q.id===id);
+ if(!quest||quest.value<quest.goal||data.claimedQuestIds.includes(id))return;
+ data.claimedQuestIds.push(id);
+ data.questXp=(data.questXp||0)+quest.xp;
+ save();render();
+ showNotice("Du hast die Quest abgeschlossen und "+quest.xp+" XP erhalten!","Quest-Belohnung erhalten 🎉");
+}
+
+function questCard(q){
+ const done=q.value>=q.goal;
+ const claimed=data.claimedQuestIds.includes(q.id);
+ const pct=Math.min(100,q.value/q.goal*100);
+ return `<div class="questCard ${done?"done":""}">
+  <div class="questType">${q.type}</div>
+  <strong>${q.icon} ${esc(q.name)}</strong>
+  <p class="muted">${esc(q.desc)}</p>
+  <div class="progress"><span style="width:${pct}%"></span></div>
+  <small>${fmt(Math.min(q.value,q.goal))} / ${fmt(q.goal)} · <span class="questReward">+${q.xp} XP</span></small>
+  ${claimed?'<p class="questReward">✓ Belohnung eingesammelt</p>':
+   done?`<p><button onclick="claimQuest('${q.id}')">Belohnung abholen</button></p>`:
+   ""}
+ </div>`;
+}
+
 function renderQuests(){
- const d=today(),w=weekDays(),s=stepsOn();
- const q=[
-  ["🏋️","Trainingsstart","Absolviere heute eine Trainingseinheit.",data.entries.some(e=>e.type==="workout"&&e.date===d)?1:0,1,25],
-  ["👣","Langer Marsch","Erreiche heute 5.000 Schritte.",Math.min(s,5000),5000,20],
-  ["🎯","Wochenquest","Trainiere an drei verschiedenen Tagen.",Math.min(w,3),3,100]
- ];
-
- const html=q.map(x=>`
- <div class="questCard ${x[3]>=x[4]?"done":""}">
-  <strong>${x[0]} ${x[1]}</strong>
-  <p class="muted">${x[2]}</p>
-  <div class="progress"><span style="width:${x[3]/x[4]*100}%"></span></div>
-  <small>${x[3]} / ${x[4]} · <span class="questReward">+${x[5]} XP</span></small>
- </div>`).join("");
-
- $("questList").innerHTML=html;
- $("homeQuests").innerHTML=html;
+ const q=questDefinitions();
+ $("dailyQuestList").innerHTML=q.daily.map(questCard).join("");
+ $("weeklyQuestList").innerHTML=q.weekly.map(questCard).join("");
+ $("longQuestList").innerHTML=q.long.map(questCard).join("");
+ const w=weekDays();
  $("questWeekBar").style.width=Math.min(100,w/3*100)+"%";
  $("questWeekText").textContent=`${w} von 3 Trainingstagen`;
+ $("homeQuests").innerHTML=[...q.daily,...q.weekly.slice(0,1)].map(questCard).join("");
+}
+
+/* Ruhmeshalle: Level-Meilensteine wachsen weit über Level 25 hinaus */
+
+function achievementList(){
+ const t=totals();
+ const levels=[5,10,25,50,75,100,150,200,300,500,750,1000,1500,2000,5000,10000];
+ const workouts=[1,5,10,25,50,100,250,500,1000,2500,5000];
+ const steps=[10000,50000,100000,250000,500000,1000000,2500000,5000000,10000000];
+ const volume=[100,500,1000,5000,10000,25000,50000,100000];
+ const streaks=[3,7,14,30,60,100,180,365];
+
+ const a=[];
+ levels.forEach(n=>a.push(["👑","Level "+fmt(n),"Erreiche Level "+fmt(n)+".",t.level>=n]));
+ workouts.forEach(n=>a.push(["🏋️",fmt(n)+" Trainings","Schließe "+fmt(n)+" Trainingseinheiten ab.",t.workouts>=n]));
+ steps.forEach(n=>a.push(["👣",fmt(n)+" Schritte","Sammle insgesamt "+fmt(n)+" Schritte.",t.steps>=n]));
+ volume.forEach(n=>a.push(["💪",fmt(n)+" Trainingsumfang","Sammle "+fmt(n)+" Wiederholungen oder Sekunden.",totalExerciseAmount()>=n]));
+ streaks.forEach(n=>a.push(["🔥",n+" Tage Serie","Trainiere "+n+" Tage in Folge.",t.streak>=n]));
+ a.push(
+  ["🎯","Wochenkrieger","Schließe eine Wochenquest ab.",(data.weekRewards||0)>0],
+  ["⚔️","Quest-Sammler","Sammle 10 Quest-Belohnungen.",data.claimedQuestIds.length>=10],
+  ["🌟","Quest-Legende","Sammle 50 Quest-Belohnungen.",data.claimedQuestIds.length>=50]
+ );
+ return a;
 }
 
 function renderAchievements(){
- const t=totals();
- const a=[
-  ["🥉","Erster Schritt","Sammle 10 XP.",t.xp>=10],
-  ["🏋️","Trainingsstart","Schließe ein Training ab.",t.workouts>=1],
-  ["⭐","Level 5","Erreiche Level 5.",t.level>=5],
-  ["🏅","Level 10","Erreiche Level 10.",t.level>=10],
-  ["👑","Level 25","Erreiche Level 25.",t.level>=25],
-  ["🔥","Serienkrieger","Erreiche 7 Trainingstage in Folge.",t.streak>=7],
-  ["👣","Schrittemeister","Sammle 50.000 Schritte.",t.steps>=50000],
-  ["🎯","Wochenkrieger","Schließe eine Wochenquest ab.",(data.weekRewards||0)>0]
- ];
-
+ const a=achievementList();
+ const unlocked=a.filter(x=>x[3]).length;
+ $("achievementSummary").textContent=`${unlocked} von ${a.length} Erfolgen freigeschaltet · Die Ruhmeshalle wächst mit deinem Fortschritt.`;
  $("achievementList").innerHTML=a.map(x=>`
- <div class="achievement ${x[3]?"":"locked"}">
-  <span class="achievementIcon">${x[0]}</span>
-  <div style="flex:1"><strong>${x[1]}</strong><br><small>${x[2]}</small></div>
-  <strong>${x[3]?"✓":"🔒"}</strong>
- </div>`).join("");
+  <div class="achievement ${x[3]?"":"locked"}">
+   <span class="achievementIcon">${x[0]}</span>
+   <div style="flex:1"><strong>${esc(x[1])}</strong><br><small>${esc(x[2])}</small></div>
+   <strong>${x[3]?"✓":"🔒"}</strong>
+  </div>`).join("");
 }
+
+/* Historie */
 
 function renderHistory(){
  const list=[...data.entries].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
@@ -894,7 +941,7 @@ function renderHistory(){
  <div class="historyItem item">
   <div>
    <strong>${e.type==="steps"?"👣 Schritte":esc(e.plan||"🏋️ Training")}</strong><br>
-   <small>${esc(e.date)} · ${e.type==="steps"?Number(e.steps).toLocaleString("de-DE")+" Schritte":entryXp(e)+" XP"}</small>
+   <small>${esc(e.date)} · ${e.type==="steps"?fmt(e.steps)+" Schritte":entryXp(e)+" XP"}</small>
   </div>
   <div class="historyActions">
    <button class="secondary" onclick="editEntry(${e.id})">✏️</button>
@@ -906,17 +953,13 @@ function renderHistory(){
 function editEntry(id){
  const e=data.entries.find(x=>x.id===id);
  if(!e)return;
-
  showInput("Wähle ein neues Datum für diesen Eintrag.",e.date,value=>{
   if(value&&/^\d{4}-\d{2}-\d{2}$/.test(value)){
    e.date=value;save();render();
    showNotice("Das Datum wurde geändert.","Eintrag aktualisiert");
-  }else{
-   showNotice("Bitte gib ein gültiges Datum ein.","Datum nicht erkannt");
-  }
+  }else showNotice("Bitte gib ein gültiges Datum ein.","Datum nicht erkannt");
  });
 }
-
 function deleteEntry(id){
  showConfirm("Möchtest du diesen Eintrag wirklich löschen?",()=>{
   data.entries=data.entries.filter(e=>e.id!==id);
@@ -925,11 +968,50 @@ function deleteEntry(id){
  },"Eintrag löschen");
 }
 
+/* Spielstand sichern und übertragen */
+
+function exportSave(){
+ const content=JSON.stringify(data,null,2);
+ const blob=new Blob([content],{type:"application/json"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;a.download="fitness-quest-spielstand.json";
+ a.click();URL.revokeObjectURL(url);
+ showNotice("Dein Spielstand wurde als Datei exportiert. Bewahre diese Datei sicher auf.","Sicherung erstellt");
+}
+function importSave(){
+ openDialog("Spielstand importieren","Wähle deine zuvor exportierte Fitness-Quest-Sicherungsdatei aus.",[
+  {text:"Abbrechen",secondary:true},
+  {text:"Datei auswählen",action:()=>{
+   const input=document.createElement("input");
+   input.type="file";input.accept=".json,application/json";
+   input.onchange=()=>{
+    const file=input.files&&input.files[0];
+    if(!file)return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+     try{
+      const imported=JSON.parse(reader.result);
+      if(!imported||!Array.isArray(imported.entries))throw new Error("Ungültige Datei");
+      showConfirm("Möchtest du den aktuellen Spielstand durch die Sicherung ersetzen?",()=>{
+       data={...data,...imported};
+       save();render();
+       showNotice("Deine Sicherung wurde geladen.","Spielstand wiederhergestellt");
+      },"Sicherung wiederherstellen");
+     }catch(e){showNotice("Die Datei konnte nicht gelesen werden.","Import fehlgeschlagen")}
+    };
+    reader.readAsText(file);
+   };
+   input.click();
+  }}
+ ]);
+}
+
 function resetProgress(){
  showConfirm(
-  "Möchtest du wirklich deinen gesamten Spielstand löschen? Dieser Schritt kann nicht rückgängig gemacht werden.",
+  "Möchtest du wirklich deinen gesamten Spielstand löschen? Dieser Schritt kann nicht rückgängig gemacht werden. Deine externe Sicherungsdatei bleibt davon unberührt.",
   ()=>{
-   data={entries:[],weekRewards:0,questXp:0,claimedQuests:[],claimedWeeks:[]};
+   data={entries:[],weekRewards:0,questXp:0,claimedQuests:[],claimedWeeks:[],claimedQuestIds:[]};
    activePlan=null;
    save();render();renderPlanSession();
    showNotice("Dein Spielstand wurde zurückgesetzt.","Neuer Anfang");
@@ -938,40 +1020,40 @@ function resetProgress(){
  );
 }
 
+/* Gesamte Anzeige aktualisieren */
+
 function render(){
  checkQuests();
-
  const t=totals();
  const start=xpForLevel(t.level);
  const next=xpForLevel(t.level+1);
  const inside=t.xp-start;
- const needed=next-start;
+ const needed=Math.max(1,next-start);
 
- $("level").textContent=t.level;
+ $("level").textContent=fmt(t.level);
  $("rank").textContent=rankFor(t.level);
- $("totalXp").textContent=t.xp.toLocaleString("de-DE");
- $("nextXp").textContent=`Noch ${next-t.xp} XP bis Level ${t.level+1}`;
- $("xpProgress").textContent=`${inside} / ${needed} XP`;
+ $("totalXp").textContent=fmt(t.xp);
+ $("nextXp").textContent=`Noch ${fmt(next-t.xp)} XP bis Level ${fmt(t.level+1)}`;
+ $("xpProgress").textContent=`${fmt(inside)} / ${fmt(needed)} XP`;
  $("xpBar").style.width=Math.min(100,inside/needed*100)+"%";
 
  $("streak").textContent=t.streak;
  $("weekDays").textContent=t.week+"/3";
- $("workouts").textContent=t.workouts;
+ $("workouts").textContent=fmt(t.workouts);
 
- $("todayXp").textContent=data.entries
-  .filter(e=>e.date===today())
-  .reduce((s,e)=>s+entryXp(e),0);
+ const todayWorkoutXp=data.entries.filter(e=>e.date===today()&&e.type==="workout").reduce((s,e)=>s+entryXp(e),0);
+ const todayStepXp=stepXp(stepsOn());
+ $("todayXp").textContent=fmt(todayWorkoutXp+todayStepXp);
 
  $("weekBar").style.width=Math.min(100,t.week/3*100)+"%";
  $("weekText").textContent=`${t.week} von 3 Tagen`;
+ $("homeSteps").textContent=fmt(stepsOn());
+ $("homeStepXp").textContent=fmt(stepXp(stepsOn()))+" XP durch Schritte";
 
- $("homeSteps").textContent=stepsOn().toLocaleString("de-DE");
- $("homeStepXp").textContent=stepXp(stepsOn())+" XP durch Schritte";
-
- $("profileXp").textContent=t.xp.toLocaleString("de-DE");
- $("profileLevel").textContent=t.level;
- $("profileWorkouts").textContent=t.workouts;
- $("profileDays").textContent=t.days;
+ $("profileXp").textContent=fmt(t.xp);
+ $("profileLevel").textContent=fmt(t.level);
+ $("profileWorkouts").textContent=fmt(t.workouts);
+ $("profileDays").textContent=fmt(t.days);
 
  $("stepDate").value=$("stepDate").value||today();
  $("stepCount").value=stepsOn();
@@ -992,7 +1074,15 @@ buildWorkouts();
 render();
 
 if("serviceWorker"in navigator&&location.protocol.startsWith("http")){
- window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+ window.addEventListener("load",async()=>{
+  try{
+   const registration=await navigator.serviceWorker.register("./sw.js");
+   registration.update().catch(()=>{});
+   if(registration.waiting){
+    registration.waiting.postMessage({type:"SKIP_WAITING"});
+   }
+  }catch(e){console.warn("App-Update konnte nicht geprüft werden",e)}
+ });
 }
 </script>
 </body>
