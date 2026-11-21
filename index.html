@@ -129,6 +129,40 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .questCard.done{border-color:#9c8051}
 .questReward{color:var(--gold2);font-weight:850}
 .questType{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--pink);font-weight:850}
+
+/* Aufklappbare Quest-Menüs im Stil der Trainingspläne */
+.questDropdown{
+ background:linear-gradient(145deg,#2b202a,#1b151d);
+ border:1px solid #624354;
+ border-radius:16px;
+ margin:13px 0;
+ overflow:hidden
+}
+.questDropdown summary{
+ list-style:none;
+ cursor:pointer;
+ padding:17px;
+ font-weight:850;
+ color:var(--gold2);
+ display:flex;
+ justify-content:space-between;
+ align-items:center
+}
+.questDropdown summary::-webkit-details-marker{display:none}
+.questDropdown summary::after{
+ content:"▼";
+ color:var(--pink);
+ font-size:12px;
+ transition:transform .2s
+}
+.questDropdown[open] summary::after{
+ transform:rotate(180deg)
+}
+.questDropdownContent{
+ padding:0 14px 10px;
+ border-top:1px solid var(--line)
+}
+
 .achievement{
  display:flex;align-items:center;gap:12px;
  padding:12px 0;border-bottom:1px solid var(--line)
@@ -274,18 +308,28 @@ nav button.active{
 <section id="questsSection" class="section">
  <h2>📜 Quest-Tafel</h2>
  <p class="muted">Tägliche Aufgaben, Wochenziele und Herausforderungen für deine ganze Fitness-Reise.</p>
- <div class="card">
-  <h3>🌞 Tägliche Quests</h3>
-  <div id="dailyQuestList"></div>
- </div>
- <div class="card">
-  <h3>🗓️ Wochenquests</h3>
-  <div id="weeklyQuestList"></div>
- </div>
- <div class="card">
-  <h3>♾️ Langzeit-Quests</h3>
-  <div id="longQuestList"></div>
- </div>
+
+ <details class="questDropdown">
+  <summary>🌞 Tägliche Quests</summary>
+  <div class="questDropdownContent">
+   <div id="dailyQuestList"></div>
+  </div>
+ </details>
+
+ <details class="questDropdown">
+  <summary>🗓️ Wochenquests</summary>
+  <div class="questDropdownContent">
+   <div id="weeklyQuestList"></div>
+  </div>
+ </details>
+
+ <details class="questDropdown">
+  <summary>♾️ Langzeit-Quests</summary>
+  <div class="questDropdownContent">
+   <div id="longQuestList"></div>
+  </div>
+ </details>
+
  <div class="card">
   <h3>🏅 Wochenfortschritt</h3>
   <div class="progress"><span id="questWeekBar"></span></div>
