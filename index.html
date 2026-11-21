@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -10,29 +9,19 @@
 <link rel="icon" href="./icon-192.png">
 <style>
 :root{
- --bg:#0b090d;
- --panel:#171219;
- --panel2:#211820;
- --text:#f8f1f3;
- --muted:#b7a8b0;
- --gold:#e7bd72;
- --gold2:#f7dda5;
- --pink:#e9a2bd;
- --pink2:#f5c5d6;
- --line:#493442;
- --green:#9dc9a8;
- --red:#e58b9e;
+ --bg:#0b090d;--panel:#171219;--panel2:#211820;
+ --text:#f8f1f3;--muted:#b7a8b0;--gold:#e7bd72;
+ --gold2:#f7dda5;--pink:#e9a2bd;--pink2:#f5c5d6;
+ --line:#493442;--green:#9dc9a8;--red:#e58b9e;
  --shadow:0 14px 34px #0008;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
  margin:0;min-height:100vh;padding-bottom:100px;
- background:
- radial-gradient(ellipse at 50% -15%,#49303d 0%,transparent 48%),
+ background:radial-gradient(ellipse at 50% -15%,#49303d 0%,transparent 48%),
  linear-gradient(180deg,#100c12,var(--bg) 55%);
- color:var(--text);
- font-family:system-ui,-apple-system,sans-serif;
+ color:var(--text);font-family:system-ui,-apple-system,sans-serif;
 }
 header,main{max-width:850px;margin:auto}
 header{padding:25px 18px 18px}
@@ -44,8 +33,7 @@ p{line-height:1.55}
 small,.muted{color:var(--muted)}
 button,input,select{font:inherit}
 button{
- border:1px solid #f0ce8a;
- border-radius:14px;padding:12px 17px;
+ border:1px solid #f0ce8a;border-radius:14px;padding:12px 17px;
  background:linear-gradient(135deg,var(--gold2),var(--gold));
  color:#21150e;font-weight:850;cursor:pointer;
  box-shadow:0 5px 16px #dcae5522;
@@ -53,19 +41,14 @@ button{
 }
 button:active{transform:scale(.97)}
 button:hover{filter:brightness(1.07);box-shadow:0 7px 20px #dcae5533}
-button:disabled{
- opacity:.45;cursor:not-allowed;filter:none;
- box-shadow:none;transform:none
-}
+button:disabled{opacity:.45;cursor:not-allowed;filter:none;box-shadow:none;transform:none}
 button.secondary{
  background:linear-gradient(135deg,#4a2c3d,#30202d);
- border-color:#80516a;color:#f8d9e5;
- box-shadow:none
+ border-color:#80516a;color:#f8d9e5;box-shadow:none
 }
 button.danger{
  background:linear-gradient(135deg,#67313f,#3c202b);
- border-color:#a75e70;color:#ffe7ed;
- box-shadow:none
+ border-color:#a75e70;color:#ffe7ed;box-shadow:none
 }
 input,select{
  width:100%;background:#100d12;border:1px solid var(--line);
@@ -73,8 +56,7 @@ input,select{
  accent-color:var(--pink)
 }
 input:focus,select:focus{
- outline:none;border-color:var(--pink);
- box-shadow:0 0 0 3px #e9a2bd22
+ outline:none;border-color:var(--pink);box-shadow:0 0 0 3px #e9a2bd22
 }
 label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .card{
@@ -83,17 +65,14 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
  padding:17px;margin:13px 0;box-shadow:var(--shadow)
 }
 .hero{
- background:
- radial-gradient(circle at 90% 10%,#e9a2bd18,transparent 35%),
+ background:radial-gradient(circle at 90% 10%,#e9a2bd18,transparent 35%),
  linear-gradient(135deg,#34232e,#1a141c 72%);
  border-color:#8c654d;position:relative;overflow:hidden
 }
 .hero:after{
  content:"";position:absolute;width:180px;height:180px;
- right:-75px;top:-85px;border-radius:50%;
- border:1px solid #e7bd7233;
- box-shadow:0 0 0 17px #e7bd7208,0 0 0 34px #e7bd7205;
- pointer-events:none
+ right:-75px;top:-85px;border-radius:50%;border:1px solid #e7bd7233;
+ box-shadow:0 0 0 17px #e7bd7208,0 0 0 34px #e7bd7205;pointer-events:none
 }
 .heroTop{display:flex;justify-content:space-between;gap:12px;align-items:center}
 .level{font-size:46px;line-height:1.1;font-weight:950;color:var(--gold2)}
@@ -117,10 +96,7 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .stat small{font-size:12px}
 .section{display:none}
 .section.active{display:block;animation:appear .24s ease}
-@keyframes appear{
- from{opacity:.4;transform:translateY(6px)}
- to{opacity:1;transform:none}
-}
+@keyframes appear{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
 .item{padding:13px 0;border-bottom:1px solid var(--line)}
 .item:last-child{border:0}
 .itemTop{display:flex;justify-content:space-between;gap:10px;align-items:center}
@@ -142,7 +118,17 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
  transition:border-color .2s,transform .2s
 }
 .planOption:active{transform:scale(.99)}
-.planOption p{font-size:12px;color:var(--muted);min-height:40px}
+.planOption p{font-size:12px;color:var(--muted);min-height:0;margin:8px 0}
+.planControls{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.planControls label{font-size:11px;margin:0 0 3px}
+.planControls select{margin:3px 0 8px;padding:10px 9px;font-size:13px}
+.planPreview{
+ margin:5px 0 12px;padding:10px 12px;
+ background:#100d12;border:1px solid #493442;border-radius:13px
+}
+.planPreview .item{padding:8px 0}
+.planPreview .item:last-child{border:0}
+.planPreviewTitle{font-size:12px;color:var(--gold2);font-weight:800;margin-bottom:4px}
 .notice{
  background:#253027;border:1px solid #58745c;
  border-radius:14px;padding:13px;color:#d6f0d8
@@ -160,16 +146,13 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .achievement:last-child{border:0}
 .achievementIcon{font-size:25px}
 .locked{opacity:.55}
-.historyItem{
- display:flex;justify-content:space-between;align-items:center;gap:10px
-}
+.historyItem{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .historyActions{display:flex;gap:6px}
 .historyActions button{padding:8px 11px}
 nav{
  position:fixed;bottom:0;left:0;right:0;z-index:5;
  background:#100c12f5;backdrop-filter:blur(18px);
- border-top:1px solid #59404e;display:grid;
- grid-template-columns:repeat(6,1fr);
+ border-top:1px solid #59404e;display:grid;grid-template-columns:repeat(6,1fr);
  padding:8px 3px calc(8px + env(safe-area-inset-bottom))
 }
 nav button{
@@ -179,38 +162,29 @@ nav button{
 nav button:hover{box-shadow:none}
 nav button span{display:block;font-size:20px;margin-bottom:3px}
 nav button.active{
- color:var(--gold2);
- background:linear-gradient(145deg,#392532,#251923);
- border:1px solid #765064;
- box-shadow:0 3px 14px #e9a2bd18
+ color:var(--gold2);background:linear-gradient(145deg,#392532,#251923);
+ border:1px solid #765064;box-shadow:0 3px 14px #e9a2bd18
 }
 #dialogLayer{
- display:none;position:fixed;inset:0;z-index:20;
- background:#050308d9;backdrop-filter:blur(9px);
- align-items:center;justify-content:center;padding:20px
+ display:none;position:fixed;inset:0;z-index:20;background:#050308d9;
+ backdrop-filter:blur(9px);align-items:center;justify-content:center;padding:20px
 }
 #dialogLayer.open{display:flex}
 .dialog{
  width:min(100%,420px);
- background:
- radial-gradient(circle at 100% 0%,#e9a2bd18,transparent 40%),
+ background:radial-gradient(circle at 100% 0%,#e9a2bd18,transparent 40%),
  linear-gradient(145deg,#261b25,#151117);
- border:1px solid #9a715d;border-radius:23px;
- padding:22px;box-shadow:0 22px 70px #000b;
- animation:dialogIn .22s ease
+ border:1px solid #9a715d;border-radius:23px;padding:22px;
+ box-shadow:0 22px 70px #000b;animation:dialogIn .22s ease
 }
-@keyframes dialogIn{
- from{opacity:0;transform:translateY(12px) scale(.98)}
- to{opacity:1;transform:none}
-}
+@keyframes dialogIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
 .dialog h3{color:var(--gold2);font-size:19px}
 .dialog p{color:#ddcfd6;white-space:pre-line}
 .dialogActions{display:flex;gap:9px;margin-top:17px}
 .dialogActions button{flex:1}
 .dialogMark{
  width:42px;height:4px;border-radius:10px;
- background:linear-gradient(90deg,var(--gold),var(--pink));
- margin-bottom:17px
+ background:linear-gradient(90deg,var(--gold),var(--pink));margin-bottom:17px
 }
 .dialog input{margin:8px 0 4px}
 @media(min-width:620px){
@@ -222,6 +196,8 @@ nav button.active{
  nav button{font-size:9px}
  nav button span{font-size:18px}
  .card{padding:14px}
+ .planControls{gap:6px}
+ .planControls select{font-size:12px;padding:9px 6px}
 }
 @media(prefers-reduced-motion:reduce){
  *,*:before,*:after{animation:none!important;scroll-behavior:auto!important}
@@ -456,9 +432,7 @@ function load(){
  if(!Array.isArray(data.entries))data.entries=[];
 }
 
-function save(){
- localStorage.setItem(SAVE_KEY,JSON.stringify(data));
-}
+function save(){localStorage.setItem(SAVE_KEY,JSON.stringify(data))}
 
 function weekKey(date=today()){
  const d=new Date(date+"T12:00:00");
@@ -466,9 +440,7 @@ function weekKey(date=today()){
  return d.toISOString().slice(0,10);
 }
 
-function xpForLevel(level){
- return Math.floor(100*Math.pow(Math.max(0,level-1),1.35));
-}
+function xpForLevel(level){return Math.floor(100*Math.pow(Math.max(0,level-1),1.35))}
 
 function levelFor(xp){
  let level=1;
@@ -493,14 +465,8 @@ function entryXp(e){
  return xp;
 }
 
-function totalXp(){
- return data.entries.reduce((s,e)=>s+entryXp(e),0);
-}
-
-function days(){
- return [...new Set(data.entries.filter(e=>e.type==="workout").map(e=>e.date))].sort();
-}
-
+function totalXp(){return data.entries.reduce((s,e)=>s+entryXp(e),0)}
+function days(){return [...new Set(data.entries.filter(e=>e.type==="workout").map(e=>e.date))].sort()}
 function weekDays(){
  const start=weekKey();
  return days().filter(d=>d>=start&&d<=today()).length;
@@ -510,8 +476,7 @@ function streak(){
  const set=new Set(days());let d=new Date(),n=0;
  if(!set.has(today()))d.setDate(d.getDate()-1);
  while(set.has(d.toISOString().slice(0,10))){
-  n++;
-  d.setDate(d.getDate()-1);
+  n++;d.setDate(d.getDate()-1);
  }
  return n;
 }
@@ -520,19 +485,14 @@ function stepsOn(date=today()){
  return data.entries.filter(e=>e.type==="steps"&&e.date===date).reduce((s,e)=>s+Number(e.steps||0),0);
 }
 
-function stepXp(n){
- return Math.floor(n/1000)*5;
-}
+function stepXp(n){return Math.floor(n/1000)*5}
 
 function totals(){
  const xp=totalXp();
  return {
-  xp,
-  level:levelFor(xp),
+  xp,level:levelFor(xp),
   workouts:data.entries.filter(e=>e.type==="workout").length,
-  days:days().length,
-  week:weekDays(),
-  streak:streak(),
+  days:days().length,week:weekDays(),streak:streak(),
   steps:data.entries.filter(e=>e.type==="steps").reduce((s,e)=>s+Number(e.steps||0),0)
  };
 }
@@ -566,9 +526,7 @@ function closeDialog(){
  dialogCallback=null;
 }
 
-function showNotice(message,title="Alles klar!"){
- openDialog(title,message,[{text:"Weiter"}]);
-}
+function showNotice(message,title="Alles klar!"){openDialog(title,message,[{text:"Weiter"}])}
 
 function showConfirm(message,onYes,title="Bist du sicher?"){
  openDialog(title,message,[
@@ -602,15 +560,12 @@ function showSection(id){
 function buildExercises(){
  $("exerciseList").innerHTML=EXERCISES.map(e=>`
  <div class="exercise">
-  <div>
-   <strong>${esc(e.name)}</strong><br>
-   <small>${e.xp} XP · ${esc(e.unit)}</small>
-  </div>
+  <div><strong>${esc(e.name)}</strong><br><small>${e.xp} XP · ${esc(e.unit)}</small></div>
   <input id="ex_${e.id}" type="number" min="0" value="0" inputmode="numeric">
  </div>`).join("");
 }
 
-/* Trainingspläne mit Übungsvorschau */
+/* Trainingspläne: kompakte Auswahl und versteckte Vorschau */
 
 function buildWorkouts(){
  $("workoutList").innerHTML=`
@@ -618,42 +573,61 @@ function buildWorkouts(){
  `+PLANS.map((p,i)=>`
  <div class="card planOption">
   <h3>${p.icon} ${esc(p.name)}</h3>
-  <p>Wähle deine Schwierigkeit und sieh dir deine Übungen an.</p>
-  <select id="difficulty_${i}" onchange="updatePlanPreview(${i})">
-   <option value="0">Anfänger</option>
-   <option value="1">Fortgeschritten</option>
-   <option value="2">Profi</option>
-  </select>
-  <div id="planPreview_${i}"></div>
+  <div class="planControls">
+   <div>
+    <label for="difficulty_${i}">Schwierigkeit</label>
+    <select id="difficulty_${i}" onfocus="showPlanPreview(${i})" onchange="updatePlanPreview(${i})">
+     <option value="0" selected>Anfänger</option>
+     <option value="1">Fortgeschritten</option>
+     <option value="2">Profi</option>
+    </select>
+   </div>
+   <div>
+    <label for="rounds_${i}">Satzanzahl</label>
+    <select id="rounds_${i}" onfocus="showPlanPreview(${i})" onchange="updatePlanPreview(${i})">
+     ${Array.from({length:10},(_,n)=>`<option value="${n+1}" ${n===0?"selected":""}>${n+1} ${n===0?"Satz":"Sätze"}</option>`).join("")}
+    </select>
+   </div>
+  </div>
+  <div id="planPreview_${i}" hidden></div>
   <button onclick="startPlan(${i})">Plan starten</button>
  </div>`).join("");
 
- PLANS.forEach((p,i)=>updatePlanPreview(i));
  renderPlanSession();
 }
 
-function updatePlanPreview(i){
- const p=PLANS[i];
- const difficulty=Number($("difficulty_"+i).value);
- const items=p.sets[difficulty];
+/* Vorschau erst zeigen, wenn ein Dropdown geöffnet wird */
 
- $("planPreview_"+i).innerHTML=`
- <div class="item">
-  <strong>Deine Übungen:</strong>
- </div>
- ${items.map(([id,amount])=>{
-  const ex=EXERCISES.find(e=>e.id===id);
-  if(!ex)return "";
-  return `
-   <div class="item">
+function showPlanPreview(i){
+ const preview=$("planPreview_"+i);
+ if(preview)preview.hidden=false;
+ updatePlanPreview(i);
+}
+
+function updatePlanPreview(i){
+ const preview=$("planPreview_"+i);
+ if(!preview)return;
+
+ const difficulty=Number($("difficulty_"+i).value);
+ const rounds=Number($("rounds_"+i).value);
+ const items=PLANS[i].sets[difficulty];
+
+ preview.hidden=false;
+ preview.className="planPreview";
+ preview.innerHTML=`
+  <div class="planPreviewTitle">Deine Übungen · ${rounds} ${rounds===1?"Satz":"Sätze"}</div>
+  ${items.map(([id,amount])=>{
+   const ex=EXERCISES.find(e=>e.id===id);
+   if(!ex)return "";
+   return `<div class="item">
     <strong>${esc(ex.name)}</strong><br>
-    <small>${amount} ${esc(ex.unit)}</small>
+    <small>${rounds} × ${amount} ${esc(ex.unit)}</small>
    </div>`;
- }).join("")}
+  }).join("")}
  `;
 }
 
-/* Einen Plan starten, ohne ihn sofort abzuschließen */
+/* Einen Plan starten */
 
 function startPlan(i){
  if(activePlan){
@@ -666,16 +640,16 @@ function startPlan(i){
 
  const p=PLANS[i];
  const difficulty=Number($("difficulty_"+i).value);
+ const rounds=Number($("rounds_"+i).value);
 
  activePlan={
   planIndex:i,
   name:p.name,
   difficulty:difficulty,
+  rounds:rounds,
   bonus:p.bonus?.[difficulty]||0,
   items:p.sets[difficulty].map(([id,amount])=>({
-   id,
-   amount,
-   done:false
+   id,amount,done:false
   }))
  };
 
@@ -703,14 +677,11 @@ function renderPlanSession(){
  area.innerHTML=`
  <div class="card hero">
   <h2>🏋️ ${esc(activePlan.name)}</h2>
-  <div class="badge">
-   ${["Anfänger","Fortgeschritten","Profi"][activePlan.difficulty]}
-  </div>
+  <div class="badge">${["Anfänger","Fortgeschritten","Profi"][activePlan.difficulty]}</div>
+  <div class="badge">${activePlan.rounds} ${activePlan.rounds===1?"Satz":"Sätze"}</div>
 
   <p><strong>Dein Trainingsfortschritt</strong></p>
-  <div class="progress">
-   <span style="width:${done/total*100}%"></span>
-  </div>
+  <div class="progress"><span style="width:${done/total*100}%"></span></div>
   <small>${done} von ${total} Übungen erledigt</small>
 
   <h3 style="margin-top:20px">Deine Aufgaben</h3>
@@ -719,24 +690,17 @@ function renderPlanSession(){
    const ex=EXERCISES.find(e=>e.id===item.id);
    return `
     <label style="
-     display:flex;
-     align-items:center;
-     gap:12px;
-     padding:13px 0;
-     border-bottom:1px solid var(--line);
-     color:var(--text);
-     font-size:14px;
-     opacity:${item.done?0.65:1};
+     display:flex;align-items:center;gap:12px;padding:13px 0;
+     border-bottom:1px solid var(--line);color:var(--text);
+     font-size:14px;opacity:${item.done?0.65:1};
     ">
-     <input
-      type="checkbox"
+     <input type="checkbox"
       style="width:22px;height:22px;margin:0;flex-shrink:0"
       ${item.done?"checked":""}
-      onchange="togglePlanExercise(${i},this.checked)"
-     >
+      onchange="togglePlanExercise(${i},this.checked)">
      <span style="${item.done?"text-decoration:line-through":""}">
       <strong>${esc(ex.name)}</strong><br>
-      <small>${item.amount} ${esc(ex.unit)}</small>
+      <small>${activePlan.rounds} × ${item.amount} ${esc(ex.unit)}</small>
      </span>
     </label>
    `;
@@ -744,18 +708,11 @@ function renderPlanSession(){
 
   <p class="xp">Belohnung: +${activePlan.bonus} Bonus-XP</p>
 
-  <button
-   onclick="completePlan()"
-   ${finished?"":"disabled"}
-  >
+  <button onclick="completePlan()" ${finished?"":"disabled"}>
    Training abschließen
   </button>
 
-  <p>
-   <button class="secondary" onclick="cancelPlan()">
-    Plan abbrechen
-   </button>
-  </p>
+  <p><button class="secondary" onclick="cancelPlan()">Plan abbrechen</button></p>
  </div>
  `;
 }
@@ -764,7 +721,6 @@ function renderPlanSession(){
 
 function togglePlanExercise(index,checked){
  if(!activePlan)return;
-
  activePlan.items[index].done=checked;
  renderPlanSession();
 }
@@ -775,14 +731,12 @@ function completePlan(){
  if(!activePlan)return;
 
  const finished=activePlan.items.every(item=>item.done);
-
  if(!finished){
-  showNotice(
-   "Bitte erledige zuerst alle Übungen.",
-   "Training noch nicht fertig"
-  );
+  showNotice("Bitte erledige zuerst alle Übungen.","Training noch nicht fertig");
   return;
  }
+
+ const rounds=activePlan.rounds;
 
  data.entries.push({
   id:Date.now(),
@@ -791,13 +745,12 @@ function completePlan(){
   plan:activePlan.name,
   items:activePlan.items.map(item=>({
    id:item.id,
-   amount:item.amount
+   amount:item.amount*rounds
   })),
   bonus:activePlan.bonus
  });
 
  activePlan=null;
-
  save();
  render();
  renderPlanSession();
@@ -826,8 +779,7 @@ function cancelPlan(){
 
 function saveExercises(){
  const items=EXERCISES.map(e=>({
-  id:e.id,
-  amount:Number($("ex_"+e.id).value||0)
+  id:e.id,amount:Number($("ex_"+e.id).value||0)
  })).filter(i=>i.amount>0);
 
  if(!items.length){
@@ -835,18 +787,10 @@ function saveExercises(){
   return;
  }
 
- data.entries.push({
-  id:Date.now(),
-  type:"workout",
-  date:today(),
-  items
- });
-
+ data.entries.push({id:Date.now(),type:"workout",date:today(),items});
  save();
  render();
-
  EXERCISES.forEach(e=>$("ex_"+e.id).value=0);
-
  showNotice("Dein Training wurde gespeichert. Stark gemacht! 💪","Training gespeichert");
 }
 
@@ -860,22 +804,18 @@ function saveSteps(){
  }
 
  const old=data.entries.find(e=>e.type==="steps"&&e.date===date);
-
  if(old)old.steps=steps;
  else data.entries.push({id:Date.now(),type:"steps",date,steps});
 
  save();
  render();
-
  showNotice("Deine Schritte wurden gespeichert. Jeder Schritt zählt!","Schritte gespeichert");
 }
 
 function checkQuests(){
  const day=today(),week=weekKey();
-
  data.claimedQuests=data.claimedQuests||[];
  data.claimedWeeks=data.claimedWeeks||[];
-
  let changed=false;
 
  if(data.entries.some(e=>e.type==="workout"&&e.date===day)&&!data.claimedQuests.includes(day)){
@@ -902,7 +842,6 @@ function checkQuests(){
 
 function renderQuests(){
  const d=today(),w=weekDays(),s=stepsOn();
-
  const q=[
   ["🏋️","Trainingsstart","Absolviere heute eine Trainingseinheit.",data.entries.some(e=>e.type==="workout"&&e.date===d)?1:0,1,25],
   ["👣","Langer Marsch","Erreiche heute 5.000 Schritte.",Math.min(s,5000),5000,20],
@@ -925,7 +864,6 @@ function renderQuests(){
 
 function renderAchievements(){
  const t=totals();
-
  const a=[
   ["🥉","Erster Schritt","Sammle 10 XP.",t.xp>=10],
   ["🏋️","Trainingsstart","Schließe ein Training ab.",t.workouts>=1],
@@ -940,17 +878,13 @@ function renderAchievements(){
  $("achievementList").innerHTML=a.map(x=>`
  <div class="achievement ${x[3]?"":"locked"}">
   <span class="achievementIcon">${x[0]}</span>
-  <div style="flex:1">
-   <strong>${x[1]}</strong><br>
-   <small>${x[2]}</small>
-  </div>
+  <div style="flex:1"><strong>${x[1]}</strong><br><small>${x[2]}</small></div>
   <strong>${x[3]?"✓":"🔒"}</strong>
  </div>`).join("");
 }
 
 function renderHistory(){
  const list=[...data.entries].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-
  $("historyList").innerHTML=list.length?list.map(e=>`
  <div class="historyItem item">
   <div>
@@ -970,9 +904,7 @@ function editEntry(id){
 
  showInput("Wähle ein neues Datum für diesen Eintrag.",e.date,value=>{
   if(value&&/^\d{4}-\d{2}-\d{2}$/.test(value)){
-   e.date=value;
-   save();
-   render();
+   e.date=value;save();render();
    showNotice("Das Datum wurde geändert.","Eintrag aktualisiert");
   }else{
    showNotice("Bitte gib ein gültiges Datum ein.","Datum nicht erkannt");
@@ -983,8 +915,7 @@ function editEntry(id){
 function deleteEntry(id){
  showConfirm("Möchtest du diesen Eintrag wirklich löschen?",()=>{
   data.entries=data.entries.filter(e=>e.id!==id);
-  save();
-  render();
+  save();render();
   showNotice("Der Eintrag wurde gelöscht.","Eintrag gelöscht");
  },"Eintrag löschen");
 }
@@ -993,17 +924,9 @@ function resetProgress(){
  showConfirm(
   "Möchtest du wirklich deinen gesamten Spielstand löschen? Dieser Schritt kann nicht rückgängig gemacht werden.",
   ()=>{
-   data={
-    entries:[],
-    weekRewards:0,
-    questXp:0,
-    claimedQuests:[],
-    claimedWeeks:[]
-   };
+   data={entries:[],weekRewards:0,questXp:0,claimedQuests:[],claimedWeeks:[]};
    activePlan=null;
-   save();
-   render();
-   renderPlanSession();
+   save();render();renderPlanSession();
    showNotice("Dein Spielstand wurde zurückgesetzt.","Neuer Anfang");
   },
   "Spielstand zurücksetzen"
@@ -1049,7 +972,6 @@ function render(){
  $("stepCount").value=stepsOn();
 
  const latest=[...data.entries].sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];
-
  $("recentHome").textContent=latest?
   (latest.type==="steps"?"Schritte":"Training")+" – "+latest.date:
   "Dein erstes Abenteuer wartet!";
