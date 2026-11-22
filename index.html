@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -217,6 +216,59 @@ nav button.active{
  background:linear-gradient(90deg,var(--gold),var(--pink));margin-bottom:17px
 }
 .dialog input{margin:8px 0 4px}
+
+/* Erfolgsmomente */
+#successLayer{
+ display:none;position:fixed;inset:0;z-index:30;
+ align-items:center;justify-content:center;padding:22px;
+ background:radial-gradient(circle at center,#e7bd7230,#050308df 70%);
+ backdrop-filter:blur(7px)
+}
+#successLayer.show{
+ display:flex;animation:successBackdrop .25s ease
+}
+.successCard{
+ position:relative;overflow:hidden;width:min(100%,390px);
+ text-align:center;padding:30px 22px;
+ border:1px solid #c79b60;border-radius:24px;
+ background:radial-gradient(circle at 50% 0%,#e7bd7230,transparent 58%),
+ linear-gradient(145deg,#34232e,#171219 75%);
+ box-shadow:0 0 35px #e7bd7240,0 22px 70px #000b;
+ animation:successPop .55s cubic-bezier(.2,.8,.2,1) both
+}
+.successEyebrow{
+ color:var(--gold);font-size:11px;font-weight:900;
+ letter-spacing:2px;margin-bottom:12px
+}
+.successTitle{
+ color:var(--gold2);font-size:22px;font-weight:950;
+ margin-bottom:12px
+}
+.successLevel{
+ color:var(--gold2);font-size:58px;line-height:1.1;
+ font-weight:950;text-shadow:0 0 25px #e7bd72aa;
+ margin:12px 0
+}
+.successRank{color:var(--pink);font-weight:850;font-size:17px}
+.successMessage{color:#ddcfd6;margin:14px 0}
+.successHint{color:var(--muted);font-size:11px}
+.successSparkle{
+ position:absolute;color:var(--gold2);
+ animation:successSparkle 1.4s ease-in-out infinite
+}
+@keyframes successBackdrop{
+ from{opacity:0}to{opacity:1}
+}
+@keyframes successPop{
+ 0%{opacity:0;transform:translateY(12px) scale(.88)}
+ 70%{transform:translateY(-2px) scale(1.02)}
+ 100%{opacity:1;transform:none}
+}
+@keyframes successSparkle{
+ 0%,100%{opacity:.2;transform:scale(.7) rotate(0)}
+ 50%{opacity:1;transform:scale(1.25) rotate(30deg)}
+}
+
 @media(min-width:620px){
  .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
  .planGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -391,6 +443,21 @@ nav button.active{
   <p id="dialogMessage"></p>
   <div id="dialogInputArea"></div>
   <div class="dialogActions" id="dialogActions"></div>
+ </div>
+</div>
+
+<div id="successLayer" aria-hidden="true" onclick="dismissSuccess()">
+ <div class="successCard" role="dialog" aria-modal="true">
+  <span class="successSparkle" style="top:18px;left:24px">✦</span>
+  <span class="successSparkle" style="top:45px;right:30px">✧</span>
+  <span class="successSparkle" style="bottom:50px;left:38px">✧</span>
+  <span class="successSparkle" style="bottom:24px;right:28px">✦</span>
+  <div class="successEyebrow" id="successEyebrow">✦ EIN BESONDERER MOMENT ✦</div>
+  <div class="successTitle" id="successTitle">LEVEL AUFGESTIEGEN!</div>
+  <div class="successLevel" id="successLevel">LEVEL 2</div>
+  <div class="successRank" id="successRank">🌱 Anfänger</div>
+  <p class="successMessage" id="successMessage">Dein Training zahlt sich aus!</p>
+  <div class="successHint">Tippe irgendwo, um fortzufahren</div>
  </div>
 </div>
 
@@ -821,7 +888,7 @@ function completePlan(){
  });
  activePlan=null;
  save();render();renderPlanSession();
- showNotice("Du hast alle Übungen geschafft! Dein Training wurde gespeichert und deine XP wurden gutgeschrieben. 💪","Training abgeschlossen!");
+ showTrainingComplete();
 }
 function cancelPlan(){
  if(!activePlan)return;
@@ -841,7 +908,7 @@ function saveExercises(){
  data.entries.push({id:Date.now(),type:"workout",date:today(),items});
  save();render();
  EXERCISES.forEach(e=>$("ex_"+e.id).value=0);
- showNotice("Dein Training wurde gespeichert. Stark gemacht! 💪","Training gespeichert");
+ showTrainingComplete();
 }
 function saveSteps(){
  const date=$("stepDate").value||today();
@@ -1064,10 +1131,78 @@ function resetProgress(){
  );
 }
 
+/* Erfolgsmomente */
+let displayedLevel=null;
+let successTimer=null;
+
+function dismissSuccess(){
+ const layer=$("successLayer");
+ if(!layer)return;
+ layer.classList.remove("show");
+ layer.setAttribute("aria-hidden","true");
+ if(successTimer){
+  clearTimeout(successTimer);
+  successTimer=null;
+ }
+}
+
+function showSuccess(title,number,rank,message,eyebrow){
+ const layer=$("successLayer");
+ if(!layer)return;
+
+ $("successTitle").textContent=title;
+ $("successLevel").textContent=number;
+ $("successRank").textContent=rank;
+ $("successMessage").textContent=message;
+ $("successEyebrow").textContent=eyebrow;
+
+ layer.classList.add("show");
+ layer.setAttribute("aria-hidden","false");
+
+ if(successTimer)clearTimeout(successTimer);
+ successTimer=setTimeout(dismissSuccess,2200);
+}
+
+function showLevelUp(level){
+ showSuccess(
+  "LEVEL AUFGESTIEGEN!",
+  "LEVEL "+fmt(level),
+  rankFor(level),
+  "Dein Training zahlt sich aus!",
+  "✦ EIN BESONDERER MOMENT ✦"
+ );
+}
+
+function showTrainingComplete(){
+ const layer=$("successLayer");
+
+ // Ein Levelaufstieg hat Vorrang.
+ if(layer&&layer.classList.contains("show"))return;
+
+ showSuccess(
+  "TRAINING GESCHAFFT!",
+  "💪 STARK!",
+  "Du bist auf deinem Weg!",
+  "Du hast heute etwas für dich getan. Weiter so!",
+  "✦ ERFOLG FREIGESCHALTET ✦"
+ );
+}
+
 /* Gesamte Anzeige aktualisieren */
 function render(){
  checkQuests();
  const t=totals();
+
+ if(displayedLevel===null){
+  // Beim ersten Öffnen nur den vorhandenen Spielstand übernehmen.
+  displayedLevel=t.level;
+ }else{
+  if(t.level>displayedLevel){
+   showLevelUp(t.level);
+  }
+  displayedLevel=t.level;
+ }
+
  const start=xpForLevel(t.level);
  const next=xpForLevel(t.level+1);
  const inside=t.xp-start;
