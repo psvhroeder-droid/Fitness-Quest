@@ -1550,10 +1550,6 @@ function renderQuests(){
  $("dailyQuestList").innerHTML=q.daily.map(questCard).join("");
  $("weeklyQuestList").innerHTML=q.weekly.map(questCard).join("");
  $("longQuestList").innerHTML=renderLongQuests(q.long);
- const w=weekDays();
- $("questWeekBar").style.width=Math.min(100,w/3*100)+"%";
- $("questWeekText").textContent=`${w} von 3 Trainingstagen`;
- $("homeQuests").innerHTML=[...q.daily,...q.weekly.slice(0,1)].map(questCard).join("");
 }
 
 /* Ruhmeshalle */
