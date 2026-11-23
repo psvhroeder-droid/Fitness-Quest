@@ -859,41 +859,51 @@ function buildCustomWorkoutBuilder(){
  `).join("");
 
  return `
- <div class="customWorkoutCard">
-  <h3>✨ Eigenen Trainingsplan erstellen</h3>
-  <p class="muted">Stelle deinen persönlichen Trainingsplan zusammen. Du kannst Kraftübungen und Ausdauerziele kombinieren.</p>
-  <label for="customWorkoutName">Name deines Trainingsplans</label>
-  <input id="customWorkoutName" type="text" maxlength="50" placeholder="z. B. Mein Ganzkörpertraining">
-  <label for="customWorkoutRounds">Satzanzahl / Runden</label>
-  <select id="customWorkoutRounds">
-   ${Array.from({length:10},(_,i)=>`<option value="${i+1}" ${i===2?"selected":""}>${i+1} ${i===0?"Satz":"Sätze"}</option>`).join("")}
-  </select>
-  <div class="planPreview">
-   <div class="planPreviewTitle">💪 Übungen – Anzahl pro Satz</div>
-   ${exerciseFields}
-  </div>
-  <div class="planPreview">
-   <div class="planPreviewTitle">🏃 Zusätzliche Aktivitäten (optional)</div>
-   <div class="customActivityGrid">
-    <div>
-     <label for="customRunKm">Laufen in Kilometern</label>
-     <input id="customRunKm" type="text" inputmode="decimal" placeholder="z. B. 5,5">
-     <small>20 XP pro Kilometer</small>
+ <details class="customBuilder">
+  <summary>✨ Eigenen Trainingsplan erstellen</summary>
+  <div class="customBuilderContent">
+   <div class="customWorkoutCard">
+    <p class="muted">Stelle deinen persönlichen Trainingsplan zusammen. Du kannst Kraftübungen und Ausdauerziele kombinieren.</p>
+
+    <label for="customWorkoutName">Name deines Trainingsplans</label>
+    <input id="customWorkoutName" type="text" maxlength="50" placeholder="z. B. Mein Ganzkörpertraining">
+
+    <label for="customWorkoutRounds">Satzanzahl / Runden</label>
+    <select id="customWorkoutRounds">
+     ${Array.from({length:10},(_,i)=>`<option value="${i+1}" ${i===2?"selected":""}>${i+1} ${i===0?"Satz":"Sätze"}</option>`).join("")}
+    </select>
+
+    <div class="planPreview">
+     <div class="planPreviewTitle">💪 Übungen – Anzahl pro Satz</div>
+     ${exerciseFields}
     </div>
-    <div>
-     <label for="customBikeKm">Radfahren in Kilometern</label>
-     <input id="customBikeKm" type="text" inputmode="decimal" placeholder="z. B. 12">
-     <small>8 XP pro Kilometer</small>
+
+    <div class="planPreview">
+     <div class="planPreviewTitle">🏃 Zusätzliche Aktivitäten (optional)</div>
+     <div class="customActivityGrid">
+      <div>
+       <label for="customRunKm">Laufen in Kilometern</label>
+       <input id="customRunKm" type="text" inputmode="decimal" placeholder="z. B. 5,5">
+       <small>20 XP pro Kilometer</small>
+      </div>
+      <div>
+       <label for="customBikeKm">Radfahren in Kilometern</label>
+       <input id="customBikeKm" type="text" inputmode="decimal" placeholder="z. B. 12">
+       <small>8 XP pro Kilometer</small>
+      </div>
+      <div>
+       <label for="customSteps">Schritte</label>
+       <input id="customSteps" type="number" min="0" max="100000" step="1" placeholder="z. B. 7500">
+       <small>5 XP je 1.000 Schritte</small>
+      </div>
+     </div>
     </div>
-    <div>
-     <label for="customSteps">Schritte</label>
-     <input id="customSteps" type="number" min="0" max="100000" step="1" placeholder="z. B. 7500">
-     <small>5 XP je 1.000 Schritte</small>
-    </div>
+
+    <button onclick="saveCustomWorkout()">Eigenen Plan speichern</button>
    </div>
   </div>
-  <button onclick="saveCustomWorkout()">Eigenen Plan speichern</button>
- </div>
+ </details>
+
  <div class="card">
   <h3>📚 Deine eigenen Trainingspläne</h3>
   <p class="muted">Hier findest du alle selbst erstellten und gespeicherten Pläne.</p>
@@ -1311,7 +1321,10 @@ function checkQuests(){
  const day=today(),week=weekKey();
  data.claimedQuests=data.claimedQuests||[];
  data.claimedWeeks=data.claimedWeeks||[];
+ data.claimedQuestIds=data.claimedQuestIds||[];
  let changed=false;
+
+ // Bestehende tägliche und wöchentliche Bonus-XP beibehalten
  if(data.entries.some(e=>e.type==="workout"&&e.date===day)&&!data.claimedQuests.includes(day)){
   data.claimedQuests.push(day);
   data.questXp=(data.questXp||0)+25;
@@ -1328,6 +1341,30 @@ function checkQuests(){
   data.weekRewards=(data.weekRewards||0)+1;
   changed=true;
  }
+
+ // Alle erreichten Quests automatisch und nur einmal belohnen.
+ // Mehrere Durchläufe berücksichtigen auch Level-Quests,
+ // die erst durch gerade gutgeschriebene XP erreicht werden.
+ let foundNewReward=true;
+ let safetyCounter=0;
+
+ while(foundNewReward&&safetyCounter<30){
+  foundNewReward=false;
+  safetyCounter++;
+
+  const all=questDefinitions();
+  const quests=[...all.daily,...all.weekly,...all.long];
+
+  quests.forEach(q=>{
+   if(q.value>=q.goal&&!data.claimedQuestIds.includes(q.id)){
+    data.claimedQuestIds.push(q.id);
+    data.questXp=(data.questXp||0)+q.xp;
+    changed=true;
+    foundNewReward=true;
+   }
+  });
+ }
+
  if(changed)save();
 }
 function questDefinitions(){
@@ -1465,26 +1502,19 @@ function questDefinitions(){
   long:long.map(q=>({id:q[0],type:"Langzeit",icon:q[1],name:q[2],desc:q[3],value:q[4],goal:q[5],xp:q[6]}))
  };
 }
-function claimQuest(id){
- const all=questDefinitions();
- const quest=[...all.daily,...all.weekly,...all.long].find(q=>q.id===id);
- if(!quest||quest.value<quest.goal||data.claimedQuestIds.includes(id))return;
- data.claimedQuestIds.push(id);
- data.questXp=(data.questXp||0)+quest.xp;
- save();render();
- showNotice("Du hast die Quest abgeschlossen und "+quest.xp+" XP erhalten!","Quest-Belohnung erhalten 🎉");
-}
+
 function questCard(q){
  const done=q.value>=q.goal;
  const claimed=data.claimedQuestIds.includes(q.id);
  const pct=Math.min(100,q.value/q.goal*100);
+
  return `<div class="questCard ${done?"done":""}">
   <div class="questType">${q.type}</div>
   <strong>${q.icon} ${esc(q.name)}</strong>
   <p class="muted">${esc(q.desc)}</p>
   <div class="progress"><span style="width:${pct}%"></span></div>
   <small>${fmt(Math.min(q.value,q.goal))} / ${fmt(q.goal)} · <span class="questReward">+${q.xp} XP</span></small>
-  ${claimed?'<p class="questReward">✓ Belohnung eingesammelt</p>':done?`<p><button onclick="claimQuest('${q.id}')">Belohnung abholen</button></p>`:""}
+  ${claimed?'<p class="questReward">✓ XP automatisch gutgeschrieben</p>':""}
  </div>`;
 }
 
