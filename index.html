@@ -186,8 +186,6 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .achievement:last-child{border:0}
 .achievementIcon{font-size:25px}
 .locked{opacity:.55}
-
-/* Dropdown-Kategorien der Ruhmeshalle */
 .achievementCategory{
  background:linear-gradient(145deg,#2b202a,#1b151d);
  border:1px solid #624354;border-radius:16px;margin:13px 0;overflow:hidden
@@ -208,7 +206,6 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .achievementCategoryMeta{
  display:block;font-size:11px;color:var(--muted);font-weight:600;margin-top:3px
 }
-
 .historyDay{
  background:linear-gradient(145deg,#2b202a,#1b151d);
  border:1px solid #624354;border-radius:15px;margin:11px 0;overflow:hidden
@@ -236,9 +233,7 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
  color:var(--gold2);font-weight:850;margin:17px 0 7px;
  padding-bottom:7px;border-bottom:1px solid var(--line)
 }
-.dialog{
- max-height:88vh;overflow-y:auto
-}
+.dialog{max-height:88vh;overflow-y:auto}
 nav{
  position:fixed;bottom:0;left:0;right:0;z-index:5;
  background:#100c12f5;backdrop-filter:blur(18px);
@@ -310,6 +305,27 @@ nav button.active{
  0%,100%{opacity:.2;transform:scale(.7) rotate(0)}
  50%{opacity:1;transform:scale(1.25) rotate(30deg)}
 }
+
+/* Eigene Trainingspläne */
+.customWorkoutCard{
+ background:linear-gradient(145deg,#30212c,#1a141c);
+ border:1px solid #80516a;border-radius:18px;padding:15px;margin:13px 0
+}
+.customExerciseRow{
+ display:grid;grid-template-columns:minmax(0,1fr) 90px;
+ gap:9px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)
+}
+.customExerciseRow label{margin:0;color:var(--text);font-size:13px}
+.customExerciseRow input{margin:0;padding:9px;text-align:center}
+.customActivityGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.customActivityGrid label{margin-top:8px}
+.customActivityGrid input{margin:4px 0 8px}
+.customPlanItem{
+ background:#171219;border:1px solid #493442;border-radius:14px;
+ padding:13px;margin:9px 0
+}
+.customPlanActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.customPlanActions button{flex:1;min-width:110px}
 @media(min-width:620px){
  .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
  .planGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -323,6 +339,8 @@ nav button.active{
  .historyActions{gap:4px}
  .historyActions button{padding:7px 9px}
  .editExercise{grid-template-columns:minmax(0,1fr) 82px}
+ .customExerciseRow{grid-template-columns:minmax(0,1fr) 75px}
+ .customActivityGrid{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){
  *,*:before,*:after{animation:none!important;scroll-behavior:auto!important}
@@ -385,8 +403,6 @@ nav button.active{
 <section id="training" class="section">
  <h2>🏋️ Trainingsarena</h2>
  <p class="muted">Wähle einen Bereich und trage deine Leistung ein.</p>
-
- <!-- Oberkörper ist beim Öffnen standardmäßig geschlossen -->
  <details class="questDropdown">
   <summary>💪 Oberkörper</summary>
   <div class="questDropdownContent">
@@ -408,7 +424,6 @@ nav button.active{
    <p><button onclick="saveExercises('core')">Rumpf speichern</button></p>
   </div>
  </details>
-
  <details class="questDropdown">
   <summary>🏃 Laufen</summary>
   <div class="questDropdownContent">
@@ -444,7 +459,7 @@ nav button.active{
 
 <section id="workoutsSection" class="section">
  <h2>⚔️ Trainingspläne</h2>
- <p class="muted">Tippe auf einen Trainingsplan, um die Übungen zu sehen. Du kannst die Wiederholungen und die Satzanzahl selbst festlegen.</p>
+ <p class="muted">Erstelle eigene Trainingspläne oder starte einen der zehn vorbereiteten Pläne.</p>
  <div id="workoutList"></div>
 </section>
 
@@ -507,7 +522,7 @@ nav button.active{
  </div>
  <div class="card">
   <h3>⚠️ Spielstand</h3>
-  <p class="muted">Hier kannst du deinen Fortschritt bewusst zurücksetzen.</p>
+  <p class="muted">Hier kannst du deinen Fortschritt bewusst zurücksetzen. Deine gespeicherten eigenen Trainingspläne bleiben dabei erhalten.</p>
   <button class="danger" onclick="resetProgress()">Spielstand zurücksetzen</button>
  </div>
 </section>
@@ -627,7 +642,8 @@ const PLANS=[
 
 let data={
  entries:[],weekRewards:0,questXp:0,
- claimedQuests:[],claimedWeeks:[],claimedQuestIds:[]
+ claimedQuests:[],claimedWeeks:[],claimedQuestIds:[],
+ customWorkouts:[]
 };
 let dialogCallback=null;
 let activePlan=null;
@@ -652,6 +668,7 @@ function load(){
  if(!Array.isArray(data.claimedQuests))data.claimedQuests=[];
  if(!Array.isArray(data.claimedWeeks))data.claimedWeeks=[];
  if(!Array.isArray(data.claimedQuestIds))data.claimedQuestIds=[];
+ if(!Array.isArray(data.customWorkouts))data.customWorkouts=[];
  data.questXp=Number(data.questXp||0);
  data.weekRewards=Number(data.weekRewards||0);
 }
@@ -754,15 +771,12 @@ function totals(){
 function openDialog(title,message,buttons,input){
  $("dialogTitle").textContent=title;
  $("dialogMessage").textContent=message;
-
- // Neben dem bisherigen Einzelfeld werden nun auch eigene Formulare unterstützt.
  if(typeof input==="string"){
   $("dialogInputArea").innerHTML=input;
  }else{
   $("dialogInputArea").innerHTML=input?
    `<label for="dialogInput">${esc(input.label||"Eingabe")}</label><input id="dialogInput" type="${input.type||"text"}" value="${esc(input.value||"")}">`:"";
  }
-
  $("dialogActions").innerHTML=buttons.map((b,i)=>
   `<button class="${b.secondary?"secondary":""}" onclick="dialogAction(${i})">${esc(b.text)}</button>`
  ).join("");
@@ -774,18 +788,13 @@ function openDialog(title,message,buttons,input){
 function dialogAction(index){
  const action=dialogCallback&&dialogCallback[index];
  let value=null;
-
- // Wenn das Dialogformular Datenfelder enthält, werden alle Werte gesammelt.
  const fields=$("dialogInputArea").querySelectorAll("[data-edit-field]");
  if(fields.length){
   value={};
-  fields.forEach(field=>{
-   value[field.dataset.editField]=field.value;
-  });
+  fields.forEach(field=>{value[field.dataset.editField]=field.value});
  }else{
   value=$("dialogInput")?$("dialogInput").value:null;
  }
-
  closeDialog();
  if(action)action(value);
 }
@@ -806,7 +815,7 @@ document.addEventListener("keydown",e=>{
  if(e.key==="Escape"&&$("dialogLayer").classList.contains("open"))closeDialog();
 });
 
-/* Navigation: zuletzt geöffneten Tab merken */
+/* Navigation */
 function showSection(id,remember=true){
  const valid=["home","training","workoutsSection","questsSection","achievements","profile"];
  if(!valid.includes(id))id="home";
@@ -836,9 +845,205 @@ function buildExercises(){
 function planExercises(i){return PLANS[i].sets[1]}
 function planBonus(i){return PLANS[i].bonus?.[1]||0}
 
+/* Eigene Trainingspläne erstellen und verwalten */
+function buildCustomWorkoutBuilder(){
+ const exerciseFields=EXERCISES.map(ex=>`
+  <div class="customExerciseRow">
+   <label for="custom_${ex.id}">
+    <strong>${esc(ex.name)}</strong><br>
+    <small>${esc(ex.unit)} · ${ex.xp} XP</small>
+   </label>
+   <input id="custom_${ex.id}" type="number" min="0" max="500" step="1"
+    value="0" inputmode="numeric" aria-label="${esc(ex.name)} pro Satz">
+  </div>
+ `).join("");
+
+ return `
+ <div class="customWorkoutCard">
+  <h3>✨ Eigenen Trainingsplan erstellen</h3>
+  <p class="muted">Stelle deinen persönlichen Trainingsplan zusammen. Du kannst Kraftübungen und Ausdauerziele kombinieren.</p>
+  <label for="customWorkoutName">Name deines Trainingsplans</label>
+  <input id="customWorkoutName" type="text" maxlength="50" placeholder="z. B. Mein Ganzkörpertraining">
+  <label for="customWorkoutRounds">Satzanzahl / Runden</label>
+  <select id="customWorkoutRounds">
+   ${Array.from({length:10},(_,i)=>`<option value="${i+1}" ${i===2?"selected":""}>${i+1} ${i===0?"Satz":"Sätze"}</option>`).join("")}
+  </select>
+  <div class="planPreview">
+   <div class="planPreviewTitle">💪 Übungen – Anzahl pro Satz</div>
+   ${exerciseFields}
+  </div>
+  <div class="planPreview">
+   <div class="planPreviewTitle">🏃 Zusätzliche Aktivitäten (optional)</div>
+   <div class="customActivityGrid">
+    <div>
+     <label for="customRunKm">Laufen in Kilometern</label>
+     <input id="customRunKm" type="text" inputmode="decimal" placeholder="z. B. 5,5">
+     <small>20 XP pro Kilometer</small>
+    </div>
+    <div>
+     <label for="customBikeKm">Radfahren in Kilometern</label>
+     <input id="customBikeKm" type="text" inputmode="decimal" placeholder="z. B. 12">
+     <small>8 XP pro Kilometer</small>
+    </div>
+    <div>
+     <label for="customSteps">Schritte</label>
+     <input id="customSteps" type="number" min="0" max="100000" step="1" placeholder="z. B. 7500">
+     <small>5 XP je 1.000 Schritte</small>
+    </div>
+   </div>
+  </div>
+  <button onclick="saveCustomWorkout()">Eigenen Plan speichern</button>
+ </div>
+ <div class="card">
+  <h3>📚 Deine eigenen Trainingspläne</h3>
+  <p class="muted">Hier findest du alle selbst erstellten und gespeicherten Pläne.</p>
+  <div id="customWorkoutList"></div>
+ </div>`;
+}
+
+function renderCustomWorkoutList(){
+ const list=$("customWorkoutList");
+ if(!list)return;
+ if(!Array.isArray(data.customWorkouts))data.customWorkouts=[];
+ if(!data.customWorkouts.length){
+  list.innerHTML='<p class="muted">Du hast noch keine eigenen Trainingspläne gespeichert.</p>';
+  return;
+ }
+ list.innerHTML=data.customWorkouts.map(plan=>{
+  const exerciseSummary=(plan.items||[]).map(item=>{
+   const ex=EXERCISES.find(e=>e.id===item.id);
+   return ex?`${esc(ex.name)}: ${fmt(item.amount)} je Satz`:"";
+  }).filter(Boolean);
+  const activities=[];
+  if(Number(plan.runKm)>0)activities.push(`🏃 ${String(plan.runKm).replace(".",",")} km`);
+  if(Number(plan.bikeKm)>0)activities.push(`🚴 ${String(plan.bikeKm).replace(".",",")} km`);
+  if(Number(plan.steps)>0)activities.push(`👣 ${fmt(plan.steps)} Schritte`);
+  const summary=[...exerciseSummary,...activities];
+  return `
+   <div class="customPlanItem">
+    <div class="itemTop">
+     <strong>✨ ${esc(plan.name)}</strong>
+     <span class="badge">${Number(plan.rounds)||1} Runden</span>
+    </div>
+    <div class="muted" style="font-size:12px;margin-top:8px">
+     ${summary.length?summary.join(" · "):"Keine Aktivitäten hinterlegt"}
+    </div>
+    <div class="customPlanActions">
+     <button onclick="startCustomWorkout('${esc(plan.id)}')">Plan starten</button>
+     <button class="danger" onclick="deleteCustomWorkout('${esc(plan.id)}')">Löschen</button>
+    </div>
+   </div>`;
+ }).join("");
+}
+
+function saveCustomWorkout(){
+ const name=$("customWorkoutName").value.trim();
+ const rounds=Number($("customWorkoutRounds").value);
+ if(!name){
+  showNotice("Bitte gib deinem Trainingsplan zuerst einen Namen.","Name fehlt");
+  $("customWorkoutName").focus();
+  return;
+ }
+ if(name.length>50){
+  showNotice("Der Name darf höchstens 50 Zeichen lang sein.","Name zu lang");
+  return;
+ }
+ if(!Number.isInteger(rounds)||rounds<1||rounds>10){
+  showNotice("Bitte wähle zwischen 1 und 10 Runden.","Runden prüfen");
+  return;
+ }
+
+ const items=[];
+ for(const ex of EXERCISES){
+  const amount=Number($("custom_"+ex.id).value||0);
+  if(!Number.isInteger(amount)||amount<0||amount>500){
+   showNotice(`Bitte überprüfe die Anzahl für ${ex.name}. Erlaubt sind 0 bis 500 pro Satz.`,"Übungswert prüfen");
+   return;
+  }
+  if(amount>0)items.push({id:ex.id,amount});
+ }
+
+ const runRaw=$("customRunKm").value.trim().replace(",",".");
+ const bikeRaw=$("customBikeKm").value.trim().replace(",",".");
+ const runKm=runRaw===""?0:Number(runRaw);
+ const bikeKm=bikeRaw===""?0:Number(bikeRaw);
+ const stepsRaw=$("customSteps").value.trim();
+ const steps=stepsRaw===""?0:Number(stepsRaw);
+
+ if(!Number.isFinite(runKm)||runKm<0||runKm>1000||
+    !Number.isFinite(bikeKm)||bikeKm<0||bikeKm>1000){
+  showNotice("Lauf- und Radstrecke müssen zwischen 0 und 1.000 Kilometern liegen.","Strecke prüfen");
+  return;
+ }
+ if(!Number.isInteger(steps)||steps<0||steps>100000){
+  showNotice("Das Schrittziel muss eine ganze Zahl zwischen 0 und 100.000 sein.","Schrittzahl prüfen");
+  return;
+ }
+ if(!items.length&&runKm===0&&bikeKm===0&&steps===0){
+  showNotice("Bitte wähle mindestens eine Übung oder trage ein Aktivitätsziel ein.","Plan ist noch leer");
+  return;
+ }
+
+ const plan={
+  id:"cw_"+Date.now()+"_"+Math.random().toString(36).slice(2,7),
+  name,rounds,items,runKm,bikeKm,steps
+ };
+ data.customWorkouts.push(plan);
+ save();
+ $("customWorkoutName").value="";
+ $("customRunKm").value="";
+ $("customBikeKm").value="";
+ $("customSteps").value="";
+ EXERCISES.forEach(ex=>$("custom_"+ex.id).value=0);
+ renderCustomWorkoutList();
+ showNotice(`Dein Trainingsplan „${name}“ wurde gespeichert. Du kannst ihn jetzt jederzeit starten.`,"Plan gespeichert ✨");
+}
+
+function startCustomWorkout(id){
+ if(activePlan){
+  showNotice("Bitte schließe zuerst dein aktuelles Training ab oder brich es ab.","Training läuft bereits");
+  return;
+ }
+ const saved=data.customWorkouts.find(p=>String(p.id)===String(id));
+ if(!saved)return;
+ const items=(saved.items||[]).map(item=>({
+  id:item.id,amount:Number(item.amount)||0,done:false
+ })).filter(item=>item.amount>0);
+ const activities=[];
+ if(Number(saved.runKm)>0)activities.push({type:"distance",activity:"run",km:Number(saved.runKm),done:false});
+ if(Number(saved.bikeKm)>0)activities.push({type:"distance",activity:"bike",km:Number(saved.bikeKm),done:false});
+ if(Number(saved.steps)>0)activities.push({type:"steps",steps:Number(saved.steps),done:false});
+
+ if(!items.length&&!activities.length){
+  showNotice("Dieser gespeicherte Plan enthält keine Aktivitäten mehr.","Plan leer");
+  return;
+ }
+ activePlan={
+  kind:"custom",name:saved.name,rounds:Number(saved.rounds)||1,
+  bonus:0,items,activities
+ };
+ renderPlanSession();
+ const area=$("activePlanSession");
+ if(area)area.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function deleteCustomWorkout(id){
+ const plan=data.customWorkouts.find(p=>String(p.id)===String(id));
+ if(!plan)return;
+ showConfirm(`Möchtest du den eigenen Trainingsplan „${plan.name}“ wirklich löschen? Bereits absolvierte Trainingseinheiten bleiben in deiner Historie erhalten.`,()=>{
+  data.customWorkouts=data.customWorkouts.filter(p=>String(p.id)!==String(id));
+  save();
+  renderCustomWorkoutList();
+  showNotice("Der eigene Trainingsplan wurde gelöscht.","Plan gelöscht");
+ },"Eigenen Plan löschen");
+}
+
 function buildWorkouts(){
- $("workoutList").innerHTML=`<div id="activePlanSession"></div>`+
- PLANS.map((p,i)=>`
+ $("workoutList").innerHTML=`
+  ${buildCustomWorkoutBuilder()}
+  <div id="activePlanSession"></div>
+  <h3 style="margin-top:24px">⚔️ Die zehn Standardpläne</h3>
+ `+PLANS.map((p,i)=>`
  <details class="planOption" id="planDropdown_${i}">
   <summary>${p.icon} ${esc(p.name)}</summary>
   <div class="planContent">
@@ -878,6 +1083,7 @@ function buildWorkouts(){
   </div>
  </details>`).join("");
  PLANS.forEach((p,i)=>updatePlanXp(i));
+ renderCustomWorkoutList();
  renderPlanSession();
 }
 
@@ -918,58 +1124,135 @@ function startPlan(i){
  const area=$("activePlanSession");
  if(area)area.scrollIntoView({behavior:"smooth",block:"start"});
 }
+
 function renderPlanSession(){
  const area=$("activePlanSession");
  if(!area)return;
  if(!activePlan){area.innerHTML="";return}
- const done=activePlan.items.filter(x=>x.done).length,total=activePlan.items.length,finished=done===total;
- const expectedXp=activePlan.bonus+activePlan.items.reduce((sum,item)=>{
+
+ const isCustom=activePlan.kind==="custom";
+ const exerciseDone=activePlan.items.filter(x=>x.done).length;
+ const activityDone=isCustom?(activePlan.activities||[]).filter(x=>x.done).length:0;
+ const done=exerciseDone+activityDone;
+ const total=activePlan.items.length+(isCustom?(activePlan.activities||[]).length:0);
+ const finished=total>0&&done===total;
+
+ const expectedExerciseXp=activePlan.items.reduce((sum,item)=>{
   const ex=EXERCISES.find(e=>e.id===item.id);
   return sum+(ex?item.amount*activePlan.rounds*ex.xp:0);
  },0);
+ const expectedActivityXp=isCustom?(activePlan.activities||[]).reduce((sum,a)=>{
+  if(a.type==="distance")return sum+Math.floor(a.km*(a.activity==="run"?20:8));
+  if(a.type==="steps")return sum+stepXp(a.steps);
+  return sum;
+ },0):0;
+ const expectedXp=Number(activePlan.bonus||0)+expectedExerciseXp+expectedActivityXp;
+
+ const exerciseHtml=activePlan.items.map((item,i)=>{
+  const ex=EXERCISES.find(e=>e.id===item.id);
+  if(!ex)return "";
+  return `<label style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);color:var(--text);font-size:14px;opacity:${item.done?0.65:1}">
+   <input type="checkbox" style="width:22px;height:22px;margin:0;flex-shrink:0" ${item.done?"checked":""} onchange="togglePlanExercise(${i},this.checked)">
+   <span style="${item.done?"text-decoration:line-through":""}">
+    <strong>${esc(ex.name)}</strong><br>
+    <small>${activePlan.rounds} × ${item.amount} ${esc(ex.unit)} = ${fmt(item.amount*activePlan.rounds)}</small>
+   </span></label>`;
+ }).join("");
+
+ let activityHtml="";
+ if(isCustom){
+  activityHtml=(activePlan.activities||[]).map((a,i)=>{
+   let title="",detail="";
+   if(a.type==="distance"){
+    const isRun=a.activity==="run";
+    title=isRun?"🏃 Laufen":"🚴 Radfahren";
+    detail=`${String(a.km).replace(".",",")} Kilometer · ${isRun?20:8} XP pro Kilometer`;
+   }else{
+    title="👣 Schritte";
+    detail=`${fmt(a.steps)} Schritte · ${fmt(stepXp(a.steps))} XP`;
+   }
+   return `<label style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);color:var(--text);font-size:14px;opacity:${a.done?0.65:1}">
+    <input type="checkbox" style="width:22px;height:22px;margin:0;flex-shrink:0" ${a.done?"checked":""} onchange="togglePlanActivity(${i},this.checked)">
+    <span style="${a.done?"text-decoration:line-through":""}">
+     <strong>${title}</strong><br><small>${detail}</small>
+    </span></label>`;
+  }).join("");
+ }
+
  area.innerHTML=`
  <div class="card hero">
-  <h2>🏋️ ${esc(activePlan.name)}</h2>
+  <h2>${isCustom?"✨":"🏋️"} ${esc(activePlan.name)}</h2>
   <div class="badge">${activePlan.rounds} ${activePlan.rounds===1?"Satz":"Sätze"}</div>
   <p><strong>Dein Trainingsfortschritt</strong></p>
-  <div class="progress"><span style="width:${done/total*100}%"></span></div>
-  <small>${done} von ${total} Übungen erledigt</small>
+  <div class="progress"><span style="width:${total?done/total*100:0}%"></span></div>
+  <small>${done} von ${total} Aufgaben erledigt</small>
   <h3 style="margin-top:20px">Deine Aufgaben</h3>
-  ${activePlan.items.map((item,i)=>{
-   const ex=EXERCISES.find(e=>e.id===item.id);
-   return `<label style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);color:var(--text);font-size:14px;opacity:${item.done?0.65:1}">
-    <input type="checkbox" style="width:22px;height:22px;margin:0;flex-shrink:0" ${item.done?"checked":""} onchange="togglePlanExercise(${i},this.checked)">
-    <span style="${item.done?"text-decoration:line-through":""}">
-     <strong>${esc(ex.name)}</strong><br>
-     <small>${activePlan.rounds} × ${item.amount} ${esc(ex.unit)} = ${fmt(item.amount*activePlan.rounds)}</small>
-    </span></label>`;
-  }).join("")}
+  ${exerciseHtml}
+  ${activityHtml?`<h3 style="margin-top:20px">Zusätzliche Aktivitäten</h3>${activityHtml}`:""}
   <p class="xp">Voraussichtliche Belohnung: +${fmt(expectedXp)} XP</p>
   <button onclick="completePlan()" ${finished?"":"disabled"}>Training abschließen</button>
   <p><button class="secondary" onclick="cancelPlan()">Plan abbrechen</button></p>
  </div>`;
 }
+
 function togglePlanExercise(index,checked){
  if(!activePlan)return;
+ if(!activePlan.items[index])return;
  activePlan.items[index].done=checked;
  renderPlanSession();
 }
+function togglePlanActivity(index,checked){
+ if(!activePlan||activePlan.kind!=="custom")return;
+ if(!activePlan.activities[index])return;
+ activePlan.activities[index].done=checked;
+ renderPlanSession();
+}
+
 function completePlan(){
  if(!activePlan)return;
- if(!activePlan.items.every(item=>item.done)){
-  showNotice("Bitte erledige zuerst alle Übungen.","Training noch nicht fertig");
+ const isCustom=activePlan.kind==="custom";
+ const allExercisesDone=activePlan.items.every(item=>item.done);
+ const allActivitiesDone=!isCustom||(activePlan.activities||[]).every(item=>item.done);
+ if(!allExercisesDone||!allActivitiesDone){
+  showNotice("Bitte erledige zuerst alle Aufgaben.","Training noch nicht fertig");
   return;
  }
+
  const rounds=activePlan.rounds;
+ const completedPlan=activePlan;
+
  data.entries.push({
-  id:Date.now(),type:"workout",date:today(),plan:activePlan.name,
-  items:activePlan.items.map(item=>({id:item.id,amount:item.amount*rounds})),
-  bonus:activePlan.bonus
+  id:Date.now(),type:"workout",date:today(),plan:completedPlan.name,
+  items:completedPlan.items.map(item=>({id:item.id,amount:item.amount*rounds})),
+  bonus:completedPlan.bonus||0
  });
+
+ if(isCustom){
+  (completedPlan.activities||[]).forEach((activity,index)=>{
+   if(activity.type==="distance"){
+    data.entries.push({
+     id:Date.now()+index+1,type:"distance",activity:activity.activity,
+     date:today(),km:activity.km
+    });
+   }else if(activity.type==="steps"){
+    const existing=data.entries.find(e=>e.type==="steps"&&e.date===today());
+    if(existing){
+     existing.steps=Math.min(100000,Number(existing.steps||0)+Number(activity.steps||0));
+    }else{
+     data.entries.push({
+      id:Date.now()+index+100,type:"steps",date:today(),
+      steps:Math.min(100000,Number(activity.steps||0))
+     });
+    }
+   }
+  });
+ }
+
  activePlan=null;
  save();render();renderPlanSession();
  showTrainingComplete();
 }
+
 function cancelPlan(){
  if(!activePlan)return;
  showConfirm("Möchtest du diesen Trainingsplan wirklich abbrechen?",()=>{
@@ -1023,7 +1306,7 @@ function saveSteps(){
  showNotice("Deine Schritte wurden gespeichert. Jeder Schritt zählt!","Schritte gespeichert");
 }
 
-/* Quest-System: alte Belohnungen bleiben erhalten */
+/* Quest-System */
 function checkQuests(){
  const day=today(),week=weekKey();
  data.claimedQuests=data.claimedQuests||[];
@@ -1205,7 +1488,7 @@ function questCard(q){
  </div>`;
 }
 
-/* Langzeit-Quests: Kategorien bleiben getrennt und standardmäßig geschlossen */
+/* Langzeit-Quests */
 function renderLongQuests(quests){
  const groups=[
   {key:"level",icon:"👑",name:"Level-Aufstieg",ids:["long_level_"]},
@@ -1227,9 +1510,7 @@ function renderLongQuests(quests){
     <span>${group.icon} ${group.name}<br><span class="questGroupMeta">${completed} von ${items.length} Etappen erreicht · ${claimed} Belohnungen abgeholt</span></span>
     <span class="badge">${percent}%</span>
    </summary>
-   <div class="questGroupContent">
-    ${items.map(questCard).join("")}
-   </div>
+   <div class="questGroupContent">${items.map(questCard).join("")}</div>
   </details>`;
  }).join("");
 }
@@ -1245,7 +1526,7 @@ function renderQuests(){
  $("homeQuests").innerHTML=[...q.daily,...q.weekly.slice(0,1)].map(questCard).join("");
 }
 
-/* Ruhmeshalle: Level-Meilensteine passend zur Levelkurve */
+/* Ruhmeshalle */
 function achievementList(){
  const t=totals();
  const levels=[5,10,20,35,50,75,100,150,200,300,500,750,1000,1500,2000,3000,5000,7500,10000,15000,20000];
@@ -1271,10 +1552,8 @@ function achievementList(){
  return a;
 }
 
-/* Ruhmeshalle: Erfolge in aufklappbare Kategorien sortieren */
 function renderAchievements(){
  const a=achievementList();
-
  const categories=[
   {icon:"👑",name:"Level-Aufstieg",start:0,count:21},
   {icon:"🏋️",name:"Trainingseinheiten",start:21,count:13},
@@ -1285,25 +1564,18 @@ function renderAchievements(){
   {icon:"🚴",name:"Radstrecke",start:85,count:9},
   {icon:"🌟",name:"Besondere Erfolge",start:94,count:5}
  ];
-
  const unlocked=a.filter(x=>x[3]).length;
-
  $("achievementSummary").textContent=
   `${unlocked} von ${a.length} Erfolgen freigeschaltet · Die Ruhmeshalle wächst mit deinem Fortschritt.`;
-
  $("achievementList").innerHTML=categories.map(category=>{
   const items=a.slice(category.start,category.start+category.count);
   const completed=items.filter(x=>x[3]).length;
   const percent=Math.round(completed/items.length*100);
-
   return `
    <details class="achievementCategory">
     <summary>
-     <span>
-      ${category.icon} ${category.name}
-      <span class="achievementCategoryMeta">
-       ${completed} von ${items.length} Erfolgen freigeschaltet
-      </span>
+     <span>${category.icon} ${category.name}
+      <span class="achievementCategoryMeta">${completed} von ${items.length} Erfolgen freigeschaltet</span>
      </span>
      <span class="badge">${percent}%</span>
     </summary>
@@ -1311,20 +1583,15 @@ function renderAchievements(){
      ${items.map(x=>`
       <div class="achievement ${x[3]?"":"locked"}">
        <span class="achievementIcon">${x[0]}</span>
-       <div style="flex:1">
-        <strong>${esc(x[1])}</strong><br>
-        <small>${esc(x[2])}</small>
-       </div>
+       <div style="flex:1"><strong>${esc(x[1])}</strong><br><small>${esc(x[2])}</small></div>
        <strong>${x[3]?"✓":"🔒"}</strong>
-      </div>
-     `).join("")}
+      </div>`).join("")}
     </div>
-   </details>
-  `;
+   </details>`;
  }).join("");
 }
 
-/* Historie: Aktivitäten nach Datum gruppieren */
+/* Historie */
 function activityName(e){
  if(e.type==="steps")return "👣 Schritte";
  if(e.type==="distance")return e.activity==="run"?"🏃 Laufen":"🚴 Radfahren";
@@ -1368,7 +1635,6 @@ function renderHistory(){
   groups[date].push(e);
  });
  const dates=Object.keys(groups).sort((a,b)=>b.localeCompare(a));
-
  $("historyList").innerHTML=dates.length?dates.map(date=>{
   const entries=groups[date];
   const dayXp=entries.reduce((sum,e)=>sum+entryXp(e)+(e.type==="steps"?stepXp(Number(e.steps||0)):0),0);
@@ -1403,195 +1669,123 @@ function renderHistory(){
  }).join(""):"<p class='muted'>Noch keine Einträge.</p>";
 }
 
-/*
- * Vollständige Bearbeitung eines historischen Eintrags:
- * - Datum und Kilometer bei Lauf- und Radeinträgen
- * - Datum und Schrittzahl bei Schritte-Einträgen
- * - Datum und jede einzelne Übung bei Trainingseinträgen
- * - Fehlende Übungen können direkt ergänzt werden
- */
+/* Vollständige Bearbeitung historischer Einträge */
 function editEntry(id){
  const e=data.entries.find(x=>String(x.id)===String(id));
  if(!e)return;
-
  const dateField=`
   <label for="edit_date">Datum</label>
   <input id="edit_date" data-edit-field="date" type="date" value="${esc(e.date||today())}">
  `;
-
  if(e.type==="distance"){
   const isRun=e.activity==="run";
   const activity=isRun?"Laufen":"Radfahren";
-  const km=String(e.km??"").replace(".",",");
   const fields=dateField+`
    <label for="edit_km">${isRun?"Gelaufene":"Gefahrene"} Strecke in Kilometern</label>
-   <input id="edit_km" data-edit-field="km" type="text" inputmode="decimal" value="${esc(km)}" placeholder="z. B. 5,5">
+   <input id="edit_km" data-edit-field="km" type="text" inputmode="decimal" value="${esc(String(e.km??"").replace(".",","))}" placeholder="z. B. 5,5">
    <small>${isRun?"20":"8"} XP pro Kilometer</small>
   `;
-  openDialog(
-   activity+" bearbeiten",
-   "Du kannst das Datum und die gespeicherte Strecke korrigieren.",
-   [
-    {text:"Abbrechen",secondary:true},
-    {text:"Änderungen speichern",action:values=>{
-     const newDate=String(values.date||"").trim();
-     const kmRaw=String(values.km||"").trim().replace(",",".");
-     const newKm=Number(kmRaw);
-     if(!/^\d{4}-\d{2}-\d{2}$/.test(newDate)){
-      showNotice("Bitte gib ein gültiges Datum ein.","Datum nicht erkannt");return;
-     }
-     if(!Number.isFinite(newKm)||newKm<=0||newKm>1000){
-      showNotice("Bitte gib eine gültige Strecke zwischen 0 und 1.000 Kilometern ein.","Strecke prüfen");return;
-     }
-     e.date=newDate;
-     e.km=newKm;
-     save();render();
-     showNotice("Datum und Strecke wurden aktualisiert.","Eintrag gespeichert");
-    }}
-   ],
-   fields
-  );
+  openDialog(activity+" bearbeiten","Du kannst das Datum und die gespeicherte Strecke korrigieren.",[
+   {text:"Abbrechen",secondary:true},
+   {text:"Änderungen speichern",action:values=>{
+    const newDate=String(values.date||"").trim();
+    const newKm=Number(String(values.km||"").trim().replace(",","."));
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(newDate)){
+     showNotice("Bitte gib ein gültiges Datum ein.","Datum nicht erkannt");return;
+    }
+    if(!Number.isFinite(newKm)||newKm<=0||newKm>1000){
+     showNotice("Bitte gib eine gültige Strecke zwischen 0 und 1.000 Kilometern ein.","Strecke prüfen");return;
+    }
+    e.date=newDate;e.km=newKm;save();render();
+    showNotice("Datum und Strecke wurden aktualisiert.","Eintrag gespeichert");
+   }}
+  ],fields);
   return;
  }
-
  if(e.type==="steps"){
   const fields=dateField+`
    <label for="edit_steps">Schritte an diesem Tag</label>
    <input id="edit_steps" data-edit-field="steps" type="number" min="0" max="100000" value="${esc(e.steps??0)}">
    <small>1.000 Schritte = 5 XP · maximal 100.000 Schritte pro Tag</small>
   `;
-  openDialog(
-   "Schritte bearbeiten",
-   "Korrigiere das Datum oder die Schrittzahl dieses Eintrags.",
-   [
-    {text:"Abbrechen",secondary:true},
-    {text:"Änderungen speichern",action:values=>{
-     const newDate=String(values.date||"").trim();
-     const newSteps=Number(values.steps);
-     if(!/^\d{4}-\d{2}-\d{2}$/.test(newDate)){
-      showNotice("Bitte gib ein gültiges Datum ein.","Datum nicht erkannt");return;
-     }
-     if(!Number.isInteger(newSteps)||newSteps<0||newSteps>100000){
-      showNotice("Bitte gib eine Schrittzahl zwischen 0 und 100.000 ein.","Schrittzahl prüfen");return;
-     }
-     e.date=newDate;
-     e.steps=newSteps;
-     save();render();
-     showNotice("Datum und Schrittzahl wurden aktualisiert.","Eintrag gespeichert");
-    }}
-   ],
-   fields
-  );
+  openDialog("Schritte bearbeiten","Korrigiere das Datum oder die Schrittzahl dieses Eintrags.",[
+   {text:"Abbrechen",secondary:true},
+   {text:"Änderungen speichern",action:values=>{
+    const newDate=String(values.date||"").trim();
+    const newSteps=Number(values.steps);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(newDate)){
+     showNotice("Bitte gib ein gültiges Datum ein.","Datum nicht erkannt");return;
+    }
+    if(!Number.isInteger(newSteps)||newSteps<0||newSteps>100000){
+     showNotice("Bitte gib eine Schrittzahl zwischen 0 und 100.000 ein.","Schrittzahl prüfen");return;
+    }
+    e.date=newDate;e.steps=newSteps;save();render();
+    showNotice("Datum und Schrittzahl wurden aktualisiert.","Eintrag gespeichert");
+   }}
+  ],fields);
   return;
  }
-
  if(e.type==="workout"){
   const existingItems=Array.isArray(e.items)?e.items:[];
   const amountById={};
   existingItems.forEach(item=>{
    amountById[item.id]=Number(amountById[item.id]||0)+Number(item.amount||0);
   });
-
   const grouped={upper:[],lower:[],core:[]};
   EXERCISES.forEach(ex=>grouped[ex.group].push(ex));
-
   let exerciseFields="";
-  const groupNames={
-   upper:"💪 Oberkörper",
-   lower:"🦵 Unterkörper",
-   core:"🧱 Rumpf"
-  };
-
+  const groupNames={upper:"💪 Oberkörper",lower:"🦵 Unterkörper",core:"🧱 Rumpf"};
   Object.entries(grouped).forEach(([group,exercises])=>{
    exerciseFields+=`<div class="editSectionTitle">${groupNames[group]}</div>`;
    exercises.forEach(ex=>{
     exerciseFields+=`
      <div class="editExercise">
-      <label for="edit_ex_${ex.id}">
-       <strong>${esc(ex.name)}</strong><br>
-       <small>${esc(ex.unit)} · ${ex.xp} XP</small>
-      </label>
-      <input
-       id="edit_ex_${ex.id}"
-       data-edit-field="exercise_${ex.id}"
-       type="number"
-       min="0"
-       max="100000"
-       step="1"
-       inputmode="numeric"
-       value="${esc(amountById[ex.id]??0)}"
-      >
-     </div>
-    `;
+      <label for="edit_ex_${ex.id}"><strong>${esc(ex.name)}</strong><br><small>${esc(ex.unit)} · ${ex.xp} XP</small></label>
+      <input id="edit_ex_${ex.id}" data-edit-field="exercise_${ex.id}" type="number" min="0" max="100000" step="1" inputmode="numeric" value="${esc(amountById[ex.id]??0)}">
+     </div>`;
    });
   });
-
-  // Unbekannte bzw. ältere Übungs-IDs werden nicht versehentlich entfernt.
   const knownIds=new Set(EXERCISES.map(ex=>ex.id));
   const unknownItems=existingItems.filter(item=>!knownIds.has(item.id));
-
   let unknownInfo="";
   if(unknownItems.length){
    unknownInfo=`
     <div class="editSectionTitle">Weitere gespeicherte Übungen</div>
-    <p class="muted">Ältere Übungen, die nicht mehr in der aktuellen Übungsliste stehen, bleiben beim Speichern erhalten.</p>
-    ${unknownItems.map(item=>`
-     <div class="editExercise">
-      <label>${esc(item.id)}</label>
-      <strong>${fmt(item.amount)}</strong>
-     </div>
-    `).join("")}
+    <p class="muted">Ältere Übungen bleiben beim Speichern erhalten.</p>
+    ${unknownItems.map(item=>`<div class="editExercise"><label>${esc(item.id)}</label><strong>${fmt(item.amount)}</strong></div>`).join("")}
    `;
   }
-
   const fields=dateField+`
-   <p class="muted">Passe die Werte an. Trage auch Übungen nach, die du damals vergessen hast. Ein Wert von 0 entfernt die jeweilige Übung aus diesem Eintrag.</p>
-   ${exerciseFields}
-   ${unknownInfo}
+   <p class="muted">Passe die Werte an. Ein Wert von 0 entfernt die jeweilige Übung aus diesem Eintrag.</p>
+   ${exerciseFields}${unknownInfo}
   `;
-
-  openDialog(
-   "Training bearbeiten",
-   "Du kannst das Datum und sämtliche Übungen dieses Trainings korrigieren oder ergänzen.",
-   [
-    {text:"Abbrechen",secondary:true},
-    {text:"Änderungen speichern",action:values=>{
-     const newDate=String(values.date||"").trim();
-     if(!/^\d{4}-\d{2}-\d{2}$/.test(newDate)){
-      showNotice("Bitte gib ein gültiges Datum ein.","Datum nicht erkannt");return;
-     }
-
-     const updatedItems=[];
-     for(const ex of EXERCISES){
-      const raw=values["exercise_"+ex.id];
-      const amount=Number(raw||0);
-      if(!Number.isInteger(amount)||amount<0||amount>100000){
-       showNotice("Bitte überprüfe die Anzahl bei "+ex.name+". Erlaubt sind ganze Zahlen von 0 bis 100.000.","Übungswert prüfen");
-       return;
-      }
-      if(amount>0)updatedItems.push({id:ex.id,amount});
-     }
-
-     // Nicht bekannte historische Übungseinträge bleiben unverändert erhalten.
-     unknownItems.forEach(item=>updatedItems.push({...item}));
-
-     if(!updatedItems.length){
-      showNotice("Ein Training muss mindestens eine Übung enthalten. Wenn du den Eintrag entfernen möchtest, nutze bitte die Löschen-Funktion.","Keine Übungen eingetragen");
+  openDialog("Training bearbeiten","Du kannst das Datum und sämtliche Übungen dieses Trainings korrigieren oder ergänzen.",[
+   {text:"Abbrechen",secondary:true},
+   {text:"Änderungen speichern",action:values=>{
+    const newDate=String(values.date||"").trim();
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(newDate)){
+     showNotice("Bitte gib ein gültiges Datum ein.","Datum nicht erkannt");return;
+    }
+    const updatedItems=[];
+    for(const ex of EXERCISES){
+     const amount=Number(values["exercise_"+ex.id]||0);
+     if(!Number.isInteger(amount)||amount<0||amount>100000){
+      showNotice("Bitte überprüfe die Anzahl bei "+ex.name+". Erlaubt sind ganze Zahlen von 0 bis 100.000.","Übungswert prüfen");
       return;
      }
-
-     e.date=newDate;
-     e.items=updatedItems;
-     // Planname und Bonus-XP bleiben erhalten.
-     save();render();
-     showNotice("Datum und Übungen wurden aktualisiert. Deine XP und Fortschritte wurden neu berechnet.","Training gespeichert");
-    }}
-   ],
-   fields
-  );
+     if(amount>0)updatedItems.push({id:ex.id,amount});
+    }
+    unknownItems.forEach(item=>updatedItems.push({...item}));
+    if(!updatedItems.length){
+     showNotice("Ein Training muss mindestens eine Übung enthalten. Wenn du den Eintrag entfernen möchtest, nutze bitte die Löschen-Funktion.","Keine Übungen eingetragen");
+     return;
+    }
+    e.date=newDate;e.items=updatedItems;save();render();
+    showNotice("Datum und Übungen wurden aktualisiert. Deine XP und Fortschritte wurden neu berechnet.","Training gespeichert");
+   }}
+  ],fields);
   return;
  }
-
  showNotice("Dieser Eintragstyp kann nicht bearbeitet werden.","Eintrag nicht erkannt");
 }
 
@@ -1632,7 +1826,8 @@ function importSave(){
        if(!Array.isArray(data.claimedQuests))data.claimedQuests=[];
        if(!Array.isArray(data.claimedWeeks))data.claimedWeeks=[];
        if(!Array.isArray(data.claimedQuestIds))data.claimedQuestIds=[];
-       save();render();
+       if(!Array.isArray(data.customWorkouts))data.customWorkouts=[];
+       save();render();buildWorkouts();
        showNotice("Deine Sicherung wurde geladen.","Spielstand wiederhergestellt");
       },"Sicherung wiederherstellen");
      }catch(e){showNotice("Die Datei konnte nicht gelesen werden.","Import fehlgeschlagen")}
@@ -1645,12 +1840,16 @@ function importSave(){
 }
 function resetProgress(){
  showConfirm(
-  "Möchtest du wirklich deinen gesamten Spielstand löschen? Dieser Schritt kann nicht rückgängig gemacht werden. Deine externe Sicherungsdatei bleibt davon unberührt.",
+  "Möchtest du wirklich deinen gesamten Spielfortschritt löschen? Deine gespeicherten eigenen Trainingspläne bleiben erhalten. Dieser Schritt kann nicht rückgängig gemacht werden. Deine externe Sicherungsdatei bleibt davon unberührt.",
   ()=>{
-   data={entries:[],weekRewards:0,questXp:0,claimedQuests:[],claimedWeeks:[],claimedQuestIds:[]};
+   data={
+    entries:[],weekRewards:0,questXp:0,
+    claimedQuests:[],claimedWeeks:[],claimedQuestIds:[],
+    customWorkouts:Array.isArray(data.customWorkouts)?data.customWorkouts:[]
+   };
    activePlan=null;
-   save();render();renderPlanSession();
-   showNotice("Dein Spielstand wurde zurückgesetzt.","Neuer Anfang");
+   save();render();renderPlanSession();renderCustomWorkoutList();
+   showNotice("Dein Spielfortschritt wurde zurückgesetzt. Deine eigenen Trainingspläne sind weiterhin gespeichert.","Neuer Anfang");
   },
   "Spielstand zurücksetzen"
  );
@@ -1659,7 +1858,6 @@ function resetProgress(){
 /* Erfolgsmomente */
 let displayedLevel=null;
 let successTimer=null;
-
 function dismissSuccess(){
  const layer=$("successLayer");
  if(!layer)return;
@@ -1699,54 +1897,44 @@ function showTrainingComplete(){
 function render(){
  checkQuests();
  const t=totals();
-
  if(displayedLevel===null){
   displayedLevel=t.level;
  }else{
   if(t.level>displayedLevel)showLevelUp(t.level);
   displayedLevel=t.level;
  }
-
  const start=xpForLevel(t.level),next=xpForLevel(t.level+1);
  const inside=t.xp-start,needed=Math.max(1,next-start);
-
  $("level").textContent=fmt(t.level);
  $("rank").textContent=rankFor(t.level);
  $("totalXp").textContent=fmt(t.xp);
  $("nextXp").textContent=`Noch ${fmt(next-t.xp)} XP bis Level ${fmt(t.level+1)}`;
  $("xpProgress").textContent=`${fmt(inside)} / ${fmt(needed)} XP`;
  $("xpBar").style.width=Math.min(100,inside/needed*100)+"%";
-
  $("streak").textContent=t.streak;
  $("weekDays").textContent=t.week+"/3";
  $("workouts").textContent=fmt(t.workouts);
-
  const todayWorkoutXp=data.entries
   .filter(e=>e.date===today()&&(e.type==="workout"||e.type==="distance"))
   .reduce((s,e)=>s+entryXp(e),0);
  const todayStepXp=stepXp(stepsOn());
  $("todayXp").textContent=fmt(todayWorkoutXp+todayStepXp);
-
  $("weekBar").style.width=Math.min(100,t.week/3*100)+"%";
  $("weekText").textContent=`${t.week} von 3 Tagen`;
  $("homeSteps").textContent=fmt(stepsOn());
  $("homeStepXp").textContent=fmt(stepXp(stepsOn()))+" XP durch Schritte";
-
  $("profileXp").textContent=fmt(t.xp);
  $("profileLevel").textContent=fmt(t.level);
  $("profileWorkouts").textContent=fmt(t.workouts);
  $("profileDays").textContent=fmt(t.days);
-
  $("stepDate").value=$("stepDate").value||today();
  $("stepCount").value=stepsOn();
  $("runDate").value=$("runDate").value||today();
  $("bikeDate").value=$("bikeDate").value||today();
-
  const latest=[...data.entries].sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];
  $("recentHome").textContent=latest?
   activityName(latest)+" – "+latest.date+" · "+activityDetails(latest):
   "Dein erstes Abenteuer wartet!";
-
  renderQuests();
  renderAchievements();
  renderHistory();
