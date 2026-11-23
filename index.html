@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -156,7 +155,7 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 }
 .questDropdown summary{
  list-style:none;cursor:pointer;padding:17px;font-weight:850;color:var(--gold2);
- display:flex;justify-content:space-between;align-items:center
+ display:flex;justify-content:space-between;align-items:center;gap:10px
 }
 .questDropdown summary::-webkit-details-marker{display:none}
 .questDropdown summary::after{
@@ -164,6 +163,22 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 }
 .questDropdown[open] summary::after{transform:rotate(180deg)}
 .questDropdownContent{padding:0 14px 10px;border-top:1px solid var(--line)}
+.questGroup{
+ background:#171219;border:1px solid #493442;border-radius:14px;
+ margin:11px 0;overflow:hidden
+}
+.questGroup summary{
+ list-style:none;cursor:pointer;padding:14px;
+ display:flex;align-items:center;justify-content:space-between;gap:10px;
+ color:var(--pink2);font-weight:800
+}
+.questGroup summary::-webkit-details-marker{display:none}
+.questGroup summary::after{
+ content:"＋";font-size:18px;color:var(--gold);font-weight:900
+}
+.questGroup[open] summary::after{content:"−"}
+.questGroupContent{padding:0 11px 8px;border-top:1px solid var(--line)}
+.questGroupMeta{font-size:11px;color:var(--muted);font-weight:600}
 .achievement{
  display:flex;align-items:center;gap:12px;
  padding:12px 0;border-bottom:1px solid var(--line)
@@ -171,8 +186,21 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .achievement:last-child{border:0}
 .achievementIcon{font-size:25px}
 .locked{opacity:.55}
+.historyDay{
+ background:linear-gradient(145deg,#2b202a,#1b151d);
+ border:1px solid #624354;border-radius:15px;margin:11px 0;overflow:hidden
+}
+.historyDay summary{
+ list-style:none;cursor:pointer;padding:15px;
+ display:flex;align-items:center;justify-content:space-between;gap:10px;
+ color:var(--gold2);font-weight:850
+}
+.historyDay summary::-webkit-details-marker{display:none}
+.historyDay summary::after{content:"▼";font-size:11px;color:var(--pink)}
+.historyDay[open] summary::after{transform:rotate(180deg)}
+.historyDayContent{padding:0 13px 10px;border-top:1px solid var(--line)}
 .historyItem{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.historyActions{display:flex;gap:6px}
+.historyActions{display:flex;gap:6px;flex-shrink:0}
 .historyActions button{padding:8px 11px}
 nav{
  position:fixed;bottom:0;left:0;right:0;z-index:5;
@@ -255,6 +283,8 @@ nav button.active{
  nav button span{font-size:18px}
  .card{padding:14px}
  .planAmount{grid-template-columns:1fr 82px}
+ .historyActions{gap:4px}
+ .historyActions button{padding:7px 9px}
 }
 @media(prefers-reduced-motion:reduce){
  *,*:before,*:after{animation:none!important;scroll-behavior:auto!important}
@@ -392,7 +422,10 @@ nav button.active{
  </details>
  <details class="questDropdown">
   <summary>♾️ Langzeit-Quests</summary>
-  <div class="questDropdownContent"><div id="longQuestList"></div></div>
+  <div class="questDropdownContent">
+   <p class="muted">Die großen Herausforderungen sind in kleinere Etappen aufgeteilt. Öffne eine Kategorie, um deine Zwischenziele und Belohnungen zu sehen.</p>
+   <div id="longQuestList"></div>
+  </div>
  </details>
  <div class="card">
   <h3>🏅 Wochenfortschritt</h3>
@@ -421,7 +454,10 @@ nav button.active{
  </div>
  <details class="questDropdown">
   <summary>📜 Trainingshistorie anzeigen</summary>
-  <div class="questDropdownContent"><div id="historyList"></div></div>
+  <div class="questDropdownContent">
+   <p class="muted">Öffne einen Tag, um alle Aktivitäten dieses Datums aufzurufen.</p>
+   <div id="historyList"></div>
+  </div>
  </details>
  <div class="card">
   <h3>💾 Spielstand-Sicherung</h3>
@@ -961,46 +997,118 @@ function questDefinitions(){
  const weekEntries=workoutEntries().filter(e=>e.date>=week&&e.date<=d);
  const weekAmount=weekEntries.reduce((s,e)=>s+(e.items||[]).reduce((n,x)=>n+Number(x.amount||0),0),0);
  const t=totals();
+
  const long=[
   ["long_workouts_10","🏋️","Trainingsanfänger","Schließe insgesamt 10 Trainingseinheiten ab.",t.workouts,10,50],
-  ["long_workouts_50","🥉","Eiserner Wille","Schließe insgesamt 50 Trainingseinheiten ab.",t.workouts,50,150],
-  ["long_workouts_100","🥈","Unaufhaltsam","Schließe insgesamt 100 Trainingseinheiten ab.",t.workouts,100,300],
-  ["long_workouts_250","🥇","Trainingsmaschine","Schließe insgesamt 250 Trainingseinheiten ab.",t.workouts,250,750],
+  ["long_workouts_25","🥉","Trainingsroutine","Schließe insgesamt 25 Trainingseinheiten ab.",t.workouts,25,90],
+  ["long_workouts_50","🥈","Eiserner Wille","Schließe insgesamt 50 Trainingseinheiten ab.",t.workouts,50,150],
+  ["long_workouts_75","🥇","Trainingsfleiß","Schließe insgesamt 75 Trainingseinheiten ab.",t.workouts,75,220],
+  ["long_workouts_100","🏆","Unaufhaltsam","Schließe insgesamt 100 Trainingseinheiten ab.",t.workouts,100,300],
+  ["long_workouts_150","⚔️","Kämpferherz","Schließe insgesamt 150 Trainingseinheiten ab.",t.workouts,150,450],
+  ["long_workouts_250","👑","Trainingsmaschine","Schließe insgesamt 250 Trainingseinheiten ab.",t.workouts,250,750],
+  ["long_workouts_350","🌟","Ausdauernder Kämpfer","Schließe insgesamt 350 Trainingseinheiten ab.",t.workouts,350,1000],
   ["long_workouts_500","🏆","Trainingsmeister","Schließe insgesamt 500 Trainingseinheiten ab.",t.workouts,500,1500],
+  ["long_workouts_750","💎","Elite-Athlet","Schließe insgesamt 750 Trainingseinheiten ab.",t.workouts,750,2200],
   ["long_workouts_1000","👑","Unbezwingbarer Kämpfer","Schließe insgesamt 1.000 Trainingseinheiten ab.",t.workouts,1000,3000],
+  ["long_workouts_1500","🌠","Trainingslegende","Schließe insgesamt 1.500 Trainingseinheiten ab.",t.workouts,1500,4200],
   ["long_workouts_2500","🌟","Mythische Trainingslegende","Schließe insgesamt 2.500 Trainingseinheiten ab.",t.workouts,2500,6000],
+  ["long_workouts_5000","🌌","Unermüdliche Legende","Schließe insgesamt 5.000 Trainingseinheiten ab.",t.workouts,5000,10000],
+
   ["long_steps_100k","👣","Schrittemeister","Sammle insgesamt 100.000 Schritte.",t.steps,100000,200],
+  ["long_steps_250k","🥾","Schrittesammler","Sammle insgesamt 250.000 Schritte.",t.steps,250000,350],
   ["long_steps_500k","🥾","Wegbereiter","Sammle insgesamt 500.000 Schritte.",t.steps,500000,500],
+  ["long_steps_750k","🚶","Wanderfreund","Sammle insgesamt 750.000 Schritte.",t.steps,750000,700],
   ["long_steps_1m","🌍","Weltentdecker","Sammle insgesamt 1.000.000 Schritte.",t.steps,1000000,1000],
+  ["long_steps_1_5m","🗺️","Weitwanderer","Sammle insgesamt 1.500.000 Schritte.",t.steps,1500000,1400],
   ["long_steps_2m","🚶","Ausdauerwanderer","Sammle insgesamt 2.500.000 Schritte.",t.steps,2500000,2000],
+  ["long_steps_3m","🌄","Pfadfinder","Sammle insgesamt 3.000.000 Schritte.",t.steps,3000000,2500],
+  ["long_steps_4m","🏞️","Weg der Legenden","Sammle insgesamt 4.000.000 Schritte.",t.steps,4000000,3200],
   ["long_steps_5m","🗺️","Meister der Wege","Sammle insgesamt 5.000.000 Schritte.",t.steps,5000000,4000],
+  ["long_steps_6m","🌅","Horizontjäger","Sammle insgesamt 6.000.000 Schritte.",t.steps,6000000,4800],
+  ["long_steps_7m","🌠","Wanderlegende","Sammle insgesamt 7.000.000 Schritte.",t.steps,7000000,5600],
+  ["long_steps_8m","🌌","Meister der Entfernungen","Sammle insgesamt 8.000.000 Schritte.",t.steps,8000000,6400],
+  ["long_steps_9m","✨","Grenzenlos unterwegs","Sammle insgesamt 9.000.000 Schritte.",t.steps,9000000,7000],
   ["long_steps_10m","🌌","Schritte-Legende","Sammle insgesamt 10.000.000 Schritte.",t.steps,10000000,7500],
+  ["long_steps_15m","🌍","Weltumrunder","Sammle insgesamt 15.000.000 Schritte.",t.steps,15000000,10000],
+  ["long_steps_20m","🌟","Unendlicher Weg","Sammle insgesamt 20.000.000 Schritte.",t.steps,20000000,12500],
+
+  ["long_volume_500","💪","Wiederholungsstarter","Sammle insgesamt 500 Wiederholungen oder Sekunden.",totalExerciseAmount(),500,100],
   ["long_volume_1000","💪","Wiederholungsheld","Sammle insgesamt 1.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),1000,200],
+  ["long_volume_2500","⚡","Fleißiger Kraftsportler","Sammle insgesamt 2.500 Wiederholungen oder Sekunden.",totalExerciseAmount(),2500,350],
+  ["long_volume_5000","🔥","Kraftsammler","Sammle insgesamt 5.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),5000,450],
   ["long_volume_10000","⚡","Kraftpaket","Sammle insgesamt 10.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),10000,600],
+  ["long_volume_15000","🏋️","Starker Wille","Sammle insgesamt 15.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),15000,850],
   ["long_volume_25000","🔥","Kraftmeister","Sammle insgesamt 25.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),25000,1200],
+  ["long_volume_35000","💎","Kraft-Elite","Sammle insgesamt 35.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),35000,1800],
   ["long_volume_50000","💎","Unermüdliche Kraft","Sammle insgesamt 50.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),50000,2500],
+  ["long_volume_75000","👑","Kraft-Champion","Sammle insgesamt 75.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),75000,3500],
   ["long_volume_100000","👑","Titan der Ausdauer","Sammle insgesamt 100.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),100000,5000],
+  ["long_volume_150000","🌠","Titanenstärke","Sammle insgesamt 150.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),150000,7000],
   ["long_volume_250000","🌠","Unsterblicher Titan","Sammle insgesamt 250.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),250000,10000],
+  ["long_volume_500000","🌌","Kraft-Mythos","Sammle insgesamt 500.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),500000,15000],
+
+  ["long_streak_3","🔥","Erste Serie","Erreiche 3 Trainingstage in Folge.",t.streak,3,50],
   ["long_streak_7","🔥","Serienkrieger","Erreiche 7 Trainingstage in Folge.",t.streak,7,100],
+  ["long_streak_14","🌟","Zwei-Wochen-Kämpfer","Erreiche 14 Trainingstage in Folge.",t.streak,14,200],
+  ["long_streak_21","⚔️","Drei-Wochen-Serie","Erreiche 21 Trainingstage in Folge.",t.streak,21,300],
   ["long_streak_30","🌟","Monatslegende","Erreiche 30 Trainingstage in Folge.",t.streak,30,500],
+  ["long_streak_45","🏅","Ausdauer-Champion","Erreiche 45 Trainingstage in Folge.",t.streak,45,800],
   ["long_streak_60","🏅","Zwei-Monats-Champion","Erreiche 60 Trainingstage in Folge.",t.streak,60,1200],
+  ["long_streak_90","💫","Drei-Monats-Legende","Erreiche 90 Trainingstage in Folge.",t.streak,90,2000],
   ["long_streak_100","💫","Unaufhaltsame Serie","Erreiche 100 Trainingstage in Folge.",t.streak,100,2500],
   ["long_streak_180","👑","Halbjahreslegende","Erreiche 180 Trainingstage in Folge.",t.streak,180,5000],
+  ["long_streak_270","🌌","Neun-Monats-Legende","Erreiche 270 Trainingstage in Folge.",t.streak,270,7500],
   ["long_streak_365","🌌","Jahreslegende","Erreiche 365 Trainingstage in Folge.",t.streak,365,10000],
+  ["long_streak_500","✨","Unerschütterlich","Erreiche 500 Trainingstage in Folge.",t.streak,500,14000],
+  ["long_streak_730","🌠","Zwei-Jahres-Legende","Erreiche 730 Trainingstage in Folge.",t.streak,730,20000],
+
   ["long_level_10","🌱","Aufsteiger","Erreiche Level 10.",t.level,10,100],
+  ["long_level_20","🛡️","Wachsender Held","Erreiche Level 20.",t.level,20,180],
   ["long_level_25","🛡️","Erfahrener Held","Erreiche Level 25.",t.level,25,250],
+  ["long_level_30","⚔️","Kämpfer","Erreiche Level 30.",t.level,30,300],
+  ["long_level_40","⚔️","Erfahrener Kämpfer","Erreiche Level 40.",t.level,40,400],
   ["long_level_50","⚔️","Meister","Erreiche Level 50.",t.level,50,500],
+  ["long_level_75","🏆","Elite-Veteran","Erreiche Level 75.",t.level,75,750],
   ["long_level_100","🔥","Legende","Erreiche Level 100.",t.level,100,1000],
+  ["long_level_125","🔥","Legendenstatus","Erreiche Level 125.",t.level,125,1300],
+  ["long_level_150","💎","Meisterhafte Legende","Erreiche Level 150.",t.level,150,1700],
+  ["long_level_175","💎","Mythischer Aufstieg","Erreiche Level 175.",t.level,175,2100],
   ["long_level_200","💎","Mythischer Held","Erreiche Level 200.",t.level,200,2500],
-  ["long_level_500","👑","Ewige Legende","Erreiche Level 500.",t.level,500,5000],
+  ["long_level_250","👑","Königsklasse","Erreiche Level 250.",t.level,250,3200],
+  ["long_level_300","👑","Unsterblicher Meister","Erreiche Level 300.",t.level,300,4000],
+  ["long_level_400","🌟","Sagenheld","Erreiche Level 400.",t.level,400,5000],
+  ["long_level_500","👑","Ewige Legende","Erreiche Level 500.",t.level,500,6000],
+  ["long_level_600","🌌","Transzendenter Kämpfer","Erreiche Level 600.",t.level,600,7000],
+  ["long_level_750","🌌","Kosmische Legende","Erreiche Level 750.",t.level,750,8500],
   ["long_level_1000","🌌","Transzendenz","Erreiche Level 1.000.",t.level,1000,10000],
+  ["long_level_1250","✨","Jenseits der Grenzen","Erreiche Level 1.250.",t.level,1250,12000],
+  ["long_level_1500","🌠","Sternenkrieger","Erreiche Level 1.500.",t.level,1500,14000],
+  ["long_level_1750","🌠","Kosmischer Aufstieg","Erreiche Level 1.750.",t.level,1750,16000],
+  ["long_level_2000","🌌","Unendliche Legende","Erreiche Level 2.000.",t.level,2000,18000],
+  ["long_level_2500","🌟","Mythos ohne Ende","Erreiche Level 2.500.",t.level,2500,22000],
+  ["long_level_3000","💫","Meister des Universums","Erreiche Level 3.000.",t.level,3000,26000],
+
+  ["long_run_25","🏃","Laufanfänger","Laufe insgesamt 25 Kilometer.",totalDistance("run"),25,100],
+  ["long_run_50","🏃","Laufstrecke gesammelt","Laufe insgesamt 50 Kilometer.",totalDistance("run"),50,180],
   ["long_run_100","🏃","Laufstarter","Laufe insgesamt 100 Kilometer.",totalDistance("run"),100,300],
+  ["long_run_250","🥇","Ausdauerläufer","Laufe insgesamt 250 Kilometer.",totalDistance("run"),250,700],
   ["long_run_500","🥇","Laufprofi","Laufe insgesamt 500 Kilometer.",totalDistance("run"),500,1200],
+  ["long_run_750","🏅","Langstreckenläufer","Laufe insgesamt 750 Kilometer.",totalDistance("run"),750,2000],
   ["long_run_1000","🏅","Marathon-Legende","Laufe insgesamt 1.000 Kilometer.",totalDistance("run"),1000,3000],
+  ["long_run_1500","🌟","Lauf-Champion","Laufe insgesamt 1.500 Kilometer.",totalDistance("run"),1500,4500],
+  ["long_run_2500","🌌","Lauflegende","Laufe insgesamt 2.500 Kilometer.",totalDistance("run"),2500,7000],
+
+  ["long_bike_50","🚴","Radstarter","Fahre insgesamt 50 Kilometer.",totalDistance("bike"),50,100],
+  ["long_bike_100","🚴","Radstrecke gesammelt","Fahre insgesamt 100 Kilometer.",totalDistance("bike"),100,180],
   ["long_bike_250","🚴","Rad-Abenteurer","Fahre insgesamt 250 Kilometer.",totalDistance("bike"),250,300],
+  ["long_bike_500","🚵","Ausdauer-Radler","Fahre insgesamt 500 Kilometer.",totalDistance("bike"),500,700],
   ["long_bike_1000","🚵","Rad-Meister","Fahre insgesamt 1.000 Kilometer.",totalDistance("bike"),1000,1200],
-  ["long_bike_5000","🏆","Rad-Legende","Fahre insgesamt 5.000 Kilometer.",totalDistance("bike"),5000,4000]
+  ["long_bike_2500","🏆","Rad-Champion","Fahre insgesamt 2.500 Kilometer.",totalDistance("bike"),2500,2500],
+  ["long_bike_5000","🏆","Rad-Legende","Fahre insgesamt 5.000 Kilometer.",totalDistance("bike"),5000,4000],
+  ["long_bike_7500","🌟","Langstrecken-Radler","Fahre insgesamt 7.500 Kilometer.",totalDistance("bike"),7500,6000],
+  ["long_bike_10000","🌌","Rad-Mythos","Fahre insgesamt 10.000 Kilometer.",totalDistance("bike"),10000,8000]
  ];
+
  return {
   daily:[
    {id:"daily_workout_"+d,type:"Täglich",icon:"🏋️",name:"Trainingsstart",desc:"Schließe heute eine Trainingseinheit ab.",value:todayWorkouts.length,goal:1,xp:30},
@@ -1038,11 +1146,41 @@ function questCard(q){
   ${claimed?'<p class="questReward">✓ Belohnung eingesammelt</p>':done?`<p><button onclick="claimQuest('${q.id}')">Belohnung abholen</button></p>`:""}
  </div>`;
 }
+
+/* Langzeit-Quests in aufklappbare Kategorien sortieren */
+function renderLongQuests(quests){
+ const groups=[
+  {key:"level",icon:"👑",name:"Level-Aufstieg",ids:["long_level_"]},
+  {key:"workouts",icon:"🏋️",name:"Trainingseinheiten",ids:["long_workouts_"]},
+  {key:"steps",icon:"👣",name:"Schritte sammeln",ids:["long_steps_"]},
+  {key:"volume",icon:"💪",name:"Trainingsumfang",ids:["long_volume_"]},
+  {key:"streak",icon:"🔥",name:"Trainingstage in Folge",ids:["long_streak_"]},
+  {key:"run",icon:"🏃",name:"Laufstrecke",ids:["long_run_"]},
+  {key:"bike",icon:"🚴",name:"Radstrecke",ids:["long_bike_"]}
+ ];
+ return groups.map((group,index)=>{
+  const items=quests.filter(q=>group.ids.some(prefix=>q.id.startsWith(prefix)));
+  if(!items.length)return "";
+  const completed=items.filter(q=>q.value>=q.goal).length;
+  const claimed=items.filter(q=>data.claimedQuestIds.includes(q.id)).length;
+  const percent=Math.round(completed/items.length*100);
+  return `<details class="questGroup" ${index===0?"":""}>
+   <summary>
+    <span>${group.icon} ${group.name}<br><span class="questGroupMeta">${completed} von ${items.length} Etappen erreicht · ${claimed} Belohnungen abgeholt</span></span>
+    <span class="badge">${percent}%</span>
+   </summary>
+   <div class="questGroupContent">
+    ${items.map(questCard).join("")}
+   </div>
+  </details>`;
+ }).join("");
+}
+
 function renderQuests(){
  const q=questDefinitions();
  $("dailyQuestList").innerHTML=q.daily.map(questCard).join("");
  $("weeklyQuestList").innerHTML=q.weekly.map(questCard).join("");
- $("longQuestList").innerHTML=q.long.map(questCard).join("");
+ $("longQuestList").innerHTML=renderLongQuests(q.long);
  const w=weekDays();
  $("questWeekBar").style.width=Math.min(100,w/3*100)+"%";
  $("questWeekText").textContent=`${w} von 3 Trainingstagen`;
@@ -1054,17 +1192,17 @@ function achievementList(){
  const t=totals();
  const levels=[5,10,20,35,50,75,100,150,200,300,500,750,1000,1500,2000,3000,5000,7500,10000,15000,20000];
  const workouts=[1,5,10,25,50,100,250,500,1000,2500,5000,7500,10000];
- const steps=[10000,50000,100000,250000,500000,1000000,2500000,5000000,10000000,25000000,50000000];
- const volume=[100,500,1000,5000,10000,25000,50000,100000,250000,500000,1000000];
- const streaks=[3,7,14,30,60,100,180,365];
+ const steps=[10000,50000,100000,250000,500000,1000000,2500000,5000000,7500000,10000000,15000000,20000000,25000000,50000000];
+ const volume=[100,500,1000,2500,5000,10000,15000,25000,50000,75000,100000,250000,500000,1000000];
+ const streaks=[3,7,14,21,30,45,60,90,100,180,270,365,500,730];
  const a=[];
  levels.forEach(n=>a.push(["👑","Level "+fmt(n),"Erreiche Level "+fmt(n)+".",t.level>=n]));
  workouts.forEach(n=>a.push(["🏋️",fmt(n)+" Trainings","Schließe "+fmt(n)+" Trainingseinheiten ab.",t.workouts>=n]));
  steps.forEach(n=>a.push(["👣",fmt(n)+" Schritte","Sammle insgesamt "+fmt(n)+" Schritte.",t.steps>=n]));
  volume.forEach(n=>a.push(["💪",fmt(n)+" Trainingsumfang","Sammle "+fmt(n)+" Wiederholungen oder Sekunden.",totalExerciseAmount()>=n]));
  streaks.forEach(n=>a.push(["🔥",n+" Tage Serie","Trainiere "+n+" Tage in Folge.",t.streak>=n]));
- [100,500,1000,2500,5000].forEach(n=>a.push(["🏃",fmt(n)+" km Laufen","Laufe insgesamt "+fmt(n)+" Kilometer.",totalDistance("run")>=n]));
- [250,1000,2500,5000,10000].forEach(n=>a.push(["🚴",fmt(n)+" km Radfahren","Fahre insgesamt "+fmt(n)+" Kilometer.",totalDistance("bike")>=n]));
+ [25,50,100,250,500,750,1000,1500,2500].forEach(n=>a.push(["🏃",fmt(n)+" km Laufen","Laufe insgesamt "+fmt(n)+" Kilometer.",totalDistance("run")>=n]));
+ [50,100,250,500,1000,2500,5000,7500,10000].forEach(n=>a.push(["🚴",fmt(n)+" km Radfahren","Fahre insgesamt "+fmt(n)+" Kilometer.",totalDistance("bike")>=n]));
  a.push(
   ["🎯","Wochenkrieger","Schließe eine Wochenquest ab.",(data.weekRewards||0)>0],
   ["⚔️","Quest-Sammler","Sammle 10 Quest-Belohnungen.",data.claimedQuestIds.length>=10],
@@ -1086,7 +1224,7 @@ function renderAchievements(){
   </div>`).join("");
 }
 
-/* Historie: Training, Schritte, Laufen und Radfahren */
+/* Historie: Aktivitäten nach Datum gruppieren */
 function activityName(e){
  if(e.type==="steps")return "👣 Schritte";
  if(e.type==="distance")return e.activity==="run"?"🏃 Laufen":"🚴 Radfahren";
@@ -1100,19 +1238,69 @@ function activityDetails(e){
  }
  return `${fmt(entryXp(e))} XP`;
 }
+function entryExerciseDetails(e){
+ if(e.type!=="workout")return "";
+ const items=e.items||[];
+ if(!items.length)return "";
+ return `<div class="muted" style="font-size:12px;margin-top:7px">
+  ${items.map(item=>{
+   const ex=EXERCISES.find(x=>x.id===item.id);
+   return ex?`<div>• ${esc(ex.name)}: ${fmt(item.amount)} ${esc(ex.unit)}</div>`:"";
+  }).join("")}
+ </div>`;
+}
+function dateLabel(date){
+ if(!date)return "Datum unbekannt";
+ const parts=date.split("-");
+ if(parts.length!==3)return date;
+ return `${parts[2]}.${parts[1]}.${parts[0]}`;
+}
 function renderHistory(){
- const list=[...data.entries].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
- $("historyList").innerHTML=list.length?list.map(e=>`
- <div class="historyItem item">
-  <div>
-   <strong>${esc(activityName(e))}</strong><br>
-   <small>${esc(e.date)} · ${esc(activityDetails(e))}</small>
-  </div>
-  <div class="historyActions">
-   <button class="secondary" onclick="editEntry(${e.id})">✏️</button>
-   <button class="danger" onclick="deleteEntry(${e.id})">×</button>
-  </div>
- </div>`).join(""):"<p class='muted'>Noch keine Einträge.</p>";
+ const list=[...data.entries].sort((a,b)=>{
+  const dateCompare=String(b.date).localeCompare(String(a.date));
+  if(dateCompare!==0)return dateCompare;
+  return Number(b.id||0)-Number(a.id||0);
+ });
+ const groups={};
+ list.forEach(e=>{
+  const date=e.date||"ohne-datum";
+  if(!groups[date])groups[date]=[];
+  groups[date].push(e);
+ });
+ const dates=Object.keys(groups).sort((a,b)=>b.localeCompare(a));
+
+ $("historyList").innerHTML=dates.length?dates.map((date,index)=>{
+  const entries=groups[date];
+  const dayXp=entries.reduce((sum,e)=>sum+entryXp(e)+(e.type==="steps"?stepXp(Number(e.steps||0)):0),0);
+  const workoutCount=entries.filter(e=>e.type==="workout").length;
+  const distanceCount=entries.filter(e=>e.type==="distance").length;
+  const stepCount=entries.filter(e=>e.type==="steps").length;
+  const summary=[
+   workoutCount?`${workoutCount} Training${workoutCount===1?"":"seinheiten"}`:"",
+   distanceCount?`${distanceCount} Strecke${distanceCount===1?"":"n"}`:"",
+   stepCount?"Schritte":""
+  ].filter(Boolean).join(" · ");
+  return `<details class="historyDay">
+   <summary>
+    <span>📅 ${esc(dateLabel(date))}<br><small>${esc(summary||"Aktivitäten")} · ${fmt(dayXp)} XP</small></span>
+    <span class="badge">${entries.length} ${entries.length===1?"Eintrag":"Einträge"}</span>
+   </summary>
+   <div class="historyDayContent">
+    ${entries.map(e=>`
+     <div class="historyItem item">
+      <div style="flex:1;min-width:0">
+       <strong>${esc(activityName(e))}</strong><br>
+       <small>${esc(activityDetails(e))}</small>
+       ${entryExerciseDetails(e)}
+      </div>
+      <div class="historyActions">
+       <button class="secondary" aria-label="Eintrag bearbeiten" onclick="editEntry(${Number(e.id)})">✏️</button>
+       <button class="danger" aria-label="Eintrag löschen" onclick="deleteEntry(${Number(e.id)})">×</button>
+      </div>
+     </div>`).join("")}
+   </div>
+  </details>`;
+ }).join(""):"<p class='muted'>Noch keine Einträge.</p>";
 }
 function editEntry(id){
  const e=data.entries.find(x=>x.id===id);
