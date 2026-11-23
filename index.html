@@ -202,6 +202,20 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .historyItem{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .historyActions{display:flex;gap:6px;flex-shrink:0}
 .historyActions button{padding:8px 11px}
+.editExercise{
+ display:grid;grid-template-columns:minmax(0,1fr) 100px;
+ gap:10px;align-items:center;padding:8px 0;
+ border-bottom:1px solid var(--line)
+}
+.editExercise label{margin:0;color:var(--text);font-size:13px}
+.editExercise input{margin:0;padding:9px;text-align:center}
+.editSectionTitle{
+ color:var(--gold2);font-weight:850;margin:17px 0 7px;
+ padding-bottom:7px;border-bottom:1px solid var(--line)
+}
+.dialog{
+ max-height:88vh;overflow-y:auto
+}
 nav{
  position:fixed;bottom:0;left:0;right:0;z-index:5;
  background:#100c12f5;backdrop-filter:blur(18px);
@@ -285,6 +299,7 @@ nav button.active{
  .planAmount{grid-template-columns:1fr 82px}
  .historyActions{gap:4px}
  .historyActions button{padding:7px 9px}
+ .editExercise{grid-template-columns:minmax(0,1fr) 82px}
 }
 @media(prefers-reduced-motion:reduce){
  *,*:before,*:after{animation:none!important;scroll-behavior:auto!important}
@@ -348,7 +363,8 @@ nav button.active{
  <h2>🏋️ Trainingsarena</h2>
  <p class="muted">Wähle einen Bereich und trage deine Leistung ein.</p>
 
- <details class="questDropdown" open>
+ <!-- Oberkörper ist beim Öffnen standardmäßig geschlossen -->
+ <details class="questDropdown">
   <summary>💪 Oberkörper</summary>
   <div class="questDropdownContent">
    <div id="upperExercises"></div>
@@ -455,7 +471,7 @@ nav button.active{
  <details class="questDropdown">
   <summary>📜 Trainingshistorie anzeigen</summary>
   <div class="questDropdownContent">
-   <p class="muted">Öffne einen Tag, um alle Aktivitäten dieses Datums aufzurufen.</p>
+   <p class="muted">Öffne einen Tag, um alle Aktivitäten dieses Datums aufzurufen. Über das Stiftsymbol kannst du einen Eintrag vollständig bearbeiten.</p>
    <div id="historyList"></div>
   </div>
  </details>
@@ -715,19 +731,38 @@ function totals(){
 function openDialog(title,message,buttons,input){
  $("dialogTitle").textContent=title;
  $("dialogMessage").textContent=message;
- $("dialogInputArea").innerHTML=input?
-  `<label for="dialogInput">${esc(input.label||"Eingabe")}</label><input id="dialogInput" type="${input.type||"text"}" value="${esc(input.value||"")}">`:"";
+
+ // Neben dem bisherigen Einzelfeld werden nun auch eigene Formulare unterstützt.
+ if(typeof input==="string"){
+  $("dialogInputArea").innerHTML=input;
+ }else{
+  $("dialogInputArea").innerHTML=input?
+   `<label for="dialogInput">${esc(input.label||"Eingabe")}</label><input id="dialogInput" type="${input.type||"text"}" value="${esc(input.value||"")}">`:"";
+ }
+
  $("dialogActions").innerHTML=buttons.map((b,i)=>
   `<button class="${b.secondary?"secondary":""}" onclick="dialogAction(${i})">${esc(b.text)}</button>`
  ).join("");
  $("dialogLayer").classList.add("open");
  $("dialogLayer").setAttribute("aria-hidden","false");
  dialogCallback=buttons.map(b=>b.action||null);
- if(input)setTimeout(()=>$("dialogInput").focus(),80);
+ if(input&&typeof input!=="string")setTimeout(()=>$("dialogInput")?.focus(),80);
 }
 function dialogAction(index){
  const action=dialogCallback&&dialogCallback[index];
- const value=$("dialogInput")?$("dialogInput").value:null;
+ let value=null;
+
+ // Wenn das Dialogformular Datenfelder enthält, werden alle Werte gesammelt.
+ const fields=$("dialogInputArea").querySelectorAll("[data-edit-field]");
+ if(fields.length){
+  value={};
+  fields.forEach(field=>{
+   value[field.dataset.editField]=field.value;
+  });
+ }else{
+  value=$("dialogInput")?$("dialogInput").value:null;
+ }
+
  closeDialog();
  if(action)action(value);
 }
@@ -1147,7 +1182,7 @@ function questCard(q){
  </div>`;
 }
 
-/* Langzeit-Quests in aufklappbare Kategorien sortieren */
+/* Langzeit-Quests: Kategorien bleiben getrennt und standardmäßig geschlossen */
 function renderLongQuests(quests){
  const groups=[
   {key:"level",icon:"👑",name:"Level-Aufstieg",ids:["long_level_"]},
@@ -1158,13 +1193,13 @@ function renderLongQuests(quests){
   {key:"run",icon:"🏃",name:"Laufstrecke",ids:["long_run_"]},
   {key:"bike",icon:"🚴",name:"Radstrecke",ids:["long_bike_"]}
  ];
- return groups.map((group,index)=>{
+ return groups.map(group=>{
   const items=quests.filter(q=>group.ids.some(prefix=>q.id.startsWith(prefix)));
   if(!items.length)return "";
   const completed=items.filter(q=>q.value>=q.goal).length;
   const claimed=items.filter(q=>data.claimedQuestIds.includes(q.id)).length;
   const percent=Math.round(completed/items.length*100);
-  return `<details class="questGroup" ${index===0?"":""}>
+  return `<details class="questGroup">
    <summary>
     <span>${group.icon} ${group.name}<br><span class="questGroupMeta">${completed} von ${items.length} Etappen erreicht · ${claimed} Belohnungen abgeholt</span></span>
     <span class="badge">${percent}%</span>
@@ -1245,7 +1280,7 @@ function entryExerciseDetails(e){
  return `<div class="muted" style="font-size:12px;margin-top:7px">
   ${items.map(item=>{
    const ex=EXERCISES.find(x=>x.id===item.id);
-   return ex?`<div>• ${esc(ex.name)}: ${fmt(item.amount)} ${esc(ex.unit)}</div>`:"";
+   return ex?`<div>• ${esc(ex.name)}: ${fmt(item.amount)} ${esc(ex.unit)}</div>`:`<div>• ${esc(item.id)}: ${fmt(item.amount)}</div>`;
   }).join("")}
  </div>`;
 }
@@ -1269,7 +1304,7 @@ function renderHistory(){
  });
  const dates=Object.keys(groups).sort((a,b)=>b.localeCompare(a));
 
- $("historyList").innerHTML=dates.length?dates.map((date,index)=>{
+ $("historyList").innerHTML=dates.length?dates.map(date=>{
   const entries=groups[date];
   const dayXp=entries.reduce((sum,e)=>sum+entryXp(e)+(e.type==="steps"?stepXp(Number(e.steps||0)):0),0);
   const workoutCount=entries.filter(e=>e.type==="workout").length;
@@ -1302,19 +1337,202 @@ function renderHistory(){
   </details>`;
  }).join(""):"<p class='muted'>Noch keine Einträge.</p>";
 }
+
+/*
+ * Vollständige Bearbeitung eines historischen Eintrags:
+ * - Datum und Kilometer bei Lauf- und Radeinträgen
+ * - Datum und Schrittzahl bei Schritte-Einträgen
+ * - Datum und jede einzelne Übung bei Trainingseinträgen
+ * - Fehlende Übungen können direkt ergänzt werden
+ */
 function editEntry(id){
- const e=data.entries.find(x=>x.id===id);
+ const e=data.entries.find(x=>String(x.id)===String(id));
  if(!e)return;
- showInput("Wähle ein neues Datum für diesen Eintrag.",e.date,value=>{
-  if(value&&/^\d{4}-\d{2}-\d{2}$/.test(value)){
-   e.date=value;save();render();
-   showNotice("Das Datum wurde geändert.","Eintrag aktualisiert");
-  }else showNotice("Bitte gib ein gültiges Datum ein.","Datum nicht erkannt");
- });
+
+ const dateField=`
+  <label for="edit_date">Datum</label>
+  <input id="edit_date" data-edit-field="date" type="date" value="${esc(e.date||today())}">
+ `;
+
+ if(e.type==="distance"){
+  const isRun=e.activity==="run";
+  const activity=isRun?"Laufen":"Radfahren";
+  const km=String(e.km??"").replace(".",",");
+  const fields=dateField+`
+   <label for="edit_km">${isRun?"Gelaufene":"Gefahrene"} Strecke in Kilometern</label>
+   <input id="edit_km" data-edit-field="km" type="text" inputmode="decimal" value="${esc(km)}" placeholder="z. B. 5,5">
+   <small>${isRun?"20":"8"} XP pro Kilometer</small>
+  `;
+  openDialog(
+   activity+" bearbeiten",
+   "Du kannst das Datum und die gespeicherte Strecke korrigieren.",
+   [
+    {text:"Abbrechen",secondary:true},
+    {text:"Änderungen speichern",action:values=>{
+     const newDate=String(values.date||"").trim();
+     const kmRaw=String(values.km||"").trim().replace(",",".");
+     const newKm=Number(kmRaw);
+     if(!/^\d{4}-\d{2}-\d{2}$/.test(newDate)){
+      showNotice("Bitte gib ein gültiges Datum ein.","Datum nicht erkannt");return;
+     }
+     if(!Number.isFinite(newKm)||newKm<=0||newKm>1000){
+      showNotice("Bitte gib eine gültige Strecke zwischen 0 und 1.000 Kilometern ein.","Strecke prüfen");return;
+     }
+     e.date=newDate;
+     e.km=newKm;
+     save();render();
+     showNotice("Datum und Strecke wurden aktualisiert.","Eintrag gespeichert");
+    }}
+   ],
+   fields
+  );
+  return;
+ }
+
+ if(e.type==="steps"){
+  const fields=dateField+`
+   <label for="edit_steps">Schritte an diesem Tag</label>
+   <input id="edit_steps" data-edit-field="steps" type="number" min="0" max="100000" value="${esc(e.steps??0)}">
+   <small>1.000 Schritte = 5 XP · maximal 100.000 Schritte pro Tag</small>
+  `;
+  openDialog(
+   "Schritte bearbeiten",
+   "Korrigiere das Datum oder die Schrittzahl dieses Eintrags.",
+   [
+    {text:"Abbrechen",secondary:true},
+    {text:"Änderungen speichern",action:values=>{
+     const newDate=String(values.date||"").trim();
+     const newSteps=Number(values.steps);
+     if(!/^\d{4}-\d{2}-\d{2}$/.test(newDate)){
+      showNotice("Bitte gib ein gültiges Datum ein.","Datum nicht erkannt");return;
+     }
+     if(!Number.isInteger(newSteps)||newSteps<0||newSteps>100000){
+      showNotice("Bitte gib eine Schrittzahl zwischen 0 und 100.000 ein.","Schrittzahl prüfen");return;
+     }
+     e.date=newDate;
+     e.steps=newSteps;
+     save();render();
+     showNotice("Datum und Schrittzahl wurden aktualisiert.","Eintrag gespeichert");
+    }}
+   ],
+   fields
+  );
+  return;
+ }
+
+ if(e.type==="workout"){
+  const existingItems=Array.isArray(e.items)?e.items:[];
+  const amountById={};
+  existingItems.forEach(item=>{
+   amountById[item.id]=Number(amountById[item.id]||0)+Number(item.amount||0);
+  });
+
+  const grouped={upper:[],lower:[],core:[]};
+  EXERCISES.forEach(ex=>grouped[ex.group].push(ex));
+
+  let exerciseFields="";
+  const groupNames={
+   upper:"💪 Oberkörper",
+   lower:"🦵 Unterkörper",
+   core:"🧱 Rumpf"
+  };
+
+  Object.entries(grouped).forEach(([group,exercises])=>{
+   exerciseFields+=`<div class="editSectionTitle">${groupNames[group]}</div>`;
+   exercises.forEach(ex=>{
+    exerciseFields+=`
+     <div class="editExercise">
+      <label for="edit_ex_${ex.id}">
+       <strong>${esc(ex.name)}</strong><br>
+       <small>${esc(ex.unit)} · ${ex.xp} XP</small>
+      </label>
+      <input
+       id="edit_ex_${ex.id}"
+       data-edit-field="exercise_${ex.id}"
+       type="number"
+       min="0"
+       max="100000"
+       step="1"
+       inputmode="numeric"
+       value="${esc(amountById[ex.id]??0)}"
+      >
+     </div>
+    `;
+   });
+  });
+
+  // Unbekannte bzw. ältere Übungs-IDs werden nicht versehentlich entfernt.
+  const knownIds=new Set(EXERCISES.map(ex=>ex.id));
+  const unknownItems=existingItems.filter(item=>!knownIds.has(item.id));
+
+  let unknownInfo="";
+  if(unknownItems.length){
+   unknownInfo=`
+    <div class="editSectionTitle">Weitere gespeicherte Übungen</div>
+    <p class="muted">Ältere Übungen, die nicht mehr in der aktuellen Übungsliste stehen, bleiben beim Speichern erhalten.</p>
+    ${unknownItems.map(item=>`
+     <div class="editExercise">
+      <label>${esc(item.id)}</label>
+      <strong>${fmt(item.amount)}</strong>
+     </div>
+    `).join("")}
+   `;
+  }
+
+  const fields=dateField+`
+   <p class="muted">Passe die Werte an. Trage auch Übungen nach, die du damals vergessen hast. Ein Wert von 0 entfernt die jeweilige Übung aus diesem Eintrag.</p>
+   ${exerciseFields}
+   ${unknownInfo}
+  `;
+
+  openDialog(
+   "Training bearbeiten",
+   "Du kannst das Datum und sämtliche Übungen dieses Trainings korrigieren oder ergänzen.",
+   [
+    {text:"Abbrechen",secondary:true},
+    {text:"Änderungen speichern",action:values=>{
+     const newDate=String(values.date||"").trim();
+     if(!/^\d{4}-\d{2}-\d{2}$/.test(newDate)){
+      showNotice("Bitte gib ein gültiges Datum ein.","Datum nicht erkannt");return;
+     }
+
+     const updatedItems=[];
+     for(const ex of EXERCISES){
+      const raw=values["exercise_"+ex.id];
+      const amount=Number(raw||0);
+      if(!Number.isInteger(amount)||amount<0||amount>100000){
+       showNotice("Bitte überprüfe die Anzahl bei "+ex.name+". Erlaubt sind ganze Zahlen von 0 bis 100.000.","Übungswert prüfen");
+       return;
+      }
+      if(amount>0)updatedItems.push({id:ex.id,amount});
+     }
+
+     // Nicht bekannte historische Übungseinträge bleiben unverändert erhalten.
+     unknownItems.forEach(item=>updatedItems.push({...item}));
+
+     if(!updatedItems.length){
+      showNotice("Ein Training muss mindestens eine Übung enthalten. Wenn du den Eintrag entfernen möchtest, nutze bitte die Löschen-Funktion.","Keine Übungen eingetragen");
+      return;
+     }
+
+     e.date=newDate;
+     e.items=updatedItems;
+     // Planname und Bonus-XP bleiben erhalten.
+     save();render();
+     showNotice("Datum und Übungen wurden aktualisiert. Deine XP und Fortschritte wurden neu berechnet.","Training gespeichert");
+    }}
+   ],
+   fields
+  );
+  return;
+ }
+
+ showNotice("Dieser Eintragstyp kann nicht bearbeitet werden.","Eintrag nicht erkannt");
 }
+
 function deleteEntry(id){
  showConfirm("Möchtest du diesen Eintrag wirklich löschen?",()=>{
-  data.entries=data.entries.filter(e=>e.id!==id);
+  data.entries=data.entries.filter(e=>String(e.id)!==String(id));
   save();render();
   showNotice("Der Eintrag wurde gelöscht.","Eintrag gelöscht");
  },"Eintrag löschen");
@@ -1490,4 +1708,4 @@ if("serviceWorker"in navigator&&location.protocol.startsWith("http")){
 }
 </script>
 </body>
-</html>
+ </html>
