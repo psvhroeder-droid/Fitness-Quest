@@ -186,6 +186,29 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .achievement:last-child{border:0}
 .achievementIcon{font-size:25px}
 .locked{opacity:.55}
+
+/* Dropdown-Kategorien der Ruhmeshalle */
+.achievementCategory{
+ background:linear-gradient(145deg,#2b202a,#1b151d);
+ border:1px solid #624354;border-radius:16px;margin:13px 0;overflow:hidden
+}
+.achievementCategory summary{
+ list-style:none;cursor:pointer;padding:17px;font-weight:850;
+ color:var(--gold2);display:flex;justify-content:space-between;
+ align-items:center;gap:10px
+}
+.achievementCategory summary::-webkit-details-marker{display:none}
+.achievementCategory summary::after{
+ content:"▼";color:var(--pink);font-size:12px;transition:transform .2s
+}
+.achievementCategory[open] summary::after{transform:rotate(180deg)}
+.achievementCategoryContent{
+ padding:0 14px 10px;border-top:1px solid var(--line)
+}
+.achievementCategoryMeta{
+ display:block;font-size:11px;color:var(--muted);font-weight:600;margin-top:3px
+}
+
 .historyDay{
  background:linear-gradient(145deg,#2b202a,#1b151d);
  border:1px solid #624354;border-radius:15px;margin:11px 0;overflow:hidden
@@ -1247,16 +1270,58 @@ function achievementList(){
  );
  return a;
 }
+
+/* Ruhmeshalle: Erfolge in aufklappbare Kategorien sortieren */
 function renderAchievements(){
  const a=achievementList();
+
+ const categories=[
+  {icon:"👑",name:"Level-Aufstieg",start:0,count:21},
+  {icon:"🏋️",name:"Trainingseinheiten",start:21,count:13},
+  {icon:"👣",name:"Schritte sammeln",start:34,count:14},
+  {icon:"💪",name:"Trainingsumfang",start:48,count:14},
+  {icon:"🔥",name:"Trainingstage in Folge",start:62,count:14},
+  {icon:"🏃",name:"Laufstrecke",start:76,count:9},
+  {icon:"🚴",name:"Radstrecke",start:85,count:9},
+  {icon:"🌟",name:"Besondere Erfolge",start:94,count:5}
+ ];
+
  const unlocked=a.filter(x=>x[3]).length;
- $("achievementSummary").textContent=`${unlocked} von ${a.length} Erfolgen freigeschaltet · Die Ruhmeshalle wächst mit deinem Fortschritt.`;
- $("achievementList").innerHTML=a.map(x=>`
-  <div class="achievement ${x[3]?"":"locked"}">
-   <span class="achievementIcon">${x[0]}</span>
-   <div style="flex:1"><strong>${esc(x[1])}</strong><br><small>${esc(x[2])}</small></div>
-   <strong>${x[3]?"✓":"🔒"}</strong>
-  </div>`).join("");
+
+ $("achievementSummary").textContent=
+  `${unlocked} von ${a.length} Erfolgen freigeschaltet · Die Ruhmeshalle wächst mit deinem Fortschritt.`;
+
+ $("achievementList").innerHTML=categories.map(category=>{
+  const items=a.slice(category.start,category.start+category.count);
+  const completed=items.filter(x=>x[3]).length;
+  const percent=Math.round(completed/items.length*100);
+
+  return `
+   <details class="achievementCategory">
+    <summary>
+     <span>
+      ${category.icon} ${category.name}
+      <span class="achievementCategoryMeta">
+       ${completed} von ${items.length} Erfolgen freigeschaltet
+      </span>
+     </span>
+     <span class="badge">${percent}%</span>
+    </summary>
+    <div class="achievementCategoryContent">
+     ${items.map(x=>`
+      <div class="achievement ${x[3]?"":"locked"}">
+       <span class="achievementIcon">${x[0]}</span>
+       <div style="flex:1">
+        <strong>${esc(x[1])}</strong><br>
+        <small>${esc(x[2])}</small>
+       </div>
+       <strong>${x[3]?"✓":"🔒"}</strong>
+      </div>
+     `).join("")}
+    </div>
+   </details>
+  `;
+ }).join("");
 }
 
 /* Historie: Aktivitäten nach Datum gruppieren */
@@ -1708,4 +1773,4 @@ if("serviceWorker"in navigator&&location.protocol.startsWith("http")){
 }
 </script>
 </body>
- </html>
+</html>
