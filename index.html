@@ -904,11 +904,17 @@ function buildCustomWorkoutBuilder(){
   </div>
  </details>
 
- <div class="card">
-  <h3>📚 Deine eigenen Trainingspläne</h3>
-  <p class="muted">Hier findest du alle selbst erstellten und gespeicherten Pläne.</p>
-  <div id="customWorkoutList"></div>
- </div>`;
+<details class="customBuilder">
+  <summary>📚 Deine gespeicherten Trainingspläne</summary>
+  <div class="customBuilderContent">
+    <div class="card">
+      <p class="muted">
+        Hier findest du alle selbst erstellten und gespeicherten Pläne.
+      </p>
+      <div id="customWorkoutList"></div>
+    </div>
+  </div>
+</details>
 }
 
 function renderCustomWorkoutList(){
@@ -1512,9 +1518,19 @@ function questCard(q){
   <div class="questType">${q.type}</div>
   <strong>${q.icon} ${esc(q.name)}</strong>
   <p class="muted">${esc(q.desc)}</p>
-  <div class="progress"><span style="width:${pct}%"></span></div>
-  <small>${fmt(Math.min(q.value,q.goal))} / ${fmt(q.goal)} · <span class="questReward">+${q.xp} XP</span></small>
-  ${claimed?'<p class="questReward">✓ XP automatisch gutgeschrieben</p>':""}
+  <div class="progress">
+   <span style="width:${pct}%"></span>
+  </div>
+  <small>
+   ${fmt(Math.min(q.value,q.goal))} / ${fmt(q.goal)}
+   · <span class="questReward">+${q.xp} XP</span>
+  </small>
+  ${claimed
+   ? '<p class="questReward">✓ Belohnung automatisch gutgeschrieben</p>'
+   : done
+    ? '<p class="questReward">✓ Ziel erreicht – Belohnung wird gutgeschrieben</p>'
+    : ''
+  }
  </div>`;
 }
 
@@ -1547,9 +1563,15 @@ function renderLongQuests(quests){
 
 function renderQuests(){
  const q=questDefinitions();
+
  $("dailyQuestList").innerHTML=q.daily.map(questCard).join("");
  $("weeklyQuestList").innerHTML=q.weekly.map(questCard).join("");
  $("longQuestList").innerHTML=renderLongQuests(q.long);
+
+ $("homeQuests").innerHTML=[
+  ...q.daily,
+  ...q.weekly.slice(0,1)
+ ].map(questCard).join("");
 }
 
 /* Ruhmeshalle */
