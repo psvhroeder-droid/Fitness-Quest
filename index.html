@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -108,12 +109,22 @@ label{display:block;font-size:13px;color:var(--muted);margin-top:9px}
 .planGrid{display:grid;grid-template-columns:1fr;gap:9px}
 .planOption{
  background:linear-gradient(145deg,#2b202a,#1b151d);
- border:1px solid #624354;border-radius:16px;padding:15px
+ border:1px solid #624354;border-radius:16px;margin:13px 0;overflow:hidden
 }
-.planOption p{font-size:12px;color:var(--muted);margin:8px 0}
-.planControls{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.planControls label{font-size:11px;margin:0 0 3px}
-.planControls select{margin:3px 0 8px;padding:10px 9px;font-size:13px}
+.planOption summary{
+ list-style:none;cursor:pointer;padding:17px;font-weight:850;
+ color:var(--gold2);display:flex;justify-content:space-between;
+ align-items:center;gap:10px
+}
+.planOption summary::-webkit-details-marker{display:none}
+.planOption summary::after{
+ content:"▼";color:var(--pink);font-size:12px;transition:transform .2s
+}
+.planOption[open] summary::after{transform:rotate(180deg)}
+.planContent{padding:0 14px 14px;border-top:1px solid var(--line)}
+.planControls{display:grid;grid-template-columns:1fr;gap:5px}
+.planControls label{font-size:12px;margin:8px 0 3px}
+.planControls select{margin:3px 0 8px;padding:10px}
 .planPreview{
  margin:5px 0 12px;padding:10px 12px;
  background:#100d12;border:1px solid #493442;border-radius:13px
@@ -243,8 +254,6 @@ nav button.active{
  nav button{font-size:9px}
  nav button span{font-size:18px}
  .card{padding:14px}
- .planControls{gap:6px}
- .planControls select{font-size:12px;padding:9px 6px}
  .planAmount{grid-template-columns:1fr 82px}
 }
 @media(prefers-reduced-motion:reduce){
@@ -311,21 +320,25 @@ nav button.active{
 
  <details class="questDropdown" open>
   <summary>💪 Oberkörper</summary>
-  <div class="questDropdownContent"><div id="upperExercises"></div></div>
+  <div class="questDropdownContent">
+   <div id="upperExercises"></div>
+   <p><button onclick="saveExercises('upper')">Oberkörper speichern</button></p>
+  </div>
  </details>
  <details class="questDropdown">
   <summary>🦵 Unterkörper</summary>
-  <div class="questDropdownContent"><div id="lowerExercises"></div></div>
+  <div class="questDropdownContent">
+   <div id="lowerExercises"></div>
+   <p><button onclick="saveExercises('lower')">Unterkörper speichern</button></p>
+  </div>
  </details>
  <details class="questDropdown">
   <summary>🧱 Rumpf</summary>
-  <div class="questDropdownContent"><div id="coreExercises"></div></div>
+  <div class="questDropdownContent">
+   <div id="coreExercises"></div>
+   <p><button onclick="saveExercises('core')">Rumpf speichern</button></p>
+  </div>
  </details>
- <div class="card">
-  <h3>🏋️ Training speichern</h3>
-  <p class="muted">Trage deine Wiederholungen ein. Plank wird in Sekunden erfasst.</p>
-  <button onclick="saveExercises()">Training speichern</button>
- </div>
 
  <details class="questDropdown">
   <summary>🏃 Laufen</summary>
@@ -362,7 +375,7 @@ nav button.active{
 
 <section id="workoutsSection" class="section">
  <h2>⚔️ Trainingspläne</h2>
- <p class="muted">Wähle deinen Trainingsplan, deine Herausforderung und deine eigenen Wiederholungszahlen.</p>
+ <p class="muted">Tippe auf einen Trainingsplan, um die Übungen zu sehen. Du kannst die Wiederholungen und die Satzanzahl selbst festlegen.</p>
  <div id="workoutList"></div>
 </section>
 
@@ -460,11 +473,12 @@ nav button.active{
 </div>
 
 <script>
- "use strict";
+"use strict";
 
 const SAVE_KEY="fitnessQuestSaveV4";
 const BACKUP_KEY="fitnessQuestBackupV1";
 const BACKUP_DATE_KEY="fitnessQuestBackupDateV1";
+const LAST_SECTION_KEY="fitnessQuestLastSectionV1";
 
 const EXERCISES=[
  {id:"pull",name:"Klimmzüge",xp:10,unit:"Wiederholungen",group:"upper"},
@@ -652,6 +666,10 @@ function totalExerciseAmount(){
 function exerciseAmount(id){
  return workoutEntries().reduce((sum,e)=>sum+(e.items||[]).filter(i=>i.id===id).reduce((s,i)=>s+Number(i.amount||0),0),0);
 }
+function totalDistance(activity){
+ return data.entries.filter(e=>e.type==="distance"&&(!activity||e.activity===activity))
+  .reduce((sum,e)=>sum+Number(e.km||0),0);
+}
 function totals(){
  const xp=totalXp();
  return {xp,level:levelFor(xp),workouts:workoutEntries().length,days:days().length,week:weekDays(),streak:streak(),steps:totalSteps()};
@@ -694,9 +712,15 @@ document.addEventListener("keydown",e=>{
  if(e.key==="Escape"&&$("dialogLayer").classList.contains("open"))closeDialog();
 });
 
-function showSection(id){
+/* Navigation: zuletzt geöffneten Tab merken */
+function showSection(id,remember=true){
+ const valid=["home","training","workoutsSection","questsSection","achievements","profile"];
+ if(!valid.includes(id))id="home";
  document.querySelectorAll("main .section").forEach(s=>s.classList.toggle("active",s.id===id));
  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.section===id));
+ if(remember){
+  try{localStorage.setItem(LAST_SECTION_KEY,id)}catch(e){}
+ }
  if(id==="profile")renderHistory();
  if(id==="questsSection")renderQuests();
  if(id==="achievements")renderAchievements();
@@ -714,75 +738,59 @@ function buildExercises(){
  });
 }
 
-/* Trainingspläne */
+/* Trainingspläne: mittlere Variante als feste Grundlage */
+function planExercises(i){return PLANS[i].sets[1]}
+function planBonus(i){return PLANS[i].bonus?.[1]||0}
+
 function buildWorkouts(){
  $("workoutList").innerHTML=`<div id="activePlanSession"></div>`+
  PLANS.map((p,i)=>`
- <div class="card planOption">
-  <h3>${p.icon} ${esc(p.name)}</h3>
-  <div class="planControls">
-   <div>
-    <label for="difficulty_${i}">Schwierigkeit</label>
-    <select id="difficulty_${i}" onfocus="showPlanPreview(${i})" onchange="updatePlanPreview(${i})">
-     <option value="0" selected>Anfänger</option>
-     <option value="1">Fortgeschritten</option>
-     <option value="2">Profi</option>
-    </select>
+ <details class="planOption" id="planDropdown_${i}">
+  <summary>${p.icon} ${esc(p.name)}</summary>
+  <div class="planContent">
+   <p class="muted">Passe die Wiederholungen und die Anzahl deiner Sätze an.</p>
+   <div class="planControls">
+    <div>
+     <label for="rounds_${i}">Satzanzahl</label>
+     <select id="rounds_${i}" onchange="updatePlanXp(${i})">
+      ${Array.from({length:10},(_,n)=>`<option value="${n+1}" ${n===0?"selected":""}>${n+1} ${n===0?"Satz":"Sätze"}</option>`).join("")}
+     </select>
+    </div>
    </div>
-   <div>
-    <label for="rounds_${i}">Satzanzahl</label>
-    <select id="rounds_${i}" onfocus="showPlanPreview(${i})" onchange="updatePlanPreview(${i})">
-     ${Array.from({length:10},(_,n)=>`<option value="${n+1}" ${n===0?"selected":""}>${n+1} ${n===0?"Satz":"Sätze"}</option>`).join("")}
-    </select>
+   <div id="planPreview_${i}" class="planPreview">
+    <div class="planPreviewTitle">Deine Übungen</div>
+    ${planExercises(i).map(([id,defaultAmount],j)=>{
+     const ex=EXERCISES.find(e=>e.id===id);
+     if(!ex)return "";
+     return `
+      <div class="item">
+       <strong>${esc(ex.name)}</strong>
+       <small> · ${ex.xp} XP je ${esc(ex.unit)}</small>
+       <div class="planAmount">
+        <label for="planAmount_${i}_${j}">Anzahl pro Satz</label>
+        <input id="planAmount_${i}_${j}" type="number" min="0" max="500"
+         value="${defaultAmount}" inputmode="numeric" oninput="updatePlanXp(${i})">
+       </div>
+       <small>Gesamt: <strong id="planTotal_${i}_${j}">${fmt(defaultAmount)}</strong> ${esc(ex.unit)}</small>
+      </div>`;
+    }).join("")}
+    <div class="planXpBox">
+     <strong>✨ Voraussichtliche Erfahrungspunkte</strong>
+     <div class="big xp" id="planXp_${i}">0 XP</div>
+     <small>Basierend auf deiner Auswahl und der Satzanzahl.</small>
+    </div>
    </div>
+   <button onclick="startPlan(${i})">Plan starten</button>
   </div>
-  <div id="planPreview_${i}" hidden></div>
-  <button onclick="startPlan(${i})">Plan starten</button>
- </div>`).join("");
+ </details>`).join("");
+ PLANS.forEach((p,i)=>updatePlanXp(i));
  renderPlanSession();
 }
-function showPlanPreview(i){
- const preview=$("planPreview_"+i);
- if(preview)preview.hidden=false;
- updatePlanPreview(i);
-}
-function updatePlanPreview(i){
- const preview=$("planPreview_"+i);
- if(!preview)return;
- const difficulty=Number($("difficulty_"+i).value);
- const rounds=Number($("rounds_"+i).value);
- const exercises=PLANS[i].sets[difficulty];
- preview.hidden=false;
- preview.className="planPreview";
- preview.innerHTML=`
-  <div class="planPreviewTitle">Deine Übungen · ${rounds} ${rounds===1?"Satz":"Sätze"}</div>
-  ${exercises.map(([id,defaultAmount],j)=>{
-   const ex=EXERCISES.find(e=>e.id===id);
-   if(!ex)return "";
-   return `
-    <div class="item">
-     <strong>${esc(ex.name)}</strong>
-     <small> · ${ex.xp} XP je ${esc(ex.unit)}</small>
-     <div class="planAmount">
-      <label for="planAmount_${i}_${j}">Anzahl pro Satz</label>
-      <input id="planAmount_${i}_${j}" type="number" min="0" max="500"
-       value="${defaultAmount}" inputmode="numeric" oninput="updatePlanXp(${i})">
-     </div>
-     <small>Gesamt: <strong id="planTotal_${i}_${j}">${fmt(defaultAmount*rounds)}</strong> ${esc(ex.unit)}</small>
-    </div>`;
-  }).join("")}
-  <div class="planXpBox">
-   <strong>✨ Voraussichtliche Erfahrungspunkte</strong>
-   <div class="big xp" id="planXp_${i}">0 XP</div>
-   <small>Basierend auf deiner Auswahl und der Satzanzahl.</small>
-  </div>`;
- updatePlanXp(i);
-}
+
 function updatePlanXp(i){
- const difficulty=Number($("difficulty_"+i).value);
  const rounds=Number($("rounds_"+i).value);
- const exercises=PLANS[i].sets[difficulty];
- let xp=PLANS[i].bonus?.[difficulty]||0;
+ const exercises=planExercises(i);
+ let xp=planBonus(i);
  exercises.forEach(([id,defaultAmount],j)=>{
   const ex=EXERCISES.find(e=>e.id===id);
   const field=$("planAmount_"+i+"_"+j);
@@ -795,13 +803,14 @@ function updatePlanXp(i){
  const output=$("planXp_"+i);
  if(output)output.textContent=fmt(xp)+" XP";
 }
+
 function startPlan(i){
  if(activePlan){
   showNotice("Bitte schließe zuerst deinen aktuellen Trainingsplan ab oder brich ihn ab.","Training läuft bereits");
   return;
  }
- const p=PLANS[i],difficulty=Number($("difficulty_"+i).value),rounds=Number($("rounds_"+i).value);
- const items=p.sets[difficulty].map(([id,defaultAmount],j)=>{
+ const p=PLANS[i],rounds=Number($("rounds_"+i).value);
+ const items=planExercises(i).map(([id,defaultAmount],j)=>{
   const field=$("planAmount_"+i+"_"+j);
   const amount=field?Math.min(500,Math.max(0,Number(field.value||0))):defaultAmount;
   return {id,amount,done:false};
@@ -810,7 +819,7 @@ function startPlan(i){
   showNotice("Bitte gib für mindestens eine Übung eine Anzahl größer als 0 ein.","Keine Übungen ausgewählt");
   return;
  }
- activePlan={planIndex:i,name:p.name,difficulty,rounds,bonus:p.bonus?.[difficulty]||0,items};
+ activePlan={planIndex:i,name:p.name,rounds,bonus:planBonus(i),items};
  renderPlanSession();
  const area=$("activePlanSession");
  if(area)area.scrollIntoView({behavior:"smooth",block:"start"});
@@ -827,7 +836,6 @@ function renderPlanSession(){
  area.innerHTML=`
  <div class="card hero">
   <h2>🏋️ ${esc(activePlan.name)}</h2>
-  <div class="badge">${["Anfänger","Fortgeschritten","Profi"][activePlan.difficulty]}</div>
   <div class="badge">${activePlan.rounds} ${activePlan.rounds===1?"Satz":"Sätze"}</div>
   <p><strong>Dein Trainingsfortschritt</strong></p>
   <div class="progress"><span style="width:${done/total*100}%"></span></div>
@@ -877,15 +885,17 @@ function cancelPlan(){
 }
 
 /* Training und Ausdauer speichern */
-function saveExercises(){
- const items=EXERCISES.map(e=>({id:e.id,amount:Number($("ex_"+e.id).value||0)})).filter(i=>i.amount>0);
+function saveExercises(group){
+ const selected=EXERCISES.filter(e=>e.group===group);
+ const items=selected.map(e=>({id:e.id,amount:Number($("ex_"+e.id).value||0)})).filter(i=>i.amount>0);
  if(!items.length){
-  showNotice("Bitte trage zuerst mindestens eine Übung ein.","Noch kein Training");
+  const names={upper:"Oberkörper",lower:"Unterkörper",core:"Rumpf"};
+  showNotice("Bitte trage zuerst mindestens eine Übung ein.",names[group]+" noch leer");
   return;
  }
  data.entries.push({id:Date.now(),type:"workout",date:today(),items});
  save();render();
- EXERCISES.forEach(e=>$("ex_"+e.id).value=0);
+ selected.forEach(e=>$("ex_"+e.id).value=0);
  showTrainingComplete();
 }
 function saveDistance(activity){
@@ -897,9 +907,7 @@ function saveDistance(activity){
   showNotice("Bitte gib eine gültige Strecke zwischen 0 und 1.000 Kilometern ein.","Strecke prüfen");
   return;
  }
- data.entries.push({
-  id:Date.now(),type:"distance",activity,date,km
- });
+ data.entries.push({id:Date.now(),type:"distance",activity,date,km});
  save();render();
  $(isRun?"runKm":"bikeKm").value="";
  showNotice(
@@ -919,8 +927,9 @@ function saveSteps(){
  else data.entries.push({id:Date.now(),type:"steps",date,steps});
  save();render();
  showNotice("Deine Schritte wurden gespeichert. Jeder Schritt zählt!","Schritte gespeichert");
- }
- /* Quest-System: alte Belohnungen bleiben erhalten */
+}
+
+/* Quest-System: alte Belohnungen bleiben erhalten */
 function checkQuests(){
  const day=today(),week=weekKey();
  data.claimedQuests=data.claimedQuests||[];
@@ -951,6 +960,47 @@ function questDefinitions(){
  const todayAmount=todayWorkouts.reduce((s,e)=>s+(e.items||[]).reduce((n,x)=>n+Number(x.amount||0),0),0);
  const weekEntries=workoutEntries().filter(e=>e.date>=week&&e.date<=d);
  const weekAmount=weekEntries.reduce((s,e)=>s+(e.items||[]).reduce((n,x)=>n+Number(x.amount||0),0),0);
+ const t=totals();
+ const long=[
+  ["long_workouts_10","🏋️","Trainingsanfänger","Schließe insgesamt 10 Trainingseinheiten ab.",t.workouts,10,50],
+  ["long_workouts_50","🥉","Eiserner Wille","Schließe insgesamt 50 Trainingseinheiten ab.",t.workouts,50,150],
+  ["long_workouts_100","🥈","Unaufhaltsam","Schließe insgesamt 100 Trainingseinheiten ab.",t.workouts,100,300],
+  ["long_workouts_250","🥇","Trainingsmaschine","Schließe insgesamt 250 Trainingseinheiten ab.",t.workouts,250,750],
+  ["long_workouts_500","🏆","Trainingsmeister","Schließe insgesamt 500 Trainingseinheiten ab.",t.workouts,500,1500],
+  ["long_workouts_1000","👑","Unbezwingbarer Kämpfer","Schließe insgesamt 1.000 Trainingseinheiten ab.",t.workouts,1000,3000],
+  ["long_workouts_2500","🌟","Mythische Trainingslegende","Schließe insgesamt 2.500 Trainingseinheiten ab.",t.workouts,2500,6000],
+  ["long_steps_100k","👣","Schrittemeister","Sammle insgesamt 100.000 Schritte.",t.steps,100000,200],
+  ["long_steps_500k","🥾","Wegbereiter","Sammle insgesamt 500.000 Schritte.",t.steps,500000,500],
+  ["long_steps_1m","🌍","Weltentdecker","Sammle insgesamt 1.000.000 Schritte.",t.steps,1000000,1000],
+  ["long_steps_2m","🚶","Ausdauerwanderer","Sammle insgesamt 2.500.000 Schritte.",t.steps,2500000,2000],
+  ["long_steps_5m","🗺️","Meister der Wege","Sammle insgesamt 5.000.000 Schritte.",t.steps,5000000,4000],
+  ["long_steps_10m","🌌","Schritte-Legende","Sammle insgesamt 10.000.000 Schritte.",t.steps,10000000,7500],
+  ["long_volume_1000","💪","Wiederholungsheld","Sammle insgesamt 1.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),1000,200],
+  ["long_volume_10000","⚡","Kraftpaket","Sammle insgesamt 10.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),10000,600],
+  ["long_volume_25000","🔥","Kraftmeister","Sammle insgesamt 25.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),25000,1200],
+  ["long_volume_50000","💎","Unermüdliche Kraft","Sammle insgesamt 50.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),50000,2500],
+  ["long_volume_100000","👑","Titan der Ausdauer","Sammle insgesamt 100.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),100000,5000],
+  ["long_volume_250000","🌠","Unsterblicher Titan","Sammle insgesamt 250.000 Wiederholungen oder Sekunden.",totalExerciseAmount(),250000,10000],
+  ["long_streak_7","🔥","Serienkrieger","Erreiche 7 Trainingstage in Folge.",t.streak,7,100],
+  ["long_streak_30","🌟","Monatslegende","Erreiche 30 Trainingstage in Folge.",t.streak,30,500],
+  ["long_streak_60","🏅","Zwei-Monats-Champion","Erreiche 60 Trainingstage in Folge.",t.streak,60,1200],
+  ["long_streak_100","💫","Unaufhaltsame Serie","Erreiche 100 Trainingstage in Folge.",t.streak,100,2500],
+  ["long_streak_180","👑","Halbjahreslegende","Erreiche 180 Trainingstage in Folge.",t.streak,180,5000],
+  ["long_streak_365","🌌","Jahreslegende","Erreiche 365 Trainingstage in Folge.",t.streak,365,10000],
+  ["long_level_10","🌱","Aufsteiger","Erreiche Level 10.",t.level,10,100],
+  ["long_level_25","🛡️","Erfahrener Held","Erreiche Level 25.",t.level,25,250],
+  ["long_level_50","⚔️","Meister","Erreiche Level 50.",t.level,50,500],
+  ["long_level_100","🔥","Legende","Erreiche Level 100.",t.level,100,1000],
+  ["long_level_200","💎","Mythischer Held","Erreiche Level 200.",t.level,200,2500],
+  ["long_level_500","👑","Ewige Legende","Erreiche Level 500.",t.level,500,5000],
+  ["long_level_1000","🌌","Transzendenz","Erreiche Level 1.000.",t.level,1000,10000],
+  ["long_run_100","🏃","Laufstarter","Laufe insgesamt 100 Kilometer.",totalDistance("run"),100,300],
+  ["long_run_500","🥇","Laufprofi","Laufe insgesamt 500 Kilometer.",totalDistance("run"),500,1200],
+  ["long_run_1000","🏅","Marathon-Legende","Laufe insgesamt 1.000 Kilometer.",totalDistance("run"),1000,3000],
+  ["long_bike_250","🚴","Rad-Abenteurer","Fahre insgesamt 250 Kilometer.",totalDistance("bike"),250,300],
+  ["long_bike_1000","🚵","Rad-Meister","Fahre insgesamt 1.000 Kilometer.",totalDistance("bike"),1000,1200],
+  ["long_bike_5000","🏆","Rad-Legende","Fahre insgesamt 5.000 Kilometer.",totalDistance("bike"),5000,4000]
+ ];
  return {
   daily:[
    {id:"daily_workout_"+d,type:"Täglich",icon:"🏋️",name:"Trainingsstart",desc:"Schließe heute eine Trainingseinheit ab.",value:todayWorkouts.length,goal:1,xp:30},
@@ -963,19 +1013,7 @@ function questDefinitions(){
    {id:"weekly_steps_"+week,type:"Wöchentlich",icon:"🥾",name:"Wanderlegende",desc:"Sammle diese Woche 25.000 Schritte.",value:data.entries.filter(e=>e.type==="steps"&&e.date>=week&&e.date<=d).reduce((s,e)=>s+Number(e.steps||0),0),goal:25000,xp:120},
    {id:"weekly_volume_"+week,type:"Wöchentlich",icon:"🔥",name:"Volumen-Meister",desc:"Sammle diese Woche 500 Wiederholungen oder Sekunden.",value:weekAmount,goal:500,xp:120}
   ],
-  long:[
-   {id:"long_workouts_10",type:"Langzeit",icon:"🏋️",name:"Trainingsanfänger",desc:"Schließe insgesamt 10 Trainingseinheiten ab.",value:workoutEntries().length,goal:10,xp:50},
-   {id:"long_workouts_50",type:"Langzeit",icon:"🥉",name:"Eiserner Wille",desc:"Schließe insgesamt 50 Trainingseinheiten ab.",value:workoutEntries().length,goal:50,xp:150},
-   {id:"long_workouts_100",type:"Langzeit",icon:"🥈",name:"Unaufhaltsam",desc:"Schließe insgesamt 100 Trainingseinheiten ab.",value:workoutEntries().length,goal:100,xp:300},
-   {id:"long_workouts_250",type:"Langzeit",icon:"🥇",name:"Trainingsmaschine",desc:"Schließe insgesamt 250 Trainingseinheiten ab.",value:workoutEntries().length,goal:250,xp:750},
-   {id:"long_steps_100k",type:"Langzeit",icon:"👣",name:"Schrittemeister",desc:"Sammle insgesamt 100.000 Schritte.",value:totalSteps(),goal:100000,xp:200},
-   {id:"long_steps_500k",type:"Langzeit",icon:"🥾",name:"Wegbereiter",desc:"Sammle insgesamt 500.000 Schritte.",value:totalSteps(),goal:500000,xp:500},
-   {id:"long_steps_1m",type:"Langzeit",icon:"🌍",name:"Weltentdecker",desc:"Sammle insgesamt 1.000.000 Schritte.",value:totalSteps(),goal:1000000,xp:1000},
-   {id:"long_volume_1000",type:"Langzeit",icon:"💪",name:"Wiederholungsheld",desc:"Sammle insgesamt 1.000 Wiederholungen oder Sekunden.",value:totalExerciseAmount(),goal:1000,xp:200},
-   {id:"long_volume_10000",type:"Langzeit",icon:"⚡",name:"Kraftpaket",desc:"Sammle insgesamt 10.000 Wiederholungen oder Sekunden.",value:totalExerciseAmount(),goal:10000,xp:600},
-   {id:"long_streak_7",type:"Langzeit",icon:"🔥",name:"Serienkrieger",desc:"Erreiche 7 Trainingstage in Folge.",value:streak(),goal:7,xp:100},
-   {id:"long_streak_30",type:"Langzeit",icon:"🌟",name:"Monatslegende",desc:"Erreiche 30 Trainingstage in Folge.",value:streak(),goal:30,xp:500}
-  ]
+  long:long.map(q=>({id:q[0],type:"Langzeit",icon:q[1],name:q[2],desc:q[3],value:q[4],goal:q[5],xp:q[6]}))
  };
 }
 function claimQuest(id){
@@ -1011,13 +1049,13 @@ function renderQuests(){
  $("homeQuests").innerHTML=[...q.daily,...q.weekly.slice(0,1)].map(questCard).join("");
 }
 
-/* Ruhmeshalle */
+/* Ruhmeshalle: Level-Meilensteine passend zur Levelkurve */
 function achievementList(){
  const t=totals();
- const levels=[5,10,25,50,75,100,150,200,300,500,750,1000,1500,2000,5000,10000];
- const workouts=[1,5,10,25,50,100,250,500,1000,2500,5000];
- const steps=[10000,50000,100000,250000,500000,1000000,2500000,5000000,10000000];
- const volume=[100,500,1000,5000,10000,25000,50000,100000];
+ const levels=[5,10,20,35,50,75,100,150,200,300,500,750,1000,1500,2000,3000,5000,7500,10000,15000,20000];
+ const workouts=[1,5,10,25,50,100,250,500,1000,2500,5000,7500,10000];
+ const steps=[10000,50000,100000,250000,500000,1000000,2500000,5000000,10000000,25000000,50000000];
+ const volume=[100,500,1000,5000,10000,25000,50000,100000,250000,500000,1000000];
  const streaks=[3,7,14,30,60,100,180,365];
  const a=[];
  levels.forEach(n=>a.push(["👑","Level "+fmt(n),"Erreiche Level "+fmt(n)+".",t.level>=n]));
@@ -1025,10 +1063,14 @@ function achievementList(){
  steps.forEach(n=>a.push(["👣",fmt(n)+" Schritte","Sammle insgesamt "+fmt(n)+" Schritte.",t.steps>=n]));
  volume.forEach(n=>a.push(["💪",fmt(n)+" Trainingsumfang","Sammle "+fmt(n)+" Wiederholungen oder Sekunden.",totalExerciseAmount()>=n]));
  streaks.forEach(n=>a.push(["🔥",n+" Tage Serie","Trainiere "+n+" Tage in Folge.",t.streak>=n]));
+ [100,500,1000,2500,5000].forEach(n=>a.push(["🏃",fmt(n)+" km Laufen","Laufe insgesamt "+fmt(n)+" Kilometer.",totalDistance("run")>=n]));
+ [250,1000,2500,5000,10000].forEach(n=>a.push(["🚴",fmt(n)+" km Radfahren","Fahre insgesamt "+fmt(n)+" Kilometer.",totalDistance("bike")>=n]));
  a.push(
   ["🎯","Wochenkrieger","Schließe eine Wochenquest ab.",(data.weekRewards||0)>0],
   ["⚔️","Quest-Sammler","Sammle 10 Quest-Belohnungen.",data.claimedQuestIds.length>=10],
-  ["🌟","Quest-Legende","Sammle 50 Quest-Belohnungen.",data.claimedQuestIds.length>=50]
+  ["🌟","Quest-Legende","Sammle 50 Quest-Belohnungen.",data.claimedQuestIds.length>=50],
+  ["👑","Quest-Großmeister","Sammle 100 Quest-Belohnungen.",data.claimedQuestIds.length>=100],
+  ["💎","Quest-Mythos","Sammle 250 Quest-Belohnungen.",data.claimedQuestIds.length>=250]
  );
  return a;
 }
@@ -1243,6 +1285,11 @@ load();
 buildExercises();
 buildWorkouts();
 render();
+
+/* Beim Start den zuletzt verwendeten Bereich wieder öffnen */
+let savedSection="home";
+try{savedSection=localStorage.getItem(LAST_SECTION_KEY)||"home"}catch(e){}
+showSection(savedSection,false);
 
 if("serviceWorker"in navigator&&location.protocol.startsWith("http")){
  window.addEventListener("load",async()=>{
